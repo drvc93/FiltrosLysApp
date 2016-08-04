@@ -51,10 +51,11 @@
                         android:layout_marginLeft="10dp"
                         android:background="@drawable/edittext_round_border"
                         android:layout_marginRight="10dp"
-                        android:padding="8dp"
+                        android:padding="7dp"
                         android:textAlignment="center"
                         android:textSize="22dp"
-                        android:hint="Usuario" />
+                        android:hint="Usuario"
+                        android:inputType="text" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -70,11 +71,12 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:padding="8dp"
+                        android:padding="7dp"
                         android:textAlignment="center"
                         android:textSize="22dp"
                         android:hint="Clave"
-                        android:hyphenationFrequency="none" />
+                        android:hyphenationFrequency="none"
+                        android:inputType="textPassword|text" />
                 </FrameLayout>
 
                 <LinearLayout
@@ -93,7 +95,8 @@
                         android:layout_marginTop="10dp"
                         android:textColor="@color/abc_btn_colored_borderless_text_material"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp" />
+                        android:layout_marginRight="10dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
