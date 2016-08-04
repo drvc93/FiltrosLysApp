@@ -95,7 +95,7 @@
                         android:background="@drawable/boton_rojo"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="10dp"
-                        android:textColor="@color/abc_btn_colored_borderless_text_material"
+                        android:textColor="@android:color/background_light"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:textStyle="bold"
