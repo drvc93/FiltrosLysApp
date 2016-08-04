@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Created by dvillanueva on 04/08/2016.
  */
-public class DBHelper  extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
         super(context, ConstasDB.DB_NAME, null, ConstasDB.DB_VERSION);
     }

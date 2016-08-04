@@ -11,13 +11,16 @@ import java.util.Hashtable;
  * Created by dvillanueva on 04/08/2016.
  */
 public class SubMenuBotones implements KvmSerializable {
-    private String codMenuBoton   ;
+    private String codMenuBoton;
     private String codPadre;
     private String codSubmenu;
     private String Descripcion;
     private Intent intent;
 
-    public  SubMenuBotones(){};
+    public SubMenuBotones() {
+    }
+
+    ;
 
     public SubMenuBotones(String codMenuBoton, String codPadre, String codSubmenu, String descripcion) {
         this.codMenuBoton = codMenuBoton;
@@ -26,7 +29,7 @@ public class SubMenuBotones implements KvmSerializable {
         Descripcion = descripcion;
     }
 
-    public SubMenuBotones(String codMenuBoton ,String codPadre, String codSubmenu, String descripcion, Intent i) {
+    public SubMenuBotones(String codMenuBoton, String codPadre, String codSubmenu, String descripcion, Intent i) {
         this.codMenuBoton = codMenuBoton;
         this.codPadre = codPadre;
         this.codSubmenu = codSubmenu;
@@ -77,15 +80,15 @@ public class SubMenuBotones implements KvmSerializable {
     @Override
     public Object getProperty(int i) {
 
-        switch (i){
+        switch (i) {
 
             case 0:
-                return  codMenuBoton;
-            case 1 :
-                return  codPadre;
+                return codMenuBoton;
+            case 1:
+                return codPadre;
             case 2:
-                return  codSubmenu;
-            case  3 :
+                return codSubmenu;
+            case 3:
                 return Descripcion;
 
 
@@ -102,7 +105,7 @@ public class SubMenuBotones implements KvmSerializable {
     @Override
     public void setProperty(int i, Object o) {
 
-        switch (i){
+        switch (i) {
 
             case 0:
                 codMenuBoton = o.toString();
@@ -117,7 +120,8 @@ public class SubMenuBotones implements KvmSerializable {
                 Descripcion = o.toString();
                 break;
 
-            default:break;
+            default:
+                break;
 
 
         }
@@ -128,23 +132,23 @@ public class SubMenuBotones implements KvmSerializable {
     public void getPropertyInfo(int i, Hashtable hashtable, PropertyInfo propertyInfo) {
 
 
-        switch (i){
+        switch (i) {
 
             case 0:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name= "codMenuBoton";
+                propertyInfo.name = "codMenuBoton";
                 break;
             case 1:
-                propertyInfo.type= PropertyInfo.STRING_CLASS;
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
                 propertyInfo.name = "codPadre";
                 break;
             case 2:
-                propertyInfo.type =PropertyInfo.STRING_CLASS;
-                propertyInfo.name="codSubMenu";
-                break;
-            case 3 :
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name="Descripcion";
+                propertyInfo.name = "codSubMenu";
+                break;
+            case 3:
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
+                propertyInfo.name = "Descripcion";
 
 
         }

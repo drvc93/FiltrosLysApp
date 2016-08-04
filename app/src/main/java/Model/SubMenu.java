@@ -10,12 +10,12 @@ import java.util.Hashtable;
  */
 public class SubMenu implements KvmSerializable {
 
-    private  String codSubMenu;
+    private String codSubMenu;
     private String descripcionSubmenu;
-    private  String codPadre;
-    private  String estado;
+    private String codPadre;
+    private String estado;
 
-    public SubMenu(String codSubMenu, String descripcionSubmenu, String codPadre,String estado) {
+    public SubMenu(String codSubMenu, String descripcionSubmenu, String codPadre, String estado) {
         this.codSubMenu = codSubMenu;
         this.descripcionSubmenu = descripcionSubmenu;
         this.codPadre = codPadre;
@@ -31,9 +31,10 @@ public class SubMenu implements KvmSerializable {
     }
 
 
+    public SubMenu() {
+    }
 
-
-    public  SubMenu(){};
+    ;
 
     public String getCodSubMenu() {
         return codSubMenu;
@@ -61,19 +62,18 @@ public class SubMenu implements KvmSerializable {
     }
 
 
-
     @Override
     public Object getProperty(int i) {
-        switch (i){
+        switch (i) {
 
             case 0:
                 return codSubMenu;
             case 1:
-                return  descripcionSubmenu;
+                return descripcionSubmenu;
             case 2:
-                return  codPadre;
-            case  3:
-                return  estado;
+                return codPadre;
+            case 3:
+                return estado;
 
 
         }
@@ -89,10 +89,10 @@ public class SubMenu implements KvmSerializable {
     @Override
     public void setProperty(int i, Object o) {
 
-        switch (i){
+        switch (i) {
 
 
-            case 0 :
+            case 0:
                 codSubMenu = o.toString();
                 break;
 
@@ -102,10 +102,10 @@ public class SubMenu implements KvmSerializable {
             case 2:
                 codPadre = o.toString();
                 break;
-            case  3:
+            case 3:
                 estado = o.toString();
-            default:break;
-
+            default:
+                break;
 
 
         }
@@ -115,29 +115,28 @@ public class SubMenu implements KvmSerializable {
     @Override
     public void getPropertyInfo(int i, Hashtable hashtable, PropertyInfo propertyInfo) {
 
-        switch (i){
+        switch (i) {
 
             case 0:
-                propertyInfo.type= PropertyInfo.STRING_CLASS;
-                propertyInfo.name ="codSubMenu";
-                break;
-            case  1 :
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name="descripcionSubmenu";
+                propertyInfo.name = "codSubMenu";
                 break;
-            case  2:
+            case 1:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name ="codPadre";
+                propertyInfo.name = "descripcionSubmenu";
+                break;
+            case 2:
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
+                propertyInfo.name = "codPadre";
                 break;
             case 3:
-                propertyInfo.type=PropertyInfo.STRING_CLASS;
-                propertyInfo.name="estado";
-            default:break;
-
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
+                propertyInfo.name = "estado";
+            default:
+                break;
 
 
         }
-
 
 
     }

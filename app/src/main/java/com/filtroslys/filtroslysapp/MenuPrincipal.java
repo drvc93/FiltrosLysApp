@@ -5,15 +5,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.ParcelUuid;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 public class MenuPrincipal extends AppCompatActivity {
 
-    Context context= this;
+    Context context = this;
     ActionBar actionBarGlobal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,12 +25,12 @@ public class MenuPrincipal extends AppCompatActivity {
 
     }
 
-    public  void  HideToolBar () {
+    public void HideToolBar() {
 
         new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long l) {
-          //      Toast.makeText(context,String.valueOf(l),Toast.LENGTH_SHORT).show();
+                //      Toast.makeText(context,String.valueOf(l),Toast.LENGTH_SHORT).show();
             }
 
             @Override

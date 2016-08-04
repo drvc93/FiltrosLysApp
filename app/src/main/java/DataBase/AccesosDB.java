@@ -10,15 +10,15 @@ import java.util.Hashtable;
  */
 public class AccesosDB implements KvmSerializable {
 
-    private  int id;
-    private  String usuario;
-    private  String appCodigo;
-    private  String nivelAcc;
-    private  String acceso;
-    private  String nuevo;
-    private  String modificar;
-    private  String eliminar;
-    private  String otros;
+    private int id;
+    private String usuario;
+    private String appCodigo;
+    private String nivelAcc;
+    private String acceso;
+    private String nuevo;
+    private String modificar;
+    private String eliminar;
+    private String otros;
 
     public String getAcceso() {
         return acceso;
@@ -110,25 +110,24 @@ public class AccesosDB implements KvmSerializable {
 
     @Override
     public Object getProperty(int i) {
-        switch (i){
+        switch (i) {
 
-            case  0 :
-                return  usuario;
-            case  1 :
-                return  appCodigo;
-            case  2:
+            case 0:
+                return usuario;
+            case 1:
+                return appCodigo;
+            case 2:
                 return nivelAcc;
             case 3:
-                return  acceso;
+                return acceso;
             case 4:
-                return  nuevo;
+                return nuevo;
             case 5:
-                return  modificar;
+                return modificar;
             case 6:
-                return  eliminar;
-            case  7:
-                return  otros;
-
+                return eliminar;
+            case 7:
+                return otros;
 
 
         }
@@ -144,9 +143,9 @@ public class AccesosDB implements KvmSerializable {
     @Override
     public void setProperty(int i, Object o) {
 
-        switch (i){
+        switch (i) {
 
-            case  0:
+            case 0:
                 usuario = o.toString();
                 break;
             case 1:
@@ -164,13 +163,14 @@ public class AccesosDB implements KvmSerializable {
             case 5:
                 modificar = o.toString();
                 break;
-            case  6:
+            case 6:
                 eliminar = o.toString();
                 break;
             case 7:
                 otros = o.toString();
                 break;
-            default: break;
+            default:
+                break;
 
 
         }
@@ -181,11 +181,11 @@ public class AccesosDB implements KvmSerializable {
     @Override
     public void getPropertyInfo(int i, Hashtable hashtable, PropertyInfo propertyInfo) {
 
-        switch (i){
+        switch (i) {
 
             case 0:
-                propertyInfo.type= PropertyInfo.STRING_CLASS;
-                propertyInfo.name="usuario";
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
+                propertyInfo.name = "usuario";
                 break;
             case 1:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
@@ -193,7 +193,7 @@ public class AccesosDB implements KvmSerializable {
                 break;
             case 2:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name= "nivelAcc";
+                propertyInfo.name = "nivelAcc";
                 break;
             case 3:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
@@ -203,20 +203,21 @@ public class AccesosDB implements KvmSerializable {
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
                 propertyInfo.name = "nuevo";
                 break;
-            case  5:
+            case 5:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
                 propertyInfo.name = "modificar";
                 break;
             case 6:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name= "eliminar";
+                propertyInfo.name = "eliminar";
                 break;
             case 7:
-                propertyInfo.type= PropertyInfo.STRING_CLASS;
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
                 propertyInfo.name = "otros";
                 break;
 
-            default:break;
+            default:
+                break;
 
         }
 

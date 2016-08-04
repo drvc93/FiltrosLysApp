@@ -10,15 +10,15 @@ import java.util.Hashtable;
  */
 public class MenuDB implements KvmSerializable {
 
-    private  int id;
-    private  String AppCodigo;
-    private  String nivel1;
-    private  String nivel2;
-    private  String nivel3;
-    private  String nivel4;
-    private  String nivel5;
-    private  String NombreMenu;
-    private  String Descripcion;
+    private int id;
+    private String AppCodigo;
+    private String nivel1;
+    private String nivel2;
+    private String nivel3;
+    private String nivel4;
+    private String nivel5;
+    private String NombreMenu;
+    private String Descripcion;
 
     public MenuDB(String appCodigo, String descripcion, String nivel1, String nivel2, String nivel3, String nivel4, String nivel5, String nombreMenu) {
         AppCodigo = appCodigo;
@@ -112,25 +112,24 @@ public class MenuDB implements KvmSerializable {
     @Override
     public Object getProperty(int i) {
 
-        switch (i){
+        switch (i) {
 
             case 0:
-                return  AppCodigo;
-            case  1:
-                return  nivel1;
+                return AppCodigo;
+            case 1:
+                return nivel1;
             case 2:
-                return  nivel2;
+                return nivel2;
             case 3:
-                return  nivel3;
+                return nivel3;
             case 4:
-                return  nivel4;
+                return nivel4;
             case 5:
-                return  nivel5;
+                return nivel5;
             case 6:
                 return NombreMenu;
             case 7:
-                return  Descripcion;
-
+                return Descripcion;
 
 
         }
@@ -147,7 +146,7 @@ public class MenuDB implements KvmSerializable {
     @Override
     public void setProperty(int i, Object o) {
 
-        switch (i){
+        switch (i) {
 
             case 0:
                 AppCodigo = o.toString();
@@ -174,7 +173,8 @@ public class MenuDB implements KvmSerializable {
                 Descripcion = o.toString();
                 break;
 
-            default:break;
+            default:
+                break;
 
         }
 
@@ -183,41 +183,42 @@ public class MenuDB implements KvmSerializable {
     @Override
     public void getPropertyInfo(int i, Hashtable hashtable, PropertyInfo propertyInfo) {
 
-        switch (i){
+        switch (i) {
 
             case 0:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name="AppCodigo";
+                propertyInfo.name = "AppCodigo";
                 break;
             case 1:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name="nivel1";
+                propertyInfo.name = "nivel1";
                 break;
             case 2:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name="nivel2";
+                propertyInfo.name = "nivel2";
                 break;
             case 3:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name="nivel3";
+                propertyInfo.name = "nivel3";
                 break;
             case 4:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name= "nivel4";
+                propertyInfo.name = "nivel4";
                 break;
             case 5:
-                propertyInfo.type= PropertyInfo.STRING_CLASS;
-                propertyInfo.name="nivel5";
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
+                propertyInfo.name = "nivel5";
                 break;
             case 6:
-                propertyInfo.type=PropertyInfo.STRING_CLASS;
-                propertyInfo.name="NombreMenu";
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
+                propertyInfo.name = "NombreMenu";
                 break;
             case 7:
-                propertyInfo.type=PropertyInfo.STRING_CLASS;
-                propertyInfo.name="Descripcion";
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
+                propertyInfo.name = "Descripcion";
                 break;
-            default:break;
+            default:
+                break;
 
 
         }

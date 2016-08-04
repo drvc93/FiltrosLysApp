@@ -2,11 +2,10 @@ package com.filtroslys.filtroslysapp;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,8 +18,9 @@ public class Login extends AppCompatActivity {
 
     //VARIABLES
 
-    Button  btnIngresar;
-    EditText  txtUser, txtPassword;
+    Button btnIngresar;
+    EditText txtUser, txtPassword;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -42,9 +42,9 @@ public class Login extends AppCompatActivity {
 
 
         // instanciando controles
-         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);
-         txtPassword = (EditText) findViewById(R.id.txtPassword);
-        txtUser = (EditText)findViewById(R.id.txtUser);
+        btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);
+        txtPassword = (EditText) findViewById(R.id.txtPassword);
+        txtUser = (EditText) findViewById(R.id.txtUser);
         //***********************
 
 
@@ -52,7 +52,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-              actionBar.hide();
+                actionBar.hide();
                 getWindow().setStatusBarColor(Color.parseColor("#fc0101"));
 
             }
@@ -71,7 +71,7 @@ public class Login extends AppCompatActivity {
         btnIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(Login.this,MenuPrincipal.class);
+                Intent i = new Intent(Login.this, MenuPrincipal.class);
                 startActivity(i);
             }
         });

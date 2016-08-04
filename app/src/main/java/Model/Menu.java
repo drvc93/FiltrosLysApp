@@ -10,13 +10,12 @@ import java.util.Hashtable;
  * Created by dvillanueva on 04/08/2016.
  */
 public class Menu implements KvmSerializable {
-    private  String  codMenu ;
-    private  String  descripcionMenu ;
+    private String codMenu;
+    private String descripcionMenu;
     private ArrayList<SubMenu> subMenus;
 
 
     private String codAplicacion;
-
 
 
     public String getCodMenu() {
@@ -44,11 +43,10 @@ public class Menu implements KvmSerializable {
     }
 
 
-
     public Menu(String codMenu, String descripcionMenu, String codApp) {
         this.codMenu = codMenu;
         this.descripcionMenu = descripcionMenu;
-        this.codAplicacion= codApp;
+        this.codAplicacion = codApp;
     }
 
     public ArrayList<SubMenu> getSubMenus() {
@@ -58,22 +56,26 @@ public class Menu implements KvmSerializable {
     public void setSubMenus(ArrayList<SubMenu> subMenus) {
         this.subMenus = subMenus;
     }
-    public  Menu(){};
+
+    public Menu() {
+    }
+
+    ;
 
     @Override
     public Object getProperty(int i) {
-        switch (i){
+        switch (i) {
 
-            case  0 :
-                return  codMenu;
+            case 0:
+                return codMenu;
             case 1:
                 return descripcionMenu;
-            case  2 :
-                return  codAplicacion;
+            case 2:
+                return codAplicacion;
 
         }
 
-        return  null;
+        return null;
 
     }
 
@@ -86,17 +88,18 @@ public class Menu implements KvmSerializable {
     public void setProperty(int i, Object o) {
 
 
-        switch (i){
+        switch (i) {
 
             case 0:
-                codMenu=o.toString();
+                codMenu = o.toString();
                 break;
             case 1:
                 descripcionMenu = o.toString();
                 break;
             case 2:
                 codAplicacion = o.toString();
-            default:break;
+            default:
+                break;
 
 
         }
@@ -107,30 +110,26 @@ public class Menu implements KvmSerializable {
     @Override
     public void getPropertyInfo(int i, Hashtable hashtable, PropertyInfo propertyInfo) {
 
-        switch (i){
+        switch (i) {
 
-            case 0 :
+            case 0:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name="codMenu";
+                propertyInfo.name = "codMenu";
                 break;
             case 1:
                 propertyInfo.type = PropertyInfo.STRING_CLASS;
-                propertyInfo.name="descripcionMenu";
+                propertyInfo.name = "descripcionMenu";
                 break;
 
             case 2:
-                propertyInfo.type=PropertyInfo.STRING_CLASS;
-                propertyInfo.name="codAplicacion";
+                propertyInfo.type = PropertyInfo.STRING_CLASS;
+                propertyInfo.name = "codAplicacion";
 
-            default:break;
-
-
+            default:
+                break;
 
 
         }
-
-
-
 
 
     }
