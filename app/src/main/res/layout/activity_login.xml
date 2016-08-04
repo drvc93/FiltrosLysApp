@@ -46,14 +46,15 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText"
+                        android:id="@+id/txtUser"
+                        android:drawableLeft="@drawable/icn_user"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginLeft="10dp"
                         android:background="@drawable/edittext_round_border"
                         android:layout_marginRight="10dp"
-                        android:padding="7dp"
+                        android:padding="5dp"
                         android:textAlignment="center"
-                        android:textSize="22dp"
+                        android:textSize="20dp"
                         android:hint="Usuario"
                         android:inputType="text" />
                 </FrameLayout>
@@ -66,14 +67,15 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText2"
+                        android:id="@+id/txtPassword"
                         android:background="@drawable/edittext_round_border"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:padding="7dp"
+                        android:drawableLeft="@drawable/icn_password"
+                        android:padding="5dp"
                         android:textAlignment="center"
-                        android:textSize="22dp"
+                        android:textSize="20dp"
                         android:hint="Clave"
                         android:hyphenationFrequency="none"
                         android:inputType="textPassword|text" />
@@ -89,14 +91,16 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:text="Ingresar"
-                        android:id="@+id/button"
+                        android:id="@+id/btnIngresarLogin"
                         android:background="@drawable/boton_rojo"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/abc_btn_colored_borderless_text_material"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:padding="7dp"
+                        android:textSize="18dp" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
