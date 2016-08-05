@@ -11,13 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"
-        android:src="@drawable/icn_success" />
+        android:src="@drawable/icn_success2" />
     <TextView
         android:id="@+id/txtDisplayToast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#2d2d2d"
-        android:textSize="20dip"
+        android:textColor="#131313"
+        android:textSize="17dp"
         android:text="Se sincronizo la data correctamente"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginRight="5dp" />
 </LinearLayout>

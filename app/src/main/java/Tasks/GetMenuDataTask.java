@@ -21,27 +21,7 @@ import Util.Constans;
  */
 public class GetMenuDataTask extends AsyncTask<String, String, ArrayList<MenuDB>> {
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        progressDialog.show();
-        Log.i("show pregress menudata >",".");
-    }
 
-    @Override
-    protected void onPostExecute(ArrayList<MenuDB> menuDBs) {
-        super.onPostExecute(menuDBs);
-       timerDelayRemoveDialog(5000,progressDialog);
-    }
-
-
-    public void timerDelayRemoveDialog(long time, final Dialog d){
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                d.dismiss();
-            }
-        }, time);
-    }
     ArrayList<MenuDB> result;
     ProgressDialog progressDialog ;
     public  GetMenuDataTask (ProgressDialog progressDialog){
@@ -106,5 +86,25 @@ public class GetMenuDataTask extends AsyncTask<String, String, ArrayList<MenuDB>
         }
         Log.i("result menudata ",".");
         return result;
+    }
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progressDialog.show();
+        Log.i("show pregress menudata >",".");
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<MenuDB> menuDBs) {
+        super.onPostExecute(menuDBs);
+        timerDelayRemoveDialog(3000,progressDialog);
+    }
+
+    public void timerDelayRemoveDialog(long time, final Dialog d){
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                d.dismiss();
+            }
+        }, time);
     }
 }

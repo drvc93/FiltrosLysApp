@@ -53,6 +53,20 @@ public class ProdMantDataBase {
     }
 
 
+    private  ContentValues UsuariosContentValues (UsuarioDB us){
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstasDB.MTP_USUARIO_COD,us.getCodigoUsuario());
+        contentValues.put(ConstasDB.MTP_USUARIO_NOM, us.getNombre());
+        contentValues.put(ConstasDB.MTP_USUARIO_CLAV, us.getClave());
+        contentValues.put(ConstasDB.MTP_USUARIO_NRO,us.getNroPersona());
+        contentValues.put(ConstasDB.MTP_USUARIO_EST,us.getEstado());
+        contentValues.put(ConstasDB.MTP_USUARIO_FLAG,us.getFlagmantto());
+
+        return  contentValues;
+
+    }
+
     private ContentValues AccesosContentValues(AccesosDB accesosDB) {
 
         ContentValues contentValues = new ContentValues();
@@ -69,6 +83,13 @@ public class ProdMantDataBase {
     }
 
 
+    public  long InsertUsuatios (UsuarioDB us){
+
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_USUARIO_NAME,null,UsuariosContentValues(us));
+        this.CloseDB();
+        return  rowid;
+    }
     public long InsetrtMenus(MenuDB menuDB) {
 
         this.OpenWritableDB();
@@ -86,6 +107,19 @@ public class ProdMantDataBase {
 
         this.CloseDB();
         return rowID;
+    }
+
+    public  boolean AutenticarUsuario (String user , String clave ){
+         boolean result  = false;
+         String query  = "SELECT * FROM  MTP_USUARIO where c_codigousuario = '"+user+"' and c_clave ='"+clave+"'";
+          this.OpenWritableDB();
+        Cursor cursor = db.rawQuery(query,null);
+        while (cursor.moveToNext()){
+            result = true;
+
+        }
+
+        return  result;
     }
 
     public ArrayList<SubMenu> GetMenuHijos(String codUser) {
@@ -195,6 +229,7 @@ public class ProdMantDataBase {
         this.OpenWritableDB();
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MENUS_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_ACCESO_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_USUARIO_NAME);
         this.CloseDB();
     }
 

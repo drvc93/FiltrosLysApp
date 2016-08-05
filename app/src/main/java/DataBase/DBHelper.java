@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import Util.Constans;
+
 /**
  * Created by dvillanueva on 04/08/2016.
  */
@@ -17,6 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_ACCESO_SQL);
         sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_MENUS_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_USUARIO_SQL);
     }
 
     @Override

@@ -57,4 +57,27 @@ public class ConstasDB {
                     MTP_MEN_N5 + " TEXT, " +
                     MTP_MEN_C_NOMM + " TEXT, " +
                     MTP_MEN_C_DESCP + " TEXT );";
+
+
+
+    // tabla usuario
+        public  static  final  String  TABLA_MTP_USUARIO_NAME = "MTP_USUARIO";
+
+        public  static  final  String MTP_USUARIO_ID = "_id";
+        public  static  final  String MTP_USUARIO_COD = "c_codigousuario";
+        public  static final   String MTP_USUARIO_NOM = "c_nombre";
+        public  static  final  String MTP_USUARIO_CLAV =  "c_clave";
+        public  static  final  String MTP_USUARIO_NRO = "n_persona";
+        public  static  final  String MTP_USUARIO_EST = "c_estado";
+        public  static  final  String MTP_USUARIO_FLAG = "c_flagmantto";
+
+        public  static  final  String TABLA_MTP_USUARIO_SQL =
+                    "CREATE TABLE "+  TABLA_MTP_USUARIO_NAME +
+                            " ( "+ MTP_USUARIO_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT,  "+
+                            MTP_USUARIO_COD + " TEXT , " +
+                            MTP_USUARIO_NOM + " TEXT , " +
+                            MTP_USUARIO_CLAV + " TEXT , " +
+                            MTP_USUARIO_NRO + " TEXT , " +
+                            MTP_USUARIO_EST + " TEXT , " +
+                            MTP_USUARIO_FLAG + " TEXT ); " ;
 }

@@ -45,11 +45,7 @@ public class GetAccesosDataTask extends AsyncTask<String,String,ArrayList<Acceso
     @Override
     protected ArrayList<AccesosDB> doInBackground(String... strings) {
 
-        try {
-            Thread.sleep(3500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
 
         ArrayList<AccesosDB> accesosDBs = new ArrayList<AccesosDB>();
         final String NAMESPACE = Constans.NameSpaceWS;
@@ -118,14 +114,15 @@ public class GetAccesosDataTask extends AsyncTask<String,String,ArrayList<Acceso
         super.onPostExecute(accesosDBs);
 
         timerDelayRemoveDialog(3000,progressDialog);
-        Intent i = new Intent(context , MenuPrincipal.class);
-        context.startActivity(i);
+
     }
 
     public void timerDelayRemoveDialog(long time, final Dialog d){
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 d.dismiss();
+                Intent i = new Intent(context , MenuPrincipal.class);
+                context.startActivity(i);
             }
         }, time);
     }

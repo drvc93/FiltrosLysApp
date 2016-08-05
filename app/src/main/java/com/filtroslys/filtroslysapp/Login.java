@@ -4,13 +4,16 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -25,8 +29,10 @@ import java.util.concurrent.ExecutionException;
 import DataBase.AccesosDB;
 import DataBase.MenuDB;
 import DataBase.ProdMantDataBase;
+import DataBase.UsuarioDB;
 import Tasks.GetAccesosDataTask;
 import Tasks.GetMenuDataTask;
+import Tasks.GetUsuariosTask;
 
 public class Login extends AppCompatActivity {
 
@@ -34,7 +40,8 @@ public class Login extends AppCompatActivity {
 
     Button btnIngresar;
     EditText txtUser, txtPassword;
-
+    ActionBar actionBar;
+    int currentapiVersion;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -48,26 +55,38 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setTitle("Login");
-        final ActionBar actionBar;
-        actionBar = getSupportActionBar();
-        actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
 
+         currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            actionBar = getSupportActionBar();
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        } else{
+
+        }
+
+        ShowDialogAlert();
 
         // instanciando controles
         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtUser = (EditText) findViewById(R.id.txtUser);
+        txtUser.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         //***********************
+
 
 
         txtUser.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                if (currentapiVersion>=20){
                 actionBar.hide();
                 getWindow().setStatusBarColor(Color.parseColor("#fc0101"));
+                }
+                else {
+
+                }
 
             }
 
@@ -78,14 +97,33 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                   // String var_text = txtUser.getText().toString();
+                  // txtUser.setText(var_text.toUpperCase());
             }
         });
 
         btnIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               ShowDialogAlert();
+                ProdMantDataBase db =  new ProdMantDataBase(Login.this);
+                String user  = txtUser.getText().toString();
+                String pass = txtPassword.getText().toString();
+                boolean res = db.AutenticarUsuario(user,pass);
+                if (res==true){
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("UserCod",user );
+                    editor.commit();
+                    Intent i = new Intent(Login.this,MenuPrincipal.class);
+                    startActivity(i);
+
+                }
+
+                else {
+                    Toast.makeText(Login.this, " Usuario o ontraseña incorrecta", Toast.LENGTH_SHORT).show();
+                }
+
+              // ShowDialogAlert();
                 //Intent i = new Intent(Login.this,MenuPrincipal.class);
                 //startActivity(i);
 
@@ -141,15 +179,18 @@ public class Login extends AppCompatActivity {
     }
 
     public  void SincMenuAcceso()  {
-        int icn = (R.drawable.icn_alert);
+
         ProgressDialog progressDialog;
+        int icn = (R.drawable.icn_sync_48);
+
+
+        // INSERT MENUS IN SQLITE
         progressDialog = CreateProgressDialog("Sincronizando..","Sincronizando menú , espere por favor..",icn);
         GetMenuDataTask getMenuDataTask = new GetMenuDataTask(progressDialog);
         AsyncTask<String,String,ArrayList<MenuDB>> asyncTask;
         ArrayList<MenuDB> menuDBs= new ArrayList<MenuDB>();
         ProdMantDataBase db =  new ProdMantDataBase(Login.this);
         db.deleteTables();
-
 
         try {
             asyncTask = getMenuDataTask.execute();
@@ -167,6 +208,27 @@ public class Login extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // INSERT USUARIOS IN SQLITE
+        progressDialog = CreateProgressDialog("Sincronizando","Sincronizando usuarios , espere por favor..",icn);
+        ArrayList<UsuarioDB> listaUsers = new ArrayList<UsuarioDB>();
+        GetUsuariosTask getUsuariosTask = new GetUsuariosTask(progressDialog);
+        AsyncTask<String,String,ArrayList<UsuarioDB>> asyncTaskUsers ;
+
+        try {
+            asyncTaskUsers =  getUsuariosTask.execute();
+            listaUsers = (ArrayList<UsuarioDB>) asyncTaskUsers.get();
+            for (int i = 0 ; i<listaUsers.size();i++){
+                UsuarioDB usuario = listaUsers.get(i);
+                db.InsertUsuatios(usuario);
+
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        //INSERT ACCESOS IN SQLITE
         ArrayList<AccesosDB> accesosDBs = new ArrayList<AccesosDB>();
          progressDialog = CreateProgressDialog("Sincronizando","Sincronizando accesos , espere por favor..",icn);
         GetAccesosDataTask getAccesosDataTask = new GetAccesosDataTask(progressDialog,Login.this);
@@ -184,6 +246,7 @@ public class Login extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
 
 
 
