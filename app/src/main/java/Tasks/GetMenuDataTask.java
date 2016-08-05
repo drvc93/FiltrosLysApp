@@ -1,6 +1,9 @@
 package Tasks;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import org.ksoap2.SoapEnvelope;
@@ -18,7 +21,33 @@ import Util.Constans;
  */
 public class GetMenuDataTask extends AsyncTask<String, String, ArrayList<MenuDB>> {
 
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progressDialog.show();
+        Log.i("show pregress menudata >",".");
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<MenuDB> menuDBs) {
+        super.onPostExecute(menuDBs);
+       timerDelayRemoveDialog(5000,progressDialog);
+    }
+
+
+    public void timerDelayRemoveDialog(long time, final Dialog d){
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                d.dismiss();
+            }
+        }, time);
+    }
     ArrayList<MenuDB> result;
+    ProgressDialog progressDialog ;
+    public  GetMenuDataTask (ProgressDialog progressDialog){
+
+        this.progressDialog  = progressDialog;
+    }
 
     @Override
     protected ArrayList<MenuDB> doInBackground(String... strings) {
@@ -75,7 +104,7 @@ public class GetMenuDataTask extends AsyncTask<String, String, ArrayList<MenuDB>
             Log.i("ERROR JAVA LIST WS MENUDB ---", e.getMessage());
             result = null;
         }
-
+        Log.i("result menudata ",".");
         return result;
     }
 }

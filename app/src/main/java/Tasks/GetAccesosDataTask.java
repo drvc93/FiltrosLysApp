@@ -1,7 +1,16 @@
 package Tasks;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+
+import com.filtroslys.filtroslysapp.MenuPrincipal;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -18,9 +27,30 @@ import Util.Constans;
  */
 public class GetAccesosDataTask extends AsyncTask<String,String,ArrayList<AccesosDB>> {
 
+    ProgressDialog progressDialog ;
+    Context context;
+    public  GetAccesosDataTask ( ProgressDialog  progressDialog , Context c){
+
+
+        this.progressDialog = progressDialog;
+        this.context = c;
+    }
+
     ArrayList<AccesosDB> result;
+
+    public GetAccesosDataTask() {
+        super();
+    }
+
     @Override
     protected ArrayList<AccesosDB> doInBackground(String... strings) {
+
+        try {
+            Thread.sleep(3500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ArrayList<AccesosDB> accesosDBs = new ArrayList<AccesosDB>();
         final String NAMESPACE = Constans.NameSpaceWS;
         final String URL = Constans.UrlServer;
@@ -43,7 +73,7 @@ public class GetAccesosDataTask extends AsyncTask<String,String,ArrayList<Acceso
             SoapObject resSoap = (SoapObject) envelope.bodyIn;
 
 
-            Log.i("MENU DB DATA > ", resSoap.toString());
+            Log.i("Accesos DB DATA > ", resSoap.toString());
             //lstProjects = new ArrayList<Parametros>();
             int num_projects = resSoap.getPropertyCount();
 
@@ -71,6 +101,32 @@ public class GetAccesosDataTask extends AsyncTask<String,String,ArrayList<Acceso
             result = null;
         }
 
+
         return result;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+        progressDialog.show();
+        Log.i("progress show accesos :" , "true");
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<AccesosDB> accesosDBs) {
+        super.onPostExecute(accesosDBs);
+
+        timerDelayRemoveDialog(3000,progressDialog);
+        Intent i = new Intent(context , MenuPrincipal.class);
+        context.startActivity(i);
+    }
+
+    public void timerDelayRemoveDialog(long time, final Dialog d){
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                d.dismiss();
+            }
+        }, time);
     }
 }

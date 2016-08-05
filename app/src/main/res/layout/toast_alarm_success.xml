@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toastlayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/lienar_layout_border"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/imgToastSucc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/icn_success" />
+    <TextView
+        android:id="@+id/txtDisplayToast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#2d2d2d"
+        android:textSize="20dip"
+        android:text="Se sincronizo la data correctamente"
+        android:textStyle="bold" />
+</LinearLayout>

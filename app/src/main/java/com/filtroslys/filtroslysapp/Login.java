@@ -1,9 +1,11 @@
 package com.filtroslys.filtroslysapp;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -83,9 +85,10 @@ public class Login extends AppCompatActivity {
         btnIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ShowDialogAlert();
-                //Intent i = new Intent(Login.this, MenuPrincipal.class);
+               ShowDialogAlert();
+                //Intent i = new Intent(Login.this,MenuPrincipal.class);
                 //startActivity(i);
+
             }
         });
 
@@ -115,19 +118,33 @@ public class Login extends AppCompatActivity {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        dialogInterface.cancel();
                        SincMenuAcceso();
+                       // dialogInterface.dismiss();
                     }
                 }).show();
 
 
     }
 
+    public ProgressDialog CreateProgressDialog (String  title , String msj, int icon ){
+
+        ProgressDialog  progress= new ProgressDialog(Login.this);
+         progress.setMessage(msj);
+        progress.setTitle(title);
+        progress.setCancelable(false);
+        progress.setIndeterminate(true);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIcon(icon);
+        return  progress;
+
+    }
+
     public  void SincMenuAcceso()  {
-
-
-
-        GetMenuDataTask getMenuDataTask = new GetMenuDataTask();
+        int icn = (R.drawable.icn_alert);
+        ProgressDialog progressDialog;
+        progressDialog = CreateProgressDialog("Sincronizando..","Sincronizando menú , espere por favor..",icn);
+        GetMenuDataTask getMenuDataTask = new GetMenuDataTask(progressDialog);
         AsyncTask<String,String,ArrayList<MenuDB>> asyncTask;
         ArrayList<MenuDB> menuDBs= new ArrayList<MenuDB>();
         ProdMantDataBase db =  new ProdMantDataBase(Login.this);
@@ -149,8 +166,10 @@ public class Login extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
         ArrayList<AccesosDB> accesosDBs = new ArrayList<AccesosDB>();
-        GetAccesosDataTask getAccesosDataTask = new GetAccesosDataTask();
+         progressDialog = CreateProgressDialog("Sincronizando","Sincronizando accesos , espere por favor..",icn);
+        GetAccesosDataTask getAccesosDataTask = new GetAccesosDataTask(progressDialog,Login.this);
         AsyncTask<String,String,ArrayList<AccesosDB>> asyncTaskAccesos;
 
         try {
@@ -165,7 +184,8 @@ public class Login extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        //ShowProgressDialog(tipoSincro);
+
+
 
     }
 }
