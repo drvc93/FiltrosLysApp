@@ -3,7 +3,7 @@ package DataBase;
 /**
  * Created by dvillanueva on 08/08/2016.
  */
-public class Maquina {
+public class MaquinaDB {
 
     private String  c_ompania;
     private String  c_maquina;
@@ -15,10 +15,10 @@ public class Maquina {
     private String  c_ultimousuario;
     private String  d_ultimafechamodificacion;
 
-    public Maquina() {
+    public MaquinaDB() {
     }
 
-    public Maquina(String c_ompania, String c_maquina, String c_descripcion, String c_codigobarras, String c_familiainspeccion, String c_centrocosto, String c_estado, String c_ultimousuario, String d_ultimafechamodificacion) {
+    public MaquinaDB(String c_ompania, String c_maquina, String c_descripcion, String c_codigobarras, String c_familiainspeccion, String c_centrocosto, String c_estado, String c_ultimousuario, String d_ultimafechamodificacion) {
         this.c_ompania = c_ompania;
         this.c_maquina = c_maquina;
         this.c_descripcion = c_descripcion;

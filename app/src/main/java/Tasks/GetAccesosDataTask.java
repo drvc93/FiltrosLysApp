@@ -29,12 +29,7 @@ public class GetAccesosDataTask extends AsyncTask<String,String,ArrayList<Acceso
 
     ProgressDialog progressDialog ;
     Context context;
-    public  GetAccesosDataTask ( ProgressDialog  progressDialog , Context c){
 
-
-        this.progressDialog = progressDialog;
-        this.context = c;
-    }
 
     ArrayList<AccesosDB> result;
 
@@ -105,17 +100,10 @@ public class GetAccesosDataTask extends AsyncTask<String,String,ArrayList<Acceso
     protected void onPreExecute() {
         super.onPreExecute();
 
-        progressDialog.show();
-        Log.i("progress show accesos :" , "true");
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<AccesosDB> accesosDBs) {
-        super.onPostExecute(accesosDBs);
-
-        timerDelayRemoveDialog(3000,progressDialog);
 
     }
+
+
 
     public void timerDelayRemoveDialog(long time, final Dialog d){
         new Handler().postDelayed(new Runnable() {

@@ -40,6 +40,7 @@ import DataBase.UsuarioDB;
 import Tasks.GetAccesosDataTask;
 import Tasks.GetMenuDataTask;
 import Tasks.GetUsuariosTask;
+import Tasks.SincronizarAccesosTask;
 import Util.Constans;
 
 public class Login extends AppCompatActivity {
@@ -75,7 +76,7 @@ public class Login extends AppCompatActivity {
 
         }
 
-       // ShowDialogAlert();
+     //  ShowDialogAlert();
 
         // instanciando controles
         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);
@@ -205,8 +206,8 @@ public class Login extends AppCompatActivity {
 
 
         // INSERT MENUS IN SQLITE
-        progressDialog = CreateProgressDialog("Sincronizando..","Sincronizando menú , espere por favor..",icn);
-        GetMenuDataTask getMenuDataTask = new GetMenuDataTask(progressDialog);
+
+        GetMenuDataTask getMenuDataTask = new GetMenuDataTask();
         AsyncTask<String,String,ArrayList<MenuDB>> asyncTask;
         ArrayList<MenuDB> menuDBs= new ArrayList<MenuDB>();
         ProdMantDataBase db =  new ProdMantDataBase(Login.this);
@@ -215,11 +216,7 @@ public class Login extends AppCompatActivity {
         try {
             asyncTask = getMenuDataTask.execute();
             menuDBs= (ArrayList<MenuDB>)asyncTask.get();
-            for (int i = 0 ; i <menuDBs.size();i++){
 
-                MenuDB mn = menuDBs.get(i);
-                db.InsetrtMenus(mn);
-            }
 
 
         } catch (InterruptedException e) {
@@ -229,19 +226,15 @@ public class Login extends AppCompatActivity {
         }
 
         // INSERT USUARIOS IN SQLITE
-        progressDialog = CreateProgressDialog("Sincronizando","Sincronizando usuarios , espere por favor..",icn);
+
         ArrayList<UsuarioDB> listaUsers = new ArrayList<UsuarioDB>();
-        GetUsuariosTask getUsuariosTask = new GetUsuariosTask(progressDialog);
+        GetUsuariosTask getUsuariosTask = new GetUsuariosTask();
         AsyncTask<String,String,ArrayList<UsuarioDB>> asyncTaskUsers ;
 
         try {
             asyncTaskUsers =  getUsuariosTask.execute();
             listaUsers = (ArrayList<UsuarioDB>) asyncTaskUsers.get();
-            for (int i = 0 ; i<listaUsers.size();i++){
-                UsuarioDB usuario = listaUsers.get(i);
-                db.InsertUsuatios(usuario);
 
-            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -250,27 +243,33 @@ public class Login extends AppCompatActivity {
 
         //INSERT ACCESOS IN SQLITE
         ArrayList<AccesosDB> accesosDBs = new ArrayList<AccesosDB>();
-         progressDialog = CreateProgressDialog("Sincronizando","Sincronizando accesos , espere por favor..",icn);
-        GetAccesosDataTask getAccesosDataTask = new GetAccesosDataTask(progressDialog,Login.this);
+       //
+        GetAccesosDataTask getAccesosDataTask = new GetAccesosDataTask();
         AsyncTask<String,String,ArrayList<AccesosDB>> asyncTaskAccesos;
 
         try {
             asyncTaskAccesos = getAccesosDataTask.execute();
             accesosDBs = (ArrayList<AccesosDB>)asyncTaskAccesos.get();
-            for (int i = 0 ; i <accesosDBs.size() ; i++){
-                AccesosDB acdb =  accesosDBs.get(i);
-                db.InsertAccesos(acdb);
-                Log.i("Acceso nro => ", String.valueOf(i));
-            }
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
+        progressDialog= new ProgressDialog(Login.this);
+        progressDialog.setTitle("Sincronizando");
+        progressDialog.setMessage("Sincronizando accesos .. espero por favor..");
+        progressDialog.setIcon(R.drawable.icn_sync_48);
+        SincronizarAccesosTask sincronizarAccesosTask = new SincronizarAccesosTask(Login.this,accesosDBs,menuDBs,listaUsers,progressDialog);
+        AsyncTask<Void,Void,Void> asyncTaskSincroAccesos ;
+
+        asyncTaskSincroAccesos = sincronizarAccesosTask.execute();
+
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("Sync","Si");
         editor.commit();
+
 
 
     }

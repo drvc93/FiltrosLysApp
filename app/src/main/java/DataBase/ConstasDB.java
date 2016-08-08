@@ -80,4 +80,30 @@ public class ConstasDB {
                             MTP_USUARIO_NRO + " TEXT , " +
                             MTP_USUARIO_EST + " TEXT , " +
                             MTP_USUARIO_FLAG + " TEXT ); " ;
+
+    // tabla maquina
+    public  static  final  String  TABLA_MTP_MAQUINAS_NAME = "MTP_MAQUINAS";
+    public  static  final  String  MTP_MAQUINA_ID="_id";
+    public  static  final  String  MTP_MAQUINA_COMP ="c_compania";
+    public  static  final  String  MTP_MAQUINA_COD_MAQUINA="c_maquina";
+    public  static  final  String  MTP_MAQUINA_DESCRP="c_descripcion";
+    public  static  final  String  MTP_MAQUINA_COD_BARRAS="c_codigobarras";
+    public  static  final  String  MTP_MAQUINA_FAM_INSP = "c_familiainspeccion";
+    public  static  final  String  MTP_MAQUINA_CENTRO_COS = "c_centrocosto";
+    public  static  final  String  MTP_MAQUINA_ESTADO = "c_estado";
+    public  static  final  String  MTP_MAQUINNA_ULT_USER = "c_ultimousuario";
+    public  static  final  String  MTP_MAQUINA_ULTIMAFECHAMOD= "d_ultimafechamodificacion";
+
+    public  static  final  String TABLA_MTP_MAQUINAS_SQL =
+            "CREATE TABLE " +TABLA_MTP_MAQUINAS_NAME+
+                    " ( "+MTP_MAQUINA_ID+"   INTEGER PRIMARY KEY AUTOINCREMENT,  "+
+                    MTP_MAQUINA_COMP  + " TEXT , " +
+                    MTP_MAQUINA_COD_MAQUINA  + " TEXT , " +
+                    MTP_MAQUINA_DESCRP  + " TEXT , " +
+                    MTP_MAQUINA_COD_BARRAS + " TEXT , " +
+                    MTP_MAQUINA_FAM_INSP + " TEXT , " +
+                    MTP_MAQUINA_CENTRO_COS + " TEXT , " +
+                    MTP_MAQUINA_ESTADO + " TEXT , " +
+                    MTP_MAQUINNA_ULT_USER + " TEXT , " +
+                    MTP_MAQUINA_ULTIMAFECHAMOD  + " TEXT ); " ;
 }

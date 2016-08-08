@@ -1,9 +1,6 @@
 package Tasks;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
 import org.ksoap2.SoapEnvelope;
@@ -13,27 +10,25 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import java.util.ArrayList;
 
-import DataBase.MenuDB;
+import DataBase.MaquinaDB;
 import DataBase.UsuarioDB;
 import Util.Constans;
 
 /**
- * Created by dvillanueva on 05/08/2016.
+ * Created by dvillanueva on 08/08/2016.
  */
-public class GetUsuariosTask  extends AsyncTask<String,String,ArrayList<UsuarioDB>> {
-
-    ArrayList<UsuarioDB> result ;
-    ProgressDialog progressDialog;
-
+public class GetMaquinasTask extends AsyncTask<String,String,ArrayList<MaquinaDB>> {
+    ArrayList<MaquinaDB> result ;
 
 
     @Override
-    protected ArrayList<UsuarioDB> doInBackground(String... strings) {
-        ArrayList<UsuarioDB> listUsers  = new ArrayList<UsuarioDB>();
+    protected ArrayList<MaquinaDB> doInBackground(String... strings) {
+
+        ArrayList<MaquinaDB> listMaquinas  = new ArrayList<MaquinaDB>();
         final String NAMESPACE = Constans.NameSpaceWS;
         final String URL = Constans.UrlServer;
         //final String URL="http://10.0.2.2:8084/SOAPLYS?wsdl";
-        final String METHOD_NAME = "GetUsuarios";
+        final String METHOD_NAME = "GetMaquinas";
         final String SOAP_ACTION = NAMESPACE + METHOD_NAME;
         SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
         //request.addProperty("CodUsuario", strings[0]);
@@ -54,36 +49,37 @@ public class GetUsuariosTask  extends AsyncTask<String,String,ArrayList<UsuarioD
 
             //lstProjects = new ArrayList<Parametros>();
             int num_projects = resSoap.getPropertyCount();
-            Log.i("result  get usuarios ",resSoap.toString());
+            Log.i("result  get maquinas ",resSoap.toString());
             for (int i = 0; i < num_projects; i++) {
                 SoapObject ic = (SoapObject) resSoap.getProperty(i);
 
-                UsuarioDB us = new UsuarioDB();
+                MaquinaDB maquinaDB = new MaquinaDB();
 
-                us.setClave(ic.getProperty(0).toString());
-                us.setCodigoUsuario(ic.getProperty(1).toString());
-                us.setEstado(ic.getProperty(2).toString());
-                us.setFlagmantto(ic.getProperty(3).toString());
-                us.setNombre(ic.getProperty(4).toString());
-                us.setNroPersona(ic.getProperty(5).toString());
+                maquinaDB.setC_centrocosto(ic.getProperty(0).toString());
+                maquinaDB.setC_codigobarras(ic.getProperty(1).toString());
+                maquinaDB.setC_descripcion(ic.getProperty(2).toString());
+                maquinaDB.setC_estado(ic.getProperty(3).toString());
+                maquinaDB.setC_familiainspeccion(ic.getProperty(4).toString());
+                maquinaDB.setC_maquina(ic.getProperty(5).toString());
+                maquinaDB.setC_ompania(ic.getProperty(6).toString());
+                maquinaDB.setC_ultimousuario(ic.getProperty(7).toString());
+                maquinaDB.setD_ultimafechamodificacion(ic.getProperty(8).toString());
 
-                listUsers.add(us);
-              //  Log.i("Usuario Nro > ", String.valueOf(i));
+
+              listMaquinas.add(maquinaDB);
+                //  Log.i("Usuario Nro > ", String.valueOf(i));
             }
             if (resSoap.getPropertyCount() > 0) {
-                result = listUsers;
+                result = listMaquinas;
 
             }
 
         } catch (Exception e) {
-            Log.i("AsynckTask GetUsers error---", e.getMessage());
-            result = null;
+            Log.i("AsynckTask maquinas error---", e.getMessage());
+           // result = null;
         }
 
         return result;
 
-
     }
-
-
 }

@@ -83,6 +83,30 @@ public class ProdMantDataBase {
 
     }
 
+    public  ContentValues MaquinasContentValues (MaquinaDB maquinaDB){
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstasDB.MTP_MAQUINA_COMP,maquinaDB.getC_ompania());
+        contentValues.put(ConstasDB.MTP_MAQUINA_COD_MAQUINA,maquinaDB.getC_maquina());
+        contentValues.put(ConstasDB.MTP_MAQUINA_DESCRP,maquinaDB.getC_descripcion());
+        contentValues.put(ConstasDB.MTP_MAQUINA_COD_BARRAS,maquinaDB.getC_codigobarras());
+        contentValues.put(ConstasDB.MTP_MAQUINA_FAM_INSP,maquinaDB.getC_familiainspeccion());
+        contentValues.put(ConstasDB.MTP_MAQUINA_CENTRO_COS,maquinaDB.getC_centrocosto());
+        contentValues.put(ConstasDB.MTP_MAQUINA_ESTADO,maquinaDB.getC_estado());
+        contentValues.put(ConstasDB.MTP_MAQUINNA_ULT_USER,maquinaDB.getC_ultimousuario());
+        contentValues.put(ConstasDB.MTP_MAQUINA_ULTIMAFECHAMOD,maquinaDB.getD_ultimafechamodificacion());
+
+        return  contentValues;
+
+    }
+
+    public  long InsertMaquina (MaquinaDB mq){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_MAQUINAS_NAME,null,MaquinasContentValues(mq));
+        this.CloseDB();
+        return  rowid;
+
+    }
 
     public  long InsertUsuatios (UsuarioDB us){
 
@@ -195,6 +219,37 @@ public class ProdMantDataBase {
 
     }
 
+    public  MaquinaDB GetMAquinaPorCodigo (String codBarras){
+        String query = "SELECT * FROM MTP_MAQUINAS WHERE  C_CODIGOBARRAS ='"+codBarras+"'";
+        this.OpenWritableDB();
+        ArrayList<MaquinaDB> listMaquina = new ArrayList<MaquinaDB>();
+        Cursor cursor = db.rawQuery(query,null);
+        while(cursor.moveToNext()){
+            MaquinaDB m = new MaquinaDB();
+            m.setC_ompania(cursor.getString(1));
+            m.setC_maquina(cursor.getString(2));
+            m.setC_descripcion(cursor.getString(3));
+            m.setC_codigobarras(cursor.getString(4));
+            m.setC_familiainspeccion(cursor.getString(5));
+            m.setC_centrocosto(cursor.getString(6));
+            m.setC_estado(cursor.getString(7));
+            m.setC_ultimousuario(cursor.getString(8));
+            m.setD_ultimafechamodificacion(cursor.getString(9));
+            listMaquina.add(m);
+
+        }
+       MaquinaDB res=null;
+
+       if(listMaquina.size()>0){
+           res = listMaquina.get(0);
+       }
+        else {
+
+       }
+
+        return  res;
+
+    }
 
     public ArrayList<Permisos> GetPermisos(String codigoUser, String nivel) {
 
@@ -231,8 +286,11 @@ public class ProdMantDataBase {
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MENUS_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_ACCESO_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_USUARIO_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MAQUINAS_NAME);
         this.CloseDB();
     }
+
+
 
 
 }

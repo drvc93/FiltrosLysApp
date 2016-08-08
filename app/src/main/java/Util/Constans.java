@@ -14,5 +14,6 @@ public class Constans {
     public static  int layout_error = R.drawable.toast_error_shape;
     public static  int icon_warning = R.drawable.ic_warning_black_24dp;
     public static  int layot_warning = R.drawable.toast_warning_shape;
-
+    public static  int layout_success = R.drawable.lienar_layout_border;
+    public static  int icon_succes = R.drawable.ic_done_24dp;
 }

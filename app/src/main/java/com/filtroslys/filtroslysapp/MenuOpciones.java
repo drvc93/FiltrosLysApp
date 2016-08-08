@@ -1,12 +1,17 @@
 package com.filtroslys.filtroslysapp;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,18 +20,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
+import DataBase.AccesosDB;
+import DataBase.MaquinaDB;
+import DataBase.MenuDB;
 import DataBase.ProdMantDataBase;
+import DataBase.UsuarioDB;
 import Model.Permisos;
 import Model.SubMenuBotones;
+import Tasks.GetAccesosDataTask;
+import Tasks.GetMaquinasTask;
+import Tasks.GetMenuDataTask;
+import Tasks.GetUsuariosTask;
+import Tasks.SincronizarAccesosTask;
+import Tasks.SincronizarMaestrosTask;
 import Util.Constans;
 
 public class MenuOpciones extends AppCompatActivity {
 
+    SharedPreferences preferences;
     String  codPadre , codHijo;
     String codUser,resultBarCode;
     public static final int REQUEST_CODE = 0x0000c0de;
@@ -36,6 +56,7 @@ public class MenuOpciones extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_opciones);
+        preferences = PreferenceManager.getDefaultSharedPreferences(MenuOpciones.this);
         LVOpciones = (ListView) findViewById(R.id.LVopcion);
 
         codHijo = getIntent().getExtras().getString("codHijo");
@@ -56,7 +77,8 @@ public class MenuOpciones extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 resultBarCode = data.getStringExtra("SCAN_RESULT");
-                Toast.makeText(MenuOpciones.this, resultBarCode, Toast.LENGTH_SHORT).show();
+                GetMaquinaBarCode(resultBarCode);
+               // Toast.makeText(MenuOpciones.this, resultBarCode, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -73,6 +95,21 @@ public class MenuOpciones extends AppCompatActivity {
 
     }
 
+
+    public void GetMaquinaBarCode (String barcode){
+
+        ProdMantDataBase db = new ProdMantDataBase(MenuOpciones.this);
+        MaquinaDB m = db.GetMAquinaPorCodigo(barcode);
+        if (m==null){
+            CreateCustomToast("No se encontro una mquina con el codigo de barra" ,Constans.icon_error,Constans.layout_error);
+        }
+        else {
+            String msj = "Maquina encontrada : " + m.getC_descripcion();
+            CreateCustomToast(msj,Constans.icon_succes,Constans.layout_success);
+        }
+
+
+    }
 
     public void CreateButtons (){
 
@@ -140,6 +177,195 @@ public class MenuOpciones extends AppCompatActivity {
             startActivityForResult(intentScan, REQUEST_CODE);
 
         }
+
+        if (var_concatenado.equals("030101")){
+
+            AlertSyncro("MAESTROS");
+        }
+
+        if (var_concatenado.equals("030102")){
+
+            AlertSyncro("ACCESOS");
+        }
+
+
+
+    }
+
+    public void AlertSyncro(final String tipoSincronizacion) {
+
+        String mensaje = "";
+        if (tipoSincronizacion.equals("MAESTROS")){
+            mensaje = "¿Desea sincronizar las tablas maestros?";
+
+        }
+        else {
+            mensaje = "¿Desea sincronizar los accesos?";
+
+
+        }
+
+        new AlertDialog.Builder(MenuOpciones.this)
+                .setTitle("Sincronización")
+                .setMessage(mensaje)
+                .setIcon(R.drawable.icn_alert)
+                .setPositiveButton("SI",
+                        new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                 if (tipoSincronizacion.equals("MAESTROS")) {
+                                     SincronizacionMaestros();
+                                 }
+                                else {
+                                     SincMenuAcceso();
+                                 }
+                            }
+                        })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+                    }
+                }).show();
+    }
+
+
+
+    public  void SincMenuAcceso()  {
+
+        ProgressDialog progressDialog;
+        int icn = (R.drawable.icn_sync_48);
+
+
+        // INSERT MENUS IN SQLITE
+
+        GetMenuDataTask getMenuDataTask = new GetMenuDataTask();
+        AsyncTask<String,String,ArrayList<MenuDB>> asyncTask;
+        ArrayList<MenuDB> menuDBs= new ArrayList<MenuDB>();
+        ProdMantDataBase db =  new ProdMantDataBase(MenuOpciones.this);
+        db.deleteTables();
+
+        try {
+            asyncTask = getMenuDataTask.execute();
+            menuDBs= (ArrayList<MenuDB>)asyncTask.get();
+
+
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // INSERT USUARIOS IN SQLITE
+
+        ArrayList<UsuarioDB> listaUsers = new ArrayList<UsuarioDB>();
+        GetUsuariosTask getUsuariosTask = new GetUsuariosTask();
+        AsyncTask<String,String,ArrayList<UsuarioDB>> asyncTaskUsers ;
+
+        try {
+            asyncTaskUsers =  getUsuariosTask.execute();
+            listaUsers = (ArrayList<UsuarioDB>) asyncTaskUsers.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        //INSERT ACCESOS IN SQLITE
+        ArrayList<AccesosDB> accesosDBs = new ArrayList<AccesosDB>();
+        //
+        GetAccesosDataTask getAccesosDataTask = new GetAccesosDataTask();
+        AsyncTask<String,String,ArrayList<AccesosDB>> asyncTaskAccesos;
+
+        try {
+            asyncTaskAccesos = getAccesosDataTask.execute();
+            accesosDBs = (ArrayList<AccesosDB>)asyncTaskAccesos.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        progressDialog= new ProgressDialog(MenuOpciones.this);
+        progressDialog.setTitle("Sincronizando");
+        progressDialog.setMessage("Sincronizando accesos .. espero por favor..");
+        progressDialog.setIcon(R.drawable.icn_sync_48);
+        SincronizarAccesosTask sincronizarAccesosTask = new SincronizarAccesosTask(MenuOpciones.this,accesosDBs,menuDBs,listaUsers,progressDialog);
+        AsyncTask<Void,Void,Void> asyncTaskSincroAccesos ;
+
+        asyncTaskSincroAccesos = sincronizarAccesosTask.execute();
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("Sync","Si");
+        editor.commit();
+
+
+
+    }
+
+
+    public  void  SincronizacionMaestros (){
+
+        ProgressDialog progressDialogo = new ProgressDialog(MenuOpciones.this);
+        progressDialogo.setMessage("Estamos sincronizando espere por favor...");
+        progressDialogo.setTitle("Sinconización");
+        progressDialogo.setIcon(R.drawable.icn_sync_48);
+
+        // Arrays variables
+
+        ArrayList<MaquinaDB> listMaquinas;
+
+        //***
+
+        // get list maquinas
+      listMaquinas = new ArrayList<MaquinaDB>();
+        GetMaquinasTask getmaquinasTask = new GetMaquinasTask();
+        AsyncTask asyncTaskMaquina ;
+
+        try {
+            asyncTaskMaquina = getmaquinasTask.execute();
+            listMaquinas = (ArrayList<MaquinaDB>) asyncTaskMaquina.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        Log.i("Pre ejecuion de maestroTask",".");
+        // progress dialog with asynctask
+        AsyncTask<Void,Void,Void> asyncMaestros;
+        SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this,progressDialogo,listMaquinas);
+         asyncMaestros = sincroMaestrosTask.execute();
+        Log.i("Post ejecuion de maestroTask",".");
+    }
+
+    public void   CreateCustomToast (String msj, int icon,int backgroundLayout ){
+
+        LayoutInflater infator = getLayoutInflater();
+        View layout =infator.inflate(R.layout.toast_alarm_success, (ViewGroup) findViewById(R.id.toastlayout));
+        TextView toastText = (TextView)layout.findViewById(R.id.txtDisplayToast);
+        ImageView imgIcon =  (ImageView)layout.findViewById(R.id.imgToastSucc);
+        LinearLayout parentLayout = ( LinearLayout)layout.findViewById(R.id.toastlayout);
+        imgIcon.setImageResource(icon);
+        final int sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            parentLayout.setBackgroundDrawable( getResources().getDrawable(backgroundLayout) );
+        } else {
+            parentLayout.setBackground( getResources().getDrawable(backgroundLayout));
+        }
+
+
+        toastText.setText(msj);
+        Toast toast = new Toast(MenuOpciones.this);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
 
     }
 }

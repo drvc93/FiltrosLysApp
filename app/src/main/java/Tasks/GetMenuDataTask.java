@@ -23,11 +23,7 @@ public class GetMenuDataTask extends AsyncTask<String, String, ArrayList<MenuDB>
 
 
     ArrayList<MenuDB> result;
-    ProgressDialog progressDialog ;
-    public  GetMenuDataTask (ProgressDialog progressDialog){
 
-        this.progressDialog  = progressDialog;
-    }
 
     @Override
     protected ArrayList<MenuDB> doInBackground(String... strings) {
@@ -90,14 +86,14 @@ public class GetMenuDataTask extends AsyncTask<String, String, ArrayList<MenuDB>
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog.show();
+
         Log.i("show pregress menudata >",".");
     }
 
     @Override
     protected void onPostExecute(ArrayList<MenuDB> menuDBs) {
         super.onPostExecute(menuDBs);
-        timerDelayRemoveDialog(3000,progressDialog);
+
     }
 
     public void timerDelayRemoveDialog(long time, final Dialog d){
