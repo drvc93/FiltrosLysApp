@@ -2,6 +2,7 @@ package com.filtroslys.filtroslysapp;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -63,6 +64,21 @@ public class MenuPrincipal extends AppCompatActivity {
 
         LoadMenu();
         ShowMenu();
+
+        menuExpListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                Menu menu = MenuFinalList.get(i);
+                SubMenu subMenu = menu.getSubMenus().get(i1);
+                Intent  intent = new Intent(MenuPrincipal.this,MenuOpciones.class);
+                intent.putExtra("codPadre",menu.getCodMenu());
+                intent.putExtra("codHijo",subMenu.getCodSubMenu());
+
+                startActivity(intent);
+                return  false;
+
+            }
+        });
 
 
 
