@@ -10,17 +10,24 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -33,6 +40,7 @@ import DataBase.UsuarioDB;
 import Tasks.GetAccesosDataTask;
 import Tasks.GetMenuDataTask;
 import Tasks.GetUsuariosTask;
+import Util.Constans;
 
 public class Login extends AppCompatActivity {
 
@@ -42,6 +50,7 @@ public class Login extends AppCompatActivity {
     EditText txtUser, txtPassword;
     ActionBar actionBar;
     int currentapiVersion;
+    SharedPreferences preferences;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -55,7 +64,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setTitle("Login");
-
+         preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
          currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
             actionBar = getSupportActionBar();
@@ -105,24 +114,35 @@ public class Login extends AppCompatActivity {
         btnIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String Sync;
                 ProdMantDataBase db =  new ProdMantDataBase(Login.this);
                 String user  = txtUser.getText().toString();
                 String pass = txtPassword.getText().toString();
-                boolean res = db.AutenticarUsuario(user,pass);
-                if (res==true){
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("UserCod",user );
-                    editor.commit();
-                    Intent i = new Intent(Login.this,MenuPrincipal.class);
-                    startActivity(i);
+
+                Sync = preferences.getString("Sync",null);
+                if(Sync!=null) {
+
+                    boolean res = db.AutenticarUsuario(user, pass);
+                    if (res == true) {
+
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("UserCod", user);
+                        editor.commit();
+                        Intent i = new Intent(Login.this, MenuPrincipal.class);
+                        startActivity(i);
+
+                    } else {
+
+                        CreateCustomToast("Usuario o contraseña incorrecta", Constans.icon_error, Constans.layout_error);
+
+                    }
 
                 }
 
                 else {
-                    Toast.makeText(Login.this, " Usuario o ontraseña incorrecta", Toast.LENGTH_SHORT).show();
-                }
+                    CreateCustomToast("Falta sincronizar el dispositivo",Constans.icon_warning,Constans.layot_warning);
 
+                }
               // ShowDialogAlert();
                 //Intent i = new Intent(Login.this,MenuPrincipal.class);
                 //startActivity(i);
@@ -240,6 +260,7 @@ public class Login extends AppCompatActivity {
             for (int i = 0 ; i <accesosDBs.size() ; i++){
                 AccesosDB acdb =  accesosDBs.get(i);
                 db.InsertAccesos(acdb);
+                Log.i("Acceso nro => ", String.valueOf(i));
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -247,7 +268,34 @@ public class Login extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("Sync","Si");
+        editor.commit();
 
+
+    }
+
+    public void   CreateCustomToast (String msj, int icon,int backgroundLayout ){
+
+        LayoutInflater infator = getLayoutInflater();
+        View layout =infator.inflate(R.layout.toast_alarm_success, (ViewGroup) findViewById(R.id.toastlayout));
+        TextView toastText = (TextView)layout.findViewById(R.id.txtDisplayToast);
+        ImageView imgIcon =  (ImageView)layout.findViewById(R.id.imgToastSucc);
+        LinearLayout parentLayout = ( LinearLayout)layout.findViewById(R.id.toastlayout);
+        imgIcon.setImageResource(icon);
+        final int sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            parentLayout.setBackgroundDrawable( getResources().getDrawable(backgroundLayout) );
+        } else {
+            parentLayout.setBackground( getResources().getDrawable(backgroundLayout));
+        }
+
+
+        toastText.setText(msj);
+        Toast toast = new Toast(Login.this);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
 
 
     }
