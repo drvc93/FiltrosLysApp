@@ -106,4 +106,25 @@ public class ConstasDB {
                     MTP_MAQUINA_ESTADO + " TEXT , " +
                     MTP_MAQUINNA_ULT_USER + " TEXT , " +
                     MTP_MAQUINA_ULTIMAFECHAMOD  + " TEXT ); " ;
+
+    // tabla periodo inspeccion
+    public  static  final  String TABLA_MTP_PERIODO_INSPECCION_NAME = "MTP_PERIODOINSPECCION";
+    public  static  final  String MTP_PERIODO_INSPECCION_ID = "_id";
+    public  static  final  String MTP_PERIODO_INSPECCION_COD_PER = "c_periodoinspeccion";
+    public  static  final  String MTP_PERIODO_INSPECCION_DESCRP = "c_descripcion";
+    public  static  final  String MTP_PERIODO_INSPECCION_ESTADO ="c_estado";
+    public static   final  String MTP_PERIODO_INSPECCION_ULT_USER = "c_ultimousuario";
+    public  static  final  String MTP_PERIODO_INSPECCION_ULT_FECHA = "d_ultimafechamodificacion";
+
+    public  static  final  String TABLA_MTP_PERIODO_SQL =
+            "CREATE TABLE "+ TABLA_MTP_PERIODO_INSPECCION_NAME +
+                    " ( "+ MTP_PERIODO_INSPECCION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    MTP_PERIODO_INSPECCION_COD_PER + " TEXT , " +
+                    MTP_PERIODO_INSPECCION_DESCRP + " TEXT , " +
+                    MTP_PERIODO_INSPECCION_ESTADO+ " TEXT , " +
+                    MTP_PERIODO_INSPECCION_ULT_USER + " TEXT , " +
+                    MTP_PERIODO_INSPECCION_ULT_FECHA + " TEXT ); ";
 }
+
+
+

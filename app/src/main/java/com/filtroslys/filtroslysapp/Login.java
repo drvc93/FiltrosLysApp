@@ -72,11 +72,12 @@ public class Login extends AppCompatActivity {
             actionBar.setDisplayUseLogoEnabled(true);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
+
         } else{
 
         }
 
-     //ShowDialogAlert();
+    // ShowDialogAlert();
 
         // instanciando controles
         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);

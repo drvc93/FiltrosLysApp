@@ -99,7 +99,25 @@ public class ProdMantDataBase {
         return  contentValues;
 
     }
+    public ContentValues PeriodosContentValues (PeriodoInspeccionDB periodo){
 
+        ContentValues  contentValues = new ContentValues();
+        contentValues.put(ConstasDB.MTP_PERIODO_INSPECCION_COD_PER, periodo.getC_periodoinspeccion());
+        contentValues.put(ConstasDB.MTP_PERIODO_INSPECCION_DESCRP,periodo.getC_descripcion());
+        contentValues.put(ConstasDB.MTP_PERIODO_INSPECCION_ESTADO,periodo.getC_estado());
+        contentValues.put(ConstasDB.MTP_PERIODO_INSPECCION_ULT_USER,periodo.getC_ultimousuario());
+        contentValues.put(ConstasDB.MTP_MAQUINA_ULTIMAFECHAMOD,periodo.getD_ultimafechamodificacion());
+        return  contentValues;
+    }
+
+
+    public  long InjsertPeriodos (PeriodoInspeccionDB periodo){
+
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME,null,PeriodosContentValues(periodo));
+        this.CloseDB();
+        return  rowid;
+    }
     public  long InsertMaquina (MaquinaDB mq){
         this.OpenWritableDB();
         long rowid = db.insert(ConstasDB.TABLA_MTP_MAQUINAS_NAME,null,MaquinasContentValues(mq));
@@ -146,6 +164,27 @@ public class ProdMantDataBase {
 
         return  result;
     }
+
+    public ArrayList<PeriodoInspeccionDB>  PeriodosInspeccionList (){
+        String query = "SELECT * FROM MTP_PERIODOINSPECCION";
+        ArrayList<PeriodoInspeccionDB> listResult =  new ArrayList<PeriodoInspeccionDB>();
+        this.OpenWritableDB();
+        Cursor  c= db.rawQuery(query,null);
+        while (c.moveToNext()){
+            PeriodoInspeccionDB p = new PeriodoInspeccionDB();
+            p.setC_periodoinspeccion(c.getString(1));
+            p.setC_descripcion(c.getString(2));
+            p.setC_estado(c.getString(3));
+            p.setC_ultimousuario(c.getString(4));
+            p.setD_ultimafechamodificacion(c.getString(5));
+
+            listResult.add(p);
+
+        }
+        return  listResult;
+    }
+
+
 
     public ArrayList<SubMenu> GetMenuHijos(String codUser) {
 
@@ -287,6 +326,7 @@ public class ProdMantDataBase {
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_ACCESO_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_USUARIO_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MAQUINAS_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME);
         this.CloseDB();
     }
 

@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 import DataBase.AccesosDB;
 import DataBase.MaquinaDB;
 import DataBase.MenuDB;
+import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
 import DataBase.UsuarioDB;
 import Model.Permisos;
@@ -39,6 +40,7 @@ import Model.SubMenuBotones;
 import Tasks.GetAccesosDataTask;
 import Tasks.GetMaquinasTask;
 import Tasks.GetMenuDataTask;
+import Tasks.GetPeriodosInspTask;
 import Tasks.GetUsuariosTask;
 import Tasks.SincronizarAccesosTask;
 import Tasks.SincronizarMaestrosTask;
@@ -316,7 +318,7 @@ public class MenuOpciones extends AppCompatActivity {
 
         progressDialog= new ProgressDialog(MenuOpciones.this);
         progressDialog.setTitle("Sincronizando");
-        progressDialog.setMessage("Sincronizando accesos .. espero por favor..");
+        progressDialog.setMessage("Sincronizando accesos .. espere por favor..");
         progressDialog.setIcon(R.drawable.icn_sync_48);
         SincronizarAccesosTask sincronizarAccesosTask = new SincronizarAccesosTask(MenuOpciones.this,accesosDBs,menuDBs,listaUsers,progressDialog);
         AsyncTask<Void,Void,Void> asyncTaskSincroAccesos ;
@@ -359,10 +361,29 @@ public class MenuOpciones extends AppCompatActivity {
             e.printStackTrace();
         }
 
+
+
+        // list Periodos
+
+        ArrayList<PeriodoInspeccionDB>  listPeriodos = new ArrayList<PeriodoInspeccionDB>();
+        AsyncTask<String,String,ArrayList<PeriodoInspeccionDB>> asyncTaskPeriodos;
+        GetPeriodosInspTask  getPeriodosInspTask = new GetPeriodosInspTask();
+
+        try {
+            asyncTaskPeriodos= getPeriodosInspTask.execute();
+            listPeriodos = (ArrayList<PeriodoInspeccionDB>)asyncTaskPeriodos.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+
+
         Log.i("Pre ejecuion de maestroTask",".");
         // progress dialog with asynctask
         AsyncTask<Void,Void,Void> asyncMaestros;
-        SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this,progressDialogo,listMaquinas);
+        SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this,progressDialogo,listMaquinas,listPeriodos);
          asyncMaestros = sincroMaestrosTask.execute();
         Log.i("Post ejecuion de maestroTask",".");
     }
