@@ -76,7 +76,7 @@ public class Login extends AppCompatActivity {
 
         }
 
-     //  ShowDialogAlert();
+     //ShowDialogAlert();
 
         // instanciando controles
         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);

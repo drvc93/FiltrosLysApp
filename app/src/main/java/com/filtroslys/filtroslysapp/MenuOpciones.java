@@ -46,6 +46,7 @@ import Util.Constans;
 
 public class MenuOpciones extends AppCompatActivity {
 
+    String codMaq ,NomMaq;
     SharedPreferences preferences;
     String  codPadre , codHijo;
     String codUser,resultBarCode;
@@ -78,7 +79,7 @@ public class MenuOpciones extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 resultBarCode = data.getStringExtra("SCAN_RESULT");
                 GetMaquinaBarCode(resultBarCode);
-               // Toast.makeText(MenuOpciones.this, resultBarCode, Toast.LENGTH_SHORT).show();
+
             }
         }
     }
@@ -101,10 +102,16 @@ public class MenuOpciones extends AppCompatActivity {
         ProdMantDataBase db = new ProdMantDataBase(MenuOpciones.this);
         MaquinaDB m = db.GetMAquinaPorCodigo(barcode);
         if (m==null){
-            CreateCustomToast("No se encontro una mquina con el codigo de barra" ,Constans.icon_error,Constans.layout_error);
+            CreateCustomToast("No se encontro una maquina con el codigo de barra" ,Constans.icon_error,Constans.layout_error);
         }
         else {
             String msj = "Maquina encontrada : " + m.getC_descripcion();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("CodMaquina", m.getC_maquina());
+            editor.putString("NomMaquina",m.getC_descripcion());
+            editor.commit();
+            NomMaq= m.getC_descripcion();
+            codMaq = m.getC_maquina();
             CreateCustomToast(msj,Constans.icon_succes,Constans.layout_success);
         }
 
@@ -151,9 +158,10 @@ public class MenuOpciones extends AppCompatActivity {
                 public void onClick(View view) {
                     //  Toast.makeText(ListaOpciones.this,String.valueOf(position),Toast.LENGTH_SHORT).show();
 
-                    Log.i("Boton Seleciconado ====>cod Boton : " , listOpciones.get(position).getCodMenuBoton());
+
                     Log.i("Boton Seleciconado ====>codPadre : " , listOpciones.get(position).getCodPadre());
                     Log.i("Boton Seleciconado ====>submenu : ",listOpciones.get(position).getCodSubmenu());
+                    Log.i("Boton Seleciconado ====>cod Boton : " , listOpciones.get(position).getCodMenuBoton());
                     // Log.i("Boton Seleciconado ====>codPadre: " , listOpciones.get(position).getaClass().getPackageName() );
                     SubMenuBotones sbmenu = listOpciones.get(position);
                      IrActivity(sbmenu);
@@ -175,6 +183,21 @@ public class MenuOpciones extends AppCompatActivity {
             Intent intentScan = new Intent(Constans.BS_PACKAGE + ".SCAN");
             intentScan.putExtra("PROMPT_MESSAGE", "Enfoque entre 9 y 11 cm. apuntado el codigo de barras de la maquina");
             startActivityForResult(intentScan, REQUEST_CODE);
+
+        }
+        if (var_concatenado.equals("010102")){
+
+           if (codMaq==null  && NomMaq== null){
+
+               CreateCustomToast("Primero de escanear el codigo de barras",Constans.icon_error,Constans.layout_error);
+           }
+            else {
+
+               Intent intent =  new Intent(getApplicationContext(),InspeccionMaq.class);
+               startActivity(intent);
+
+
+           }
 
         }
 

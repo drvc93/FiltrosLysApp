@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MenuPrincipal" />
-        <activity android:name=".MenuOpciones"></activity>
+        <activity android:name=".MenuOpciones" />
+        <activity android:name=".InspeccionMaq" ></activity>
     </application>
 
 </manifest>
