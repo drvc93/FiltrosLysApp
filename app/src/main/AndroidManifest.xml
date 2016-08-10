@@ -19,9 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MenuPrincipal" />
+        <activity android:name=".MenuPrincipal"  />
         <activity android:name=".MenuOpciones" />
-        <activity android:name=".InspeccionMaq" ></activity>
+        <activity android:name=".InspeccionMaq"
+
+            ></activity>
     </application>
 
 </manifest>

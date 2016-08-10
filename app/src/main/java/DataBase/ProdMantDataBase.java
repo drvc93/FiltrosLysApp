@@ -314,6 +314,30 @@ public class ProdMantDataBase {
 
     }
 
+
+    public  ArrayList<InspeccionDB> GetInspecciones(String famInspeccion,String periodoInso){
+
+        ArrayList<InspeccionDB> result = new ArrayList<InspeccionDB>();
+        String query = "SELECT * FROM MTP_INSPECCION WHERE c_familiainspeccion='"+famInspeccion+"' and c_periodoinspeccion = '"+periodoInso+"'";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()){
+            InspeccionDB inp = new InspeccionDB();
+            inp.setC_inspeccion(cursor.getString(1));
+            inp.setC_descripcion(cursor.getString(2));
+            inp.setC_tipoinspeccion(cursor.getString(3));
+            inp.setN_porcentajeminimo(cursor.getString(4));
+            inp.setN_porcentajemaximo(cursor.getString(5));
+            inp.setC_familiainspeccion(cursor.getString(6));
+            inp.setC_periodoinspeccion(cursor.getString(7));
+            inp.setC_estado(cursor.getString(8));
+            inp.setC_ultimousuario(cursor.getString(9));
+            inp.setD_ultimafechamodificacion(cursor.getString(10));
+            result.add(inp);
+        }
+        return result;
+    }
+
     public ArrayList<Permisos> GetPermisos(String codigoUser, String nivel) {
 
         ArrayList<Permisos> result = new ArrayList<Permisos>();
