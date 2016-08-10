@@ -11,7 +11,7 @@
         android:layout_marginTop="10dp">
 
         <EditText
-            android:layout_width="fill_parent"
+            android:layout_width="290dp"
             android:layout_height="150dp"
             android:id="@+id/txtDialogCom"
             android:inputType="textMultiLine"
@@ -27,7 +27,8 @@
             android:id="@+id/btnDialogOK"
             android:background="@drawable/boton_blanco"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="10dp"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="fill_parent"
@@ -36,6 +37,7 @@
             android:id="@+id/btnDiaglogSalir"
             android:background="@drawable/boton_blanco"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="10dp"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +28,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import DataBase.AccesosDB;
+import DataBase.InspeccionDB;
 import DataBase.MaquinaDB;
 import DataBase.MenuDB;
 import DataBase.PeriodoInspeccionDB;
@@ -38,6 +37,7 @@ import DataBase.UsuarioDB;
 import Model.Permisos;
 import Model.SubMenuBotones;
 import Tasks.GetAccesosDataTask;
+import Tasks.GetInspeccionesTask;
 import Tasks.GetMaquinasTask;
 import Tasks.GetMenuDataTask;
 import Tasks.GetPeriodosInspTask;
@@ -111,6 +111,7 @@ public class MenuOpciones extends AppCompatActivity {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("CodMaquina", m.getC_maquina());
             editor.putString("NomMaquina",m.getC_descripcion());
+            editor.putString("FamMaquina",m.getC_familiainspeccion());
             editor.commit();
             NomMaq= m.getC_descripcion();
             codMaq = m.getC_maquina();
@@ -378,12 +379,25 @@ public class MenuOpciones extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // list Inspecciones
+        ArrayList<InspeccionDB> listInspecciones = new ArrayList<InspeccionDB>();
+        AsyncTask<String,String,ArrayList<InspeccionDB>> asyncTaskInspecciones;
+        GetInspeccionesTask getInspeccionesTask = new GetInspeccionesTask();
+
+        try {
+            asyncTaskInspecciones = getInspeccionesTask.execute();
+            listInspecciones =(ArrayList<InspeccionDB>) asyncTaskInspecciones.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
 
         Log.i("Pre ejecuion de maestroTask",".");
         // progress dialog with asynctask
         AsyncTask<Void,Void,Void> asyncMaestros;
-        SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this,progressDialogo,listMaquinas,listPeriodos);
+        SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this,progressDialogo,listMaquinas,listPeriodos,listInspecciones);
          asyncMaestros = sincroMaestrosTask.execute();
         Log.i("Post ejecuion de maestroTask",".");
     }

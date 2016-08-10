@@ -124,7 +124,39 @@ public class ConstasDB {
                     MTP_PERIODO_INSPECCION_ESTADO+ " TEXT , " +
                     MTP_PERIODO_INSPECCION_ULT_USER + " TEXT , " +
                     MTP_PERIODO_INSPECCION_ULT_FECHA + " TEXT ); ";
+
+    // tabla inspecciones
+    public  static  final  String TABLA_MTP_INSPECCION_NAME = "MTP_INSPECCION";
+    public  static  final  String MTP_INSPECCION_ID ="_id";
+    public static final String MTP_INSPECCION_COD_INSP = "c_inspeccion";
+    public static final String MTP_INSPECCION_DESCRIPCION = "c_descripcion";
+    public static final String MTP_INSPECCION_TIPO_INS = "c_tipoinspeccion";
+    public static final String MTP_INSPECCION_PORC_MIN = "n_porcentajeminimo";
+    public static final String MTP_INSPECCION_PORC_MAX = "n_porcentajemaximo";
+    public static final String MTP_INSPECCION_FAM_INP = "c_familiainspeccion";
+    public static final String MTP_INSPECCION_PER_INSP = "c_periodoinspeccion";
+    public static final String MTP_INSPECCION_ESTADO = "c_estado";
+    public static final String MTP_INSPECCION_ULT_USER ="c_ultimousuario" ;
+    public static final String MTP_INSPECCION_ULT_FECHA = "d_ultimafechamodificacion";
+    
+    public static final String TABLA_MTP_INSPECCION_SQL =
+            "CREATE TABLE "+ TABLA_MTP_INSPECCION_NAME +
+                    " ( " + MTP_INSPECCION_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,  "+
+                     MTP_INSPECCION_COD_INSP + " TEXT , " +
+                    MTP_INSPECCION_DESCRIPCION  + " TEXT , " +
+                    MTP_INSPECCION_TIPO_INS + " TEXT , " +
+                    MTP_INSPECCION_PORC_MIN + " TEXT , " +
+                    MTP_INSPECCION_PORC_MAX + " TEXT , " +
+                    MTP_INSPECCION_FAM_INP + " TEXT , " +
+                    MTP_INSPECCION_PER_INSP + " TEXT , " +
+                    MTP_INSPECCION_ESTADO + " TEXT , " +
+                    MTP_INSPECCION_ULT_USER + " TEXT , " +
+                    MTP_INSPECCION_ULT_FECHA + " TEXT ); " ;
 }
+
+
+
+
 
 
 

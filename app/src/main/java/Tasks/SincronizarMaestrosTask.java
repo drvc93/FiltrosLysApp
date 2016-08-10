@@ -1,19 +1,16 @@
 package Tasks;
 
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.filtroslys.filtroslysapp.InspeccionMaq;
-
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 
 import DataBase.ConstasDB;
 import DataBase.DBHelper;
+import DataBase.InspeccionDB;
 import DataBase.MaquinaDB;
 import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
@@ -27,13 +24,15 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
     Context context ;
     ArrayList<MaquinaDB> listMaquina  ;
     ArrayList<PeriodoInspeccionDB> listPeriodos;
+    ArrayList<InspeccionDB> listInspecciones;
 
     public SincronizarMaestrosTask(Context context, ProgressDialog progressDialog, ArrayList<MaquinaDB> listMaquina,
-                                   ArrayList<PeriodoInspeccionDB> listPeriodos) {
+                                   ArrayList<PeriodoInspeccionDB> listPeriodos, ArrayList<InspeccionDB>listInspecciones) {
         this.context = context;
         this.listMaquina = listMaquina;
         this.progressDialog = progressDialog;
         this.listPeriodos = listPeriodos;
+        this.listInspecciones = listInspecciones;
     }
 
     @Override
@@ -45,6 +44,7 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         SQLiteDatabase dbBase = dbHelper.getWritableDatabase();
         dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_MAQUINAS_NAME);
         dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME);
+        dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_INSPECCION_NAME);
         dbBase.close();
         // prodMantDataBase.deleteTableMaquina();
 
@@ -68,6 +68,13 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
             }
         }
 
+        if (listInspecciones!=null && listInspecciones.size()>0){
+
+            for (int i = 0; i < listInspecciones.size() ; i++) {
+
+                prodMantDataBase.InsertInspeccion(listInspecciones.get(i));
+            }
+        }
 
         return null;
     }

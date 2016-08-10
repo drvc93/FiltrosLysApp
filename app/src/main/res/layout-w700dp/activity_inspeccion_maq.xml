@@ -129,7 +129,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="----"
                 android:id="@+id/lblnspector"
-                android:textColor="@android:color/background_light"
+                android:textColor="#000"
                 android:background="#00ffffff"
                 android:layout_marginLeft="5dp"
                 android:textSize="22dp" />
@@ -150,7 +150,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="----"
                 android:id="@+id/textView11"
-                android:textColor="@android:color/background_light"
+                android:textColor="#000"
                 android:background="#00ffffff"
                 android:layout_marginLeft="5dp"
                 android:textSize="22dp" />
@@ -179,7 +179,7 @@
             <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/listView"
+                android:id="@+id/LVDetInspM"
                 android:choiceMode="singleChoice" />
         </FrameLayout>
     </LinearLayout>

@@ -110,6 +110,30 @@ public class ProdMantDataBase {
         return  contentValues;
     }
 
+    public  ContentValues InspeccionesContentValues (InspeccionDB inp){
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstasDB.MTP_INSPECCION_COD_INSP,inp.getC_inspeccion());
+        contentValues.put(ConstasDB.MTP_INSPECCION_DESCRIPCION,inp.getC_descripcion());
+        contentValues.put(ConstasDB.MTP_INSPECCION_TIPO_INS,inp.getC_tipoinspeccion());
+        contentValues.put(ConstasDB.MTP_INSPECCION_PORC_MIN,inp.getN_porcentajeminimo());
+        contentValues.put(ConstasDB.MTP_INSPECCION_PORC_MAX,inp.getN_porcentajemaximo());
+        contentValues.put(ConstasDB.MTP_INSPECCION_FAM_INP,inp.getC_familiainspeccion());
+        contentValues.put(ConstasDB.MTP_INSPECCION_PER_INSP,inp.getC_periodoinspeccion());
+        contentValues.put(ConstasDB.MTP_INSPECCION_ESTADO,inp.getC_estado());
+        contentValues.put(ConstasDB.MTP_INSPECCION_ULT_USER,inp.getC_ultimousuario());
+        contentValues.put(ConstasDB.MTP_INSPECCION_ULT_FECHA,inp.getD_ultimafechamodificacion());
+        return  contentValues;
+
+    }
+
+
+    public  long InsertInspeccion(InspeccionDB inp){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_INSPECCION_NAME,null,InspeccionesContentValues(inp));
+        this.CloseDB();
+        return  rowid;
+    }
 
     public  long InjsertPeriodos (PeriodoInspeccionDB periodo){
 
@@ -327,6 +351,7 @@ public class ProdMantDataBase {
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_USUARIO_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MAQUINAS_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCION_NAME);
         this.CloseDB();
     }
 

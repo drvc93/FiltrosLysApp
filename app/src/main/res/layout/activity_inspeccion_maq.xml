@@ -165,10 +165,10 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtCometario"
                 android:hint="Comentario"
+
                 android:background="@drawable/edittext_round_border"
                 android:padding="7dp"
-
-               />
+                android:focusableInTouchMode="false" />
         </LinearLayout>
 
         <RelativeLayout

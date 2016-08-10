@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,7 +32,7 @@ public class InspeccionMaq extends AppCompatActivity {
     TextView lblInspector ,lblFechaInicio;
     SharedPreferences preferences;
     EditText txtComentario ;
-    String codUser,codMaquina,NomMaquina;
+    String codUser,codMaquina,NomMaquina, FamMaquina;
     Spinner spPeriodo, spCondMaq ;
     ListView LVdetalleM ;
     @Override
@@ -49,6 +50,8 @@ public class InspeccionMaq extends AppCompatActivity {
         codUser = preferences.getString("UserCod",null);
         codMaquina = preferences.getString("CodMaquina",null);
         NomMaquina = preferences.getString("NomMaquina",null);
+        FamMaquina = preferences.getString("FamMaquina",null);
+
 
 
        // lblMaquina = (TextView)findViewById(R.id.lblMaquina);
@@ -62,12 +65,12 @@ public class InspeccionMaq extends AppCompatActivity {
         CargarCabecera();
 
 
-        txtComentario.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                ShowCometarioCabDialog();
-            }
-        });
+         txtComentario.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 ShowCometarioCabDialog();
+             }
+         });
 
 
     }
@@ -158,11 +161,15 @@ public class InspeccionMaq extends AppCompatActivity {
 
         final Dialog dialog = new Dialog(InspeccionMaq.this);
         dialog.setContentView(R.layout.dialog_coment_layout);
-        setTitle("Comentarios");
+        dialog.setTitle("Comentarios");
+
+
         EditText txtComentario = (EditText)dialog.findViewById(R.id.txtDialogCom);
         Button btnSsalir = (Button) dialog.findViewById(R.id.btnDiaglogSalir);
         Button btnAceptar = (Button) dialog.findViewById(R.id.btnDialogOK);
         dialog.show();
+        //dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.icn_alert);
+
 
 
         btnSsalir.setOnClickListener(new View.OnClickListener() {
