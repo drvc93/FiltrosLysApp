@@ -23,6 +23,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_MAQUINAS_SQL);
         sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_PERIODO_SQL);
         sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_INSPECCION_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_CAB_SQL);
     }
 
     @Override

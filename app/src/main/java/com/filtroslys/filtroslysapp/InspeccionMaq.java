@@ -50,73 +50,76 @@ import java.util.HashMap;
 import DataBase.InspeccionDB;
 import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
+import Model.InspeccionMaqCabecera;
 import Model.InspeccionMaqDetalle;
 import Util.Constans;
 
 public class InspeccionMaq extends AppCompatActivity {
 
-    TextView lblInspector ,lblFechaInicio;
+    TextView lblInspector, lblFechaInicio;
+    int SOLO_GUARDAR = 0;
+    int GUARDAR_Y_ENVIAR_ = 1;
     SharedPreferences preferences;
     private static final int CAMERA_REQUEST = 1888;
     DetalleMaqAdapter detalleMaqAdap;
-    ArrayList<InspeccionMaqDetalle> dataGlobal ;
-    int posCamara ;
+    ArrayList<InspeccionMaqDetalle> dataGlobal;
+    int posCamara;
     String comentDialog = "";
-    EditText txtComentario ;
-    String codUser,codMaquina,NomMaquina, FamMaquina;
-    Spinner spPeriodo, spCondMaq ;
-    ListView LVdetalleM ;
+    EditText txtComentario;
+    String codUser, codMaquina, NomMaquina, FamMaquina;
+    Spinner spPeriodo, spCondMaq;
+    ListView LVdetalleM;
     ArrayList<PeriodoInspeccionDB> listPeriodos;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspeccion_maq);
         ActionBar actionBar = getSupportActionBar();
 
-        if (ChangeOrientationScreen()<6) {
+        if (ChangeOrientationScreen() < 6) {
 
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
-          //  getWindow().setStatusBarColor(Color.BLACK);
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            //  getWindow().setStatusBarColor(Color.BLACK);
         }
 
         preferences = PreferenceManager.getDefaultSharedPreferences(InspeccionMaq.this);
-        codUser = preferences.getString("UserCod",null);
-        codMaquina = preferences.getString("CodMaquina",null);
-        NomMaquina = preferences.getString("NomMaquina",null);
-        FamMaquina = preferences.getString("FamMaquina",null);
+        codUser = preferences.getString("UserCod", null);
+        codMaquina = preferences.getString("CodMaquina", null);
+        NomMaquina = preferences.getString("NomMaquina", null);
+        FamMaquina = preferences.getString("FamMaquina", null);
 
 
-
-       // lblMaquina = (TextView)findViewById(R.id.lblMaquina);
-        lblInspector  =  (TextView) findViewById(R.id.lblnspector);
+        // lblMaquina = (TextView)findViewById(R.id.lblMaquina);
+        lblInspector = (TextView) findViewById(R.id.lblnspector);
         spCondMaq = (Spinner) findViewById(R.id.spCondMaquina);
         LVdetalleM = (ListView) findViewById(R.id.LVDetInspM);
-        spPeriodo = (Spinner)findViewById(R.id.spPeriodo);
-         txtComentario = (EditText)findViewById(R.id.txtCometario);
-        lblFechaInicio = (TextView)findViewById(R.id.lblFechaInicio);
+        spPeriodo = (Spinner) findViewById(R.id.spPeriodo);
+        txtComentario = (EditText) findViewById(R.id.txtCometario);
+        lblFechaInicio = (TextView) findViewById(R.id.lblFechaInicio);
 
         CargarCabecera();
 
 
-         txtComentario.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 ShowCometarioCabDialog();
-             }
-         });
+        txtComentario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShowCometarioCabDialog();
+            }
+        });
 
         spPeriodo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i>0){
+                if (i > 0) {
 
-                    NumberFormat format =  new DecimalFormat("00");
+                    NumberFormat format = new DecimalFormat("00");
                     String strNumerFormat = format.format(i);
-                    Log.d("Number perdiodo => ", strNumerFormat );
-                   // Toast.makeText(InspeccionMaq.this, strNumerFormat, Toast.LENGTH_SHORT).show();
+                    Log.d("Number perdiodo => ", strNumerFormat);
+                    // Toast.makeText(InspeccionMaq.this, strNumerFormat, Toast.LENGTH_SHORT).show();
                     InsertRowsListView(strNumerFormat);
                 }
             }
@@ -144,7 +147,7 @@ public class InspeccionMaq extends AppCompatActivity {
         AlerExit();
     }
 
-    public  void   AlerExit (){
+    public void AlerExit() {
         new AlertDialog.Builder(InspeccionMaq.this)
                 .setTitle("Advertencia")
                 .setMessage("¿Esta seguro que desea salir de esta ventana?")
@@ -174,10 +177,19 @@ public class InspeccionMaq extends AppCompatActivity {
         LoadSpinnerPeriodo();
         //LoadListViewDetall();
 
+
+        lblFechaInicio.setText(FechaActual());
+    }
+
+
+    public  String  FechaActual(){
+
         Calendar  cal = Calendar.getInstance();
         SimpleDateFormat df =  new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        lblFechaInicio.setText(df.format(cal.getTime()));
+        String res = df.format(cal.getTime());
+        return  res;
     }
+
 
     public void LoadSpinerCondicionMaquina(){
         ArrayList<String> lisCondMaq = new ArrayList<String>();
@@ -605,5 +617,45 @@ public class InspeccionMaq extends AppCompatActivity {
 
             }
         }).show();
+    }
+
+    public  void  Guardar (int tipoGuardado){
+
+        InspeccionMaqCabecera inpCab ;
+
+        if (tipoGuardado==SOLO_GUARDAR){
+
+            if (ValidarCabecera()==true){
+                InspeccionMaqCabecera cab = new InspeccionMaqCabecera();
+                cab.setCompania(Constans.NroConpania);
+                cab.setComentario(txtComentario.getText().toString());
+
+            }
+
+
+
+        }
+
+        else if (tipoGuardado ==GUARDAR_Y_ENVIAR_){
+
+
+        }
+    }
+
+    public boolean ValidarCabecera (){
+        boolean result = true;
+        if (spPeriodo.getSelectedItemPosition()==0){
+            CreateCustomToast("Seleccione un periodo",Constans.icon_error,Constans.layout_error);
+            result = false;
+
+        }
+        else if (spCondMaq.getSelectedItemPosition()==0){
+            result=false;
+            CreateCustomToast("Seleccione un condición de máquina",Constans.icon_error,Constans.layout_error);
+        }
+
+        return  result;
+
+
     }
 }

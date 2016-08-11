@@ -113,6 +113,8 @@ public class MenuOpciones extends AppCompatActivity {
             editor.putString("NomMaquina",m.getC_descripcion());
             editor.putString("FamMaquina",m.getC_familiainspeccion());
             editor.commit();
+
+
             NomMaq= m.getC_descripcion();
             codMaq = m.getC_maquina();
             CreateCustomToast(msj,Constans.icon_succes,Constans.layout_success);

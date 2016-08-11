@@ -17,4 +17,5 @@ public class Constans {
     public static  int layout_success = R.drawable.lienar_layout_border;
     public static  int icon_succes = R.drawable.ic_done_24dp;
     public static  String Carpeta_foto= "LysConfig/Fotos/";
+    public static final String NroConpania = "00100000";
 }

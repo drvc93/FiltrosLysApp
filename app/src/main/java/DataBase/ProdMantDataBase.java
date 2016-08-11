@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
+import Model.InspeccionMaqCabecera;
 import Model.Menu;
 import Model.Permisos;
 import Model.SubMenu;
@@ -127,6 +128,34 @@ public class ProdMantDataBase {
 
     }
 
+    public  ContentValues InspeccionMaquinaCabValues (InspeccionMaqCabecera inpCAB){
+
+        ContentValues contentValues = new ContentValues( );
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_COMPANIA , inpCAB.getCompania());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_CORRELATIVO,inpCAB.getCorrlativo());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_COD_MAQUINA,inpCAB.getCodMaquina());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_CONDICION_MAQUINA,inpCAB.getCondicionMaq());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_COMENTARIO,inpCAB.getComentario());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_ESTADO,inpCAB.getEstado());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_FECHA_INI_INSP,inpCAB.getFechaInicioInsp());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_FECHA_FIN_INSP,inpCAB.getFechFinInsp());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_PERIODO_INSP,inpCAB.getPeriodoInsp());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_USUARIO_INS,inpCAB.getUsuarioInsp());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_USUARIO_ENV,inpCAB.getUsuarioEnv());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_FECHA_ENV,inpCAB.getFechaEnv());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_ULT_USER,inpCAB.getUltUsuairo());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_ULT_FECHA_MOD,inpCAB.getUltFechaMod());
+
+        return  contentValues;
+    }
+
+    public  long InsertInspeccionMaqCab (InspeccionMaqCabecera inspeccionMaqCabecera){
+
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME,null,InspeccionMaquinaCabValues(inspeccionMaqCabecera));
+        this.CloseDB();
+        return  rowid;
+    }
 
     public  long InsertInspeccion(InspeccionDB inp){
         this.OpenWritableDB();
@@ -188,6 +217,7 @@ public class ProdMantDataBase {
 
         return  result;
     }
+
 
     public ArrayList<PeriodoInspeccionDB>  PeriodosInspeccionList (){
         String query = "SELECT * FROM MTP_PERIODOINSPECCION";
@@ -376,6 +406,7 @@ public class ProdMantDataBase {
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MAQUINAS_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCION_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME);
         this.CloseDB();
     }
 

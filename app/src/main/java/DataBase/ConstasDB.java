@@ -152,6 +152,50 @@ public class ConstasDB {
                     MTP_INSPECCION_ESTADO + " TEXT , " +
                     MTP_INSPECCION_ULT_USER + " TEXT , " +
                     MTP_INSPECCION_ULT_FECHA + " TEXT ); " ;
+
+    // TABLA INSPECION_MAQUINA_CAB
+
+    public static final String TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME = "MTP_INSPECCIONMAQUINA_CAB";
+
+    public static final String MTP_INSP_MAQ_CAB_ID="_id" ;
+    public static final String MTP_INSP_MAQ_CAB_COMPANIA ="c_compania" ;
+    public static final String MTP_INSP_MAQ_CAB_CORRELATIVO = "n_correlativo";
+    public static final String MTP_INSP_MAQ_CAB_COD_MAQUINA = "c_maquina";
+    public static final String MTP_INSP_MAQ_CAB_CONDICION_MAQUINA = "c_condicionmaquina";
+    public static final String MTP_INSP_MAQ_CAB_COMENTARIO = "c_comentario";
+    public static final String MTP_INSP_MAQ_CAB_ESTADO = "c_estado";
+    public static final String MTP_INSP_MAQ_CAB_FECHA_INI_INSP = "d_fechaInicioInspeccion";
+    public static final String MTP_INSP_MAQ_CAB_FECHA_FIN_INSP = "d_fechaFinInspeccion";
+    public static final String MTP_INSP_MAQ_CAB_PERIODO_INSP = "c_periodoinspeccion";
+    public static final String MTP_INSP_MAQ_CAB_USUARIO_INS = "c_usuarioInspeccion";
+    public static final String MTP_INSP_MAQ_CAB_USUARIO_ENV = "c_usuarioenvio";
+    public static final String MTP_INSP_MAQ_CAB_FECHA_ENV = "d_fechaenvio";
+    public static final String MTP_INSP_MAQ_CAB_ULT_USER="c_ultimousuario";
+    public static final String MTP_INSP_MAQ_CAB_ULT_FECHA_MOD = "d_ultimafechamodificacion";
+    
+    public static final String TABLA_MTP_INSPECCIONMAQUINA_CAB_SQL =
+            "CREATE TABLE " + TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME+
+                    " ( " + MTP_INSP_MAQ_CAB_ID  +" INTEGER PRIMARY KEY AUTOINCREMENT,  "+
+                    MTP_INSP_MAQ_CAB_COMPANIA+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_CORRELATIVO+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_COD_MAQUINA+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_CONDICION_MAQUINA+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_COMENTARIO+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_ESTADO+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_FECHA_INI_INSP+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_FECHA_FIN_INSP+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_PERIODO_INSP + " TEXT , " +
+                    MTP_INSP_MAQ_CAB_USUARIO_INS+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_USUARIO_ENV+ " TEXT , " +
+                    MTP_INSP_MAQ_CAB_FECHA_ENV + " TEXT , " +
+                    MTP_INSP_MAQ_CAB_ULT_USER + " TEXT , " +
+                    MTP_INSP_MAQ_CAB_ULT_FECHA_MOD + " TEXT );";
+
+
+
+
+
+
 }
 
 
