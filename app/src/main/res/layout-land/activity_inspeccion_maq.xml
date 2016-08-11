@@ -42,7 +42,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Periodo:"
                 android:id="@+id/textView4"
-                android:textColor="#A4A4A4"
+                android:textColor="#000"
                 android:textSize="20sp"
                 android:layout_marginLeft="15dp" />
 

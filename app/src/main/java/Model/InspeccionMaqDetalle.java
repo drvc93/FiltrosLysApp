@@ -13,10 +13,10 @@ public class InspeccionMaqDetalle {
     private  String tipo_inspecicon;
     private  String porcentMin;
     private  String porcentMax;
-    private  String porcentInspec;
+    private  String porcentInspec="";
     private  String estado ;
-    private  String comentario ;
-    private  String rutaFoto;
+    private  String comentario ="";
+    private  String rutaFoto="";
     private  String ultimoUser;
     private  String ultimaFechaMod;
 

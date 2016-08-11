@@ -26,7 +26,8 @@
             android:id="@+id/lblInpecDescDet"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="4dp"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -130,7 +131,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imgDetFoto"
-            android:src="@drawable/icn_camera_32"
             android:layout_marginLeft="8dp"
             android:background="@drawable/botones_items_detalle" />
 
@@ -138,7 +138,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imgDetComent"
-            android:src="@drawable/icn_pencil_32"
             android:layout_marginLeft="8dp"
             android:background="@drawable/botones_items_detalle" />
     </LinearLayout>
