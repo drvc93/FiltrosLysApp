@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="----"
-                android:id="@+id/textView16"
+                android:id="@+id/txtEstadoCab"
                 android:textColor="#000"
                 android:background="#00ffffff"
                 android:layout_marginLeft="5dp" />

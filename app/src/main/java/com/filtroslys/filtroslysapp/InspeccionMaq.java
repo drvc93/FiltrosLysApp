@@ -14,7 +14,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,6 +60,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
     TextView lblInspector, lblFechaInicio;
     int SOLO_GUARDAR = 0;
+    String indexPeriodoInspeccion="";
     int GUARDAR_Y_ENVIAR_ = 1;
     SharedPreferences preferences;
     private static final int CAMERA_REQUEST = 1888;
@@ -118,6 +121,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
                     NumberFormat format = new DecimalFormat("00");
                     String strNumerFormat = format.format(i);
+                    indexPeriodoInspeccion = strNumerFormat;
                     Log.d("Number perdiodo => ", strNumerFormat);
                     // Toast.makeText(InspeccionMaq.this, strNumerFormat, Toast.LENGTH_SHORT).show();
                     InsertRowsListView(strNumerFormat);
@@ -356,6 +360,7 @@ public class InspeccionMaq extends AppCompatActivity {
         HashMap<Integer,Integer> indexSpiner = new HashMap<Integer, Integer>();
         HashMap<Integer,Integer> indexIconComent = new HashMap<Integer, Integer>();
         HashMap<Integer,Integer> indexIconFoto = new HashMap<Integer, Integer>();
+        HashMap<Integer,Boolean> indexEnableSpiner =new HashMap<Integer, Boolean>();
 
         SharedPreferences preferences;
         Context context;
@@ -368,6 +373,7 @@ public class InspeccionMaq extends AppCompatActivity {
             this.data = data;
             LoadHaspIconComentFoto();
             preferences= PreferenceManager.getDefaultSharedPreferences(context);
+            FillHashMapEnableSpiner();
         }
 
 
@@ -375,7 +381,7 @@ public class InspeccionMaq extends AppCompatActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder = null;
-            InspeccionMaqDetalle inp = data.get(position);
+            final InspeccionMaqDetalle inp = data.get(position);
             ArrayList<String> listEstados = new ArrayList<String>();
             listEstados.add("--Selecccione--");
             listEstados.add("OK");
@@ -397,6 +403,8 @@ public class InspeccionMaq extends AppCompatActivity {
                 viewHolder.spEstado  = (Spinner)convertView.findViewById(R.id.spDetEsado);
                 viewHolder.imgFoto = (ImageView)convertView.findViewById(R.id.imgDetFoto);
                 viewHolder.imgComent = (ImageView)convertView.findViewById(R.id.imgDetComent);
+                viewHolder.spEstado.setEnabled(indexEnableSpiner.get(position));
+
 
 
 
@@ -417,20 +425,26 @@ public class InspeccionMaq extends AppCompatActivity {
             viewHolder.lblPorcenMin.setText(inp.getPorcentMin());
             viewHolder.lblPorcenMax.setText(inp.getPorcentMax());
             viewHolder.lblTipoInsp.setText(inp.getTipo_inspecicon());
-            Double porcent = Double.parseDouble(inp.getPorcentMax());
+            final Double porcent = Double.parseDouble(inp.getPorcentMax());
             viewHolder.imgComent.setImageResource(indexIconComent.get(position));
             viewHolder.imgFoto.setImageResource(indexIconFoto.get(position));
             final ImageView imgv = viewHolder.imgComent;
 
             if (porcent.intValue()>0){
+                Log.i("Porcent and position >",String.valueOf(porcent.intValue()) + " - " + String.valueOf(position) );
                 viewHolder.txtPorcentInsp.setEnabled(true);
                 viewHolder.txtPorcentInsp.setHint("LLenar");
-                viewHolder.txtPorcentInsp.setText(data.get(position).getPorcentInspec());
+
+                indexEnableSpiner.put(position,false);
             }
             else {
                 viewHolder.txtPorcentInsp.setEnabled(false);
                 viewHolder.txtPorcentInsp.setHint("");
             }
+
+            viewHolder.spEstado.setEnabled(indexEnableSpiner.get(position));
+
+
 
             if (indexSpiner.get(position) != null) {
                 viewHolder.spEstado.setSelection(indexSpiner.get(position));
@@ -444,6 +458,7 @@ public class InspeccionMaq extends AppCompatActivity {
                 indexIconComent.put(position,R.drawable.comentario_ok_32);
 
             }
+
             if (data.get(position).getRutaFoto().equals("")){
 
             }
@@ -451,6 +466,42 @@ public class InspeccionMaq extends AppCompatActivity {
                 indexIconFoto.put(position,R.drawable.icn_camera_ok);
             }
 
+
+            final Spinner sp_aux = viewHolder.spEstado;
+            viewHolder.txtPorcentInsp.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (charSequence.equals("") || charSequence.length()==0){
+                            Log.i("no thing .","");
+
+                    }
+                    else {
+                        String varChar = String.valueOf(charSequence);
+                        data.get(position).setPorcentInspec(varChar);
+                        if (Integer.valueOf(varChar) > porcent.intValue()) {
+                            indexSpiner.put(position, 2);
+                            sp_aux.setSelection(2);
+                         //  Log.i("var_porcentIns .",charSequence);
+                        }
+
+                        else {
+                            indexSpiner.put(position,1);
+                            sp_aux.setSelection(1);
+                        }
+                    }
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
 
             viewHolder.spEstado.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -524,6 +575,10 @@ public class InspeccionMaq extends AppCompatActivity {
 
         }
 
+        public  HashMap<Integer,Integer> GetIndexsSpiner (){
+
+            return  indexSpiner;
+        }
         public  ArrayList<InspeccionMaqDetalle> AllItemsDetalle (){
             return  data;
         }
@@ -535,6 +590,12 @@ public class InspeccionMaq extends AppCompatActivity {
             }
         }
 
+        public  void  FillHashMapEnableSpiner (){
+            for (int i = 0; i <data.size() ; i++) {
+
+                indexEnableSpiner.put(i,true);
+            }
+        }
 
     }
 
@@ -612,7 +673,8 @@ public class InspeccionMaq extends AppCompatActivity {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
 
-                Toast.makeText(InspeccionMaq.this, String.valueOf(item), Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(InspeccionMaq.this, String.valueOf(item), Toast.LENGTH_SHORT).show();
+                Guardar(item);
                 dialog.dismiss();
 
             }
@@ -621,18 +683,18 @@ public class InspeccionMaq extends AppCompatActivity {
 
     public  void  Guardar (int tipoGuardado){
 
-        InspeccionMaqCabecera inpCab ;
 
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionMaq.this);
         if (tipoGuardado==SOLO_GUARDAR){
 
-            if (ValidarCabecera()==true){
-                InspeccionMaqCabecera cab = new InspeccionMaqCabecera();
-                cab.setCompania(Constans.NroConpania);
-                cab.setComentario(txtComentario.getText().toString());
+            if (ValidarCabecera()==true && ValidarDetalle()==true){
+
+               // InspeccionMaqCabecera cab = GetCabecera();
+                //long rowid = db.InsertInspeccionMaqCab(cab);
+                //Log.i("id cabecera >" , String.valueOf(rowid));
+                Log.i("Validado :" ," SI");
 
             }
-
-
 
         }
 
@@ -641,6 +703,29 @@ public class InspeccionMaq extends AppCompatActivity {
 
         }
     }
+
+    public  InspeccionMaqCabecera GetCabecera (){
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionMaq.this);
+
+        InspeccionMaqCabecera cab = new InspeccionMaqCabecera();
+        cab.setCompania(Constans.NroConpania);
+        cab.setCorrlativo(String.valueOf(db.Correlativo()));
+        cab.setCodMaquina(codMaquina);
+        cab.setCondicionMaq(spCondMaq.getSelectedItem().toString());
+        cab.setComentario(txtComentario.getText().toString());
+        cab.setEstado("I");
+        cab.setFechaInicioInsp(lblFechaInicio.getText().toString());
+        cab.setFechFinInsp(FechaActual());
+        cab.setPeriodoInsp(indexPeriodoInspeccion);
+        cab.setUsuarioInsp(codUser);
+        cab.setUsuarioEnv(codUser);
+        cab.setFechaEnv(FechaActual());
+        cab.setUltUsuairo(codUser);
+        cab.setUltFechaMod(FechaActual());
+
+        return  cab;
+    }
+
 
     public boolean ValidarCabecera (){
         boolean result = true;
@@ -651,11 +736,44 @@ public class InspeccionMaq extends AppCompatActivity {
         }
         else if (spCondMaq.getSelectedItemPosition()==0){
             result=false;
-            CreateCustomToast("Seleccione un condición de máquina",Constans.icon_error,Constans.layout_error);
+            CreateCustomToast("Seleccione una condición de máquina",Constans.icon_error,Constans.layout_error);
         }
 
         return  result;
 
+
+    }
+
+    public  boolean  ValidarDetalle (){
+        boolean result = true;
+        if (LVdetalleM.getAdapter() == null || LVdetalleM.getAdapter().getCount()==0){
+
+            CreateCustomToast("Falta ingresar detalles",Constans.icon_error,Constans.layout_error);
+            result = false;
+        }
+       else if (detalleMaqAdap.AllItemsDetalle().size()>0){
+
+            ArrayList<InspeccionMaqDetalle> listDet = detalleMaqAdap.AllItemsDetalle();
+            HashMap<Integer,Integer> indxSpiner= detalleMaqAdap.GetIndexsSpiner();
+
+            for (int i =0 ; i < listDet.size() ; i++) {
+                InspeccionMaqDetalle det = listDet.get(i);
+                Double porcent = Double.parseDouble(det.getPorcentMax());
+                if (porcent.intValue()>0 && det.getPorcentInspec().equals("")){
+
+                    CreateCustomToast("Falta llenar el porcentaje en la fila Nro " + String.valueOf(i+1),Constans.icon_error,Constans.layout_error);
+                    result = false;
+                }
+
+                else if (indxSpiner.get(i)==0){
+                    CreateCustomToast("Falta seleccionar un estado  en la fila Nro " + String.valueOf(i+1),Constans.icon_error,Constans.layout_error);
+                    result = false;
+                }
+            }
+
+        }
+
+        return  result;
 
     }
 }

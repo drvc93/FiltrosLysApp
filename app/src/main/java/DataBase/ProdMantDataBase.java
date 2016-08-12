@@ -219,6 +219,27 @@ public class ProdMantDataBase {
     }
 
 
+    public  int Correlativo (){
+        int res = 0;
+
+        String query = "SELECT MAX(n_correlativo) FROM MTP_INSPECCIONMAQUINA_CAB ";
+        this.OpenWritableDB();
+        Cursor c = db.rawQuery(query,null);
+        if (c != null) {
+            while (c.moveToNext()) {
+                if (c.getString(0) != null) {
+                    String var = c.getString(0);
+                    res = Integer.valueOf(var);
+                }
+            }
+        }
+
+        res = res+1;
+
+        return  res;
+    }
+
+
     public ArrayList<PeriodoInspeccionDB>  PeriodosInspeccionList (){
         String query = "SELECT * FROM MTP_PERIODOINSPECCION";
         ArrayList<PeriodoInspeccionDB> listResult =  new ArrayList<PeriodoInspeccionDB>();

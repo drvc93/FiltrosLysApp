@@ -111,21 +111,6 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtCometario"
-                android:hint="Comentario"
-                android:autoText="false"
-                android:background="@drawable/edittext_round_border"
-                android:padding="7dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
@@ -162,12 +147,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="----"
-                android:id="@+id/textView11"
+                android:text="Ingresada"
+                android:id="@+id/txtEstadoCab"
                 android:textColor="#000"
                 android:background="#00ffffff"
                 android:layout_marginLeft="5dp"
                 android:textSize="22dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtCometario"
+                android:hint="Comentario"
+                android:autoText="false"
+                android:background="@drawable/edittext_round_border"
+                android:padding="7dp" />
         </LinearLayout>
 
         <FrameLayout
