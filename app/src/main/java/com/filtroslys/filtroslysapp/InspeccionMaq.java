@@ -40,8 +40,10 @@ import android.widget.Toast;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -285,6 +287,7 @@ public class InspeccionMaq extends AppCompatActivity {
                 InspeccionMaqDetalle inpDet = new InspeccionMaqDetalle();
                 inpDet.setDescripcionInspecion(inp.getC_descripcion());
                 inpDet.setTipo_inspecicon(inp.getC_tipoinspeccion());
+                inpDet.setCod_inspeccion(inp.getC_inspeccion());
                 inpDet.setPorcentMin(inp.getN_porcentajeminimo());
                 inpDet.setPorcentMax(inp.getN_porcentajemaximo());
 
@@ -683,35 +686,113 @@ public class InspeccionMaq extends AppCompatActivity {
 
     public  void  Guardar (int tipoGuardado){
 
-
+        int cont  = 0;
         ProdMantDataBase db = new ProdMantDataBase(InspeccionMaq.this);
-        if (tipoGuardado==SOLO_GUARDAR){
+        InspeccionMaqCabecera cabecerasEnvio = new InspeccionMaqCabecera() ;
+        ArrayList<InspeccionMaqDetalle> detallesEnvio = new ArrayList<InspeccionMaqDetalle>();
 
             if (ValidarCabecera()==true && ValidarDetalle()==true){
 
-               // InspeccionMaqCabecera cab = GetCabecera();
-                //long rowid = db.InsertInspeccionMaqCab(cab);
-                //Log.i("id cabecera >" , String.valueOf(rowid));
+               InspeccionMaqCabecera cab = GetCabecera();
+                cabecerasEnvio = cab;
+                long rowid = db.InsertInspeccionMaqCab(cab);
+                Log.i("id cabecera >" , String.valueOf(rowid));
                 Log.i("Validado :" ," SI");
+                if (rowid>0){
 
+                    for (int i = 0; i < detalleMaqAdap.getCount() ; i++) {
+
+                        InspeccionMaqDetalle det = GetDetalle(rowid,i);
+                        detallesEnvio.add(det);
+                        long detid = db.InsertInspecciomMaqDet(det);
+                        Log.i("id detalle >" , String.valueOf(detid));
+                         cont  = cont+1;
+
+                    }
+
+                }
+
+                if (tipoGuardado==SOLO_GUARDAR){
+                    if (cont>0){
+                        CreateCustomToast("Se guardo correctamente",Constans.icon_succes,Constans.icon_succes);
+                    }
+
+                }
+                else if (tipoGuardado==GUARDAR_Y_ENVIAR_){
+
+
+                }
             }
 
+
+
+    }
+
+
+    public  InspeccionMaqDetalle GetDetalle (long correlativo , int position){
+        NumberFormat format = new DecimalFormat("00000");
+       // String cod_insp = format.format(position+1);
+        InspeccionMaqDetalle aux = detalleMaqAdap.AllItemsDetalle().get(position);
+
+
+        InspeccionMaqDetalle detresult = new InspeccionMaqDetalle();
+        detresult.setCompania(Constans.NroConpania);
+        detresult.setCorrelativo(String.valueOf(correlativo));
+        detresult.setLinea(String.valueOf(position+1));
+        detresult.setCod_inspeccion(aux.getCod_inspeccion());
+        detresult.setTipo_inspecicon(aux.getTipo_inspecicon());
+        detresult.setPorcentMin(aux.getPorcentMin());
+        detresult.setPorcentMax(aux.getPorcentMax());
+        detresult.setPorcentInspec(DecimalFormtPorcentInspeccion(aux));
+        detresult.setEstado(GetEstadoItemDetalle(position));
+        detresult.setComentario(aux.getComentario());
+        detresult.setRutaFoto(aux.getRutaFoto());
+        detresult.setUltimoUser(codUser);
+        detresult.setUltimaFechaMod(FechaActual());
+
+        Log.i("Format porcent > ",DecimalFormtPorcentInspeccion(aux));
+
+        return  detresult;
+
+
+    }
+
+    public String GetEstadoItemDetalle (int pos){
+        HashMap<Integer,Integer>  hash = detalleMaqAdap.GetIndexsSpiner();
+        int selectedIndex = hash.get(pos);
+        String res = "";
+        if (selectedIndex==1){
+            res = "O";
+        }
+        else if (selectedIndex==2){
+
+            res ="F";
         }
 
-        else if (tipoGuardado ==GUARDAR_Y_ENVIAR_){
+        return  res;
 
+
+    }
+    public  String DecimalFormtPorcentInspeccion (InspeccionMaqDetalle det ){
+        DecimalFormat precision = new DecimalFormat("0.000000");
+        String porcenInsp = det.getPorcentInspec();
+        if (porcenInsp.equals("")){
 
         }
+        else {
+         porcenInsp = precision.format(Integer.valueOf(porcenInsp));
+         }
+        return  porcenInsp;
     }
 
     public  InspeccionMaqCabecera GetCabecera (){
         ProdMantDataBase db = new ProdMantDataBase(InspeccionMaq.this);
-
+        String condicionMaq = spCondMaq.getSelectedItem().toString().substring(0,1);
         InspeccionMaqCabecera cab = new InspeccionMaqCabecera();
         cab.setCompania(Constans.NroConpania);
         cab.setCorrlativo(String.valueOf(db.Correlativo()));
         cab.setCodMaquina(codMaquina);
-        cab.setCondicionMaq(spCondMaq.getSelectedItem().toString());
+        cab.setCondicionMaq(condicionMaq);
         cab.setComentario(txtComentario.getText().toString());
         cab.setEstado("I");
         cab.setFechaInicioInsp(lblFechaInicio.getText().toString());
@@ -776,4 +857,6 @@ public class InspeccionMaq extends AppCompatActivity {
         return  result;
 
     }
+
+
 }

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 
 import Model.InspeccionMaqCabecera;
+import Model.InspeccionMaqDetalle;
 import Model.Menu;
 import Model.Permisos;
 import Model.SubMenu;
@@ -147,6 +148,36 @@ public class ProdMantDataBase {
         contentValues.put(ConstasDB.MTP_INSP_MAQ_CAB_ULT_FECHA_MOD,inpCAB.getUltFechaMod());
 
         return  contentValues;
+    }
+
+    public  ContentValues  InspeccionMaquinaDetValues (InspeccionMaqDetalle det){
+        ContentValues  contentValues = new ContentValues();
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_COMPANIA,det.getCompania());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_CORRELATIVO, det.getCorrelativo());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_LINEA,det.getLinea());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_COD_INSP,det.getCod_inspeccion());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_TIP_INSP,det.getTipo_inspecicon());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_PORCENT_MIN,det.getPorcentMin());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_PORCENT_MAX,det.getPorcentMax());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_PORCEN_INSP,det.getCod_inspeccion());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_ESTADO,det.getEstado());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_COMENTARIO,det.getComentario());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_RUTA_FOTO,det.getRutaFoto());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_ULT_USER,det.getUltimoUser());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_ULT_FECHA_MOD,det.getUltimaFechaMod());
+
+        return  contentValues;
+
+
+    }
+
+
+    public  long InsertInspecciomMaqDet (InspeccionMaqDetalle det) {
+
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_DET_NAME,null,InspeccionMaquinaDetValues(det));
+        this.CloseDB();
+        return  rowid;
     }
 
     public  long InsertInspeccionMaqCab (InspeccionMaqCabecera inspeccionMaqCabecera){
@@ -427,7 +458,7 @@ public class ProdMantDataBase {
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MAQUINAS_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCION_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME);
+       /// db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME);
         this.CloseDB();
     }
 

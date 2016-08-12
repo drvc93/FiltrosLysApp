@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBar;
@@ -30,6 +31,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -76,8 +81,8 @@ public class Login extends AppCompatActivity {
         } else{
 
         }
-
-       //ShowDialogAlert();
+        copyFile();
+      //ShowDialogAlert();
 
         // instanciando controles
         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);
@@ -260,7 +265,7 @@ public class Login extends AppCompatActivity {
 
         progressDialog= new ProgressDialog(Login.this);
         progressDialog.setTitle("Sincronizando");
-        progressDialog.setMessage("Sincronizando accesos .. espero por favor..");
+        progressDialog.setMessage("Sincronizando accesos .. espere por favor..");
         progressDialog.setIcon(R.drawable.icn_sync_48);
         SincronizarAccesosTask sincronizarAccesosTask = new SincronizarAccesosTask(Login.this,accesosDBs,menuDBs,listaUsers,progressDialog);
         AsyncTask<Void,Void,Void> asyncTaskSincroAccesos ;
@@ -273,6 +278,30 @@ public class Login extends AppCompatActivity {
 
 
 
+    }
+
+    public void copyFile()
+    {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            if (sd.canWrite()) {
+                String currentDBPath = "//data//com.filtroslys.filtroslysapp//databases//dbProdMant.db";
+                String backupDBPath = "dbProdMant.db";
+                File currentDB = new File(data, currentDBPath);
+                File backupDB = new File(sd, backupDBPath);
+
+                if (currentDB.exists()) {
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                }
+            }
+        } catch (Exception e) {
+        }
     }
 
     public void   CreateCustomToast (String msj, int icon,int backgroundLayout ){

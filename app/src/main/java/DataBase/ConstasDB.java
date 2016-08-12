@@ -192,7 +192,46 @@ public class ConstasDB {
                     MTP_INSP_MAQ_CAB_ULT_FECHA_MOD + " TEXT );";
 
 
+    //TABLA INSPECION_MAQUINA_DET
+    
+    public static final String TABLA_MTP_INSPECCIONMAQUINA_DET_NAME = "MTP_INSPECCIONMAQUINA_DET";
+    public static final String MTP_INSP_MAQ_DET_ID= "_id";
+    public static final String MTP_INSP_MAQ_DET_COMPANIA = "c_compania";
+    public static final String MTP_INSP_MAQ_DET_CORRELATIVO = "n_correlativo";
+    public static final String MTP_INSP_MAQ_DET_LINEA = "n_linea";
+    public static final String MTP_INSP_MAQ_DET_COD_INSP = "c_inspeccion";
+    public static final String MTP_INSP_MAQ_DET_TIP_INSP = "c_tipoinspeccion";
+    public static final String MTP_INSP_MAQ_DET_PORCENT_MIN = "n_porcentajeminimo";
+    public static final String MTP_INSP_MAQ_DET_PORCENT_MAX = "n_porcentajemaximo";
+    public static final String MTP_INSP_MAQ_DET_PORCEN_INSP = "n_porcentajeinspeccion";
+    public static final String MTP_INSP_MAQ_DET_ESTADO = "c_estado";
+    public static final String MTP_INSP_MAQ_DET_COMENTARIO = "c_comentario";
+    public static final String MTP_INSP_MAQ_DET_RUTA_FOTO = "c_rutafoto";
+    public static final String MTP_INSP_MAQ_DET_ULT_USER = "c_ultimousuario";
+    public static final String MTP_INSP_MAQ_DET_ULT_FECHA_MOD = "d_ultimafechamodificacion";
 
+    public static final String TABLA_MTP_INSPECCIONESMAQUINA_DET_SQL =
+            "CREATE TABLE "+ TABLA_MTP_INSPECCIONMAQUINA_DET_NAME+
+                    " (  "+MTP_INSP_MAQ_DET_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,  "+
+                    MTP_INSP_MAQ_DET_COMPANIA + " TEXT , " +
+                    MTP_INSP_MAQ_DET_CORRELATIVO + " TEXT , " +
+                    MTP_INSP_MAQ_DET_LINEA + " TEXT , " +
+                    MTP_INSP_MAQ_DET_COD_INSP + " TEXT , " +
+                    MTP_INSP_MAQ_DET_TIP_INSP + " TEXT , " +
+                    MTP_INSP_MAQ_DET_PORCENT_MIN  + " TEXT , " +
+                    MTP_INSP_MAQ_DET_PORCENT_MAX + " TEXT , " +
+                    MTP_INSP_MAQ_DET_PORCEN_INSP + " TEXT , " +
+                    MTP_INSP_MAQ_DET_ESTADO + " TEXT , " +
+                    MTP_INSP_MAQ_DET_COMENTARIO + " TEXT , " +
+                    MTP_INSP_MAQ_DET_RUTA_FOTO + " TEXT , " +
+                    MTP_INSP_MAQ_DET_ULT_USER + " TEXT , " +
+                    MTP_INSP_MAQ_DET_ULT_FECHA_MOD + " TEXT ); " ;
+
+
+    
+            
+
+    
 
 
 
