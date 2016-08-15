@@ -693,7 +693,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
             if (ValidarCabecera()==true && ValidarDetalle()==true){
 
-               InspeccionMaqCabecera cab = GetCabecera();
+               InspeccionMaqCabecera cab = GetCabecera(tipoGuardado);
                 cabecerasEnvio = cab;
                 long rowid = db.InsertInspeccionMaqCab(cab);
                 Log.i("id cabecera >" , String.valueOf(rowid));
@@ -785,7 +785,7 @@ public class InspeccionMaq extends AppCompatActivity {
         return  porcenInsp;
     }
 
-    public  InspeccionMaqCabecera GetCabecera (){
+    public  InspeccionMaqCabecera GetCabecera (int tipGuardado){
         ProdMantDataBase db = new ProdMantDataBase(InspeccionMaq.this);
         String condicionMaq = spCondMaq.getSelectedItem().toString().substring(0,1);
         InspeccionMaqCabecera cab = new InspeccionMaqCabecera();
@@ -794,7 +794,12 @@ public class InspeccionMaq extends AppCompatActivity {
         cab.setCodMaquina(codMaquina);
         cab.setCondicionMaq(condicionMaq);
         cab.setComentario(txtComentario.getText().toString());
-        cab.setEstado("I");
+        if (tipGuardado==SOLO_GUARDAR) {
+            cab.setEstado("I");
+        }
+        else {
+            cab.setEstado("E");
+        }
         cab.setFechaInicioInsp(lblFechaInicio.getText().toString());
         cab.setFechFinInsp(FechaActual());
         cab.setPeriodoInsp(indexPeriodoInspeccion);
