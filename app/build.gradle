@@ -25,4 +25,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile files('libs/ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar')
     compile files('libs/commons-io-2.5.jar')
+    compile 'com.android.support:design:24.0.0'
 }

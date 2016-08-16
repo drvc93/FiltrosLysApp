@@ -227,8 +227,22 @@ public class ConstasDB {
                     MTP_INSP_MAQ_DET_ULT_USER + " TEXT , " +
                     MTP_INSP_MAQ_DET_ULT_FECHA_MOD + " TEXT ); " ;
 
+    // TABLA CENTRO COSTO
 
-    
+    public static final String TABLA_MTP_CENTROCOSTO_NAME = "MTP_CENTROCOSTO";
+    public static final String MTP_CENTRO_C_ID = "_id";
+    public static final String MTP_CENTRO_C_COMPANIA = "c_compania";
+    public static final String MTP_CENTRO_C_COD_CCOSTO = "c_centrocosto";
+    public static final String MTP_CENTRO_C_DESCRIPCION = "c_descripcion";
+    public static final String MTP_CENTRO_C_ESTADO = "c_estado";
+    public static final String TABLA_MTP_CENTROCOSTO_SQL =
+            "CREATE TABLE "+ TABLA_MTP_CENTROCOSTO_NAME+
+                    " ( "+MTP_CENTRO_C_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,  "+
+                    MTP_CENTRO_C_COMPANIA + " TEXT , " +
+                    MTP_CENTRO_C_COD_CCOSTO+ " TEXT , " +
+                    MTP_CENTRO_C_DESCRIPCION+ " TEXT , " +
+                    MTP_CENTRO_C_ESTADO + " TEXT ); " ;
+
             
 
     

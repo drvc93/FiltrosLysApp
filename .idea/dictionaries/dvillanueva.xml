@@ -2,12 +2,15 @@
   <dictionary name="dvillanueva">
     <words>
       <w>cargar</w>
+      <w>centro</w>
       <w>condicion</w>
       <w>corrlativo</w>
+      <w>costo</w>
       <w>detalle</w>
       <w>detalles</w>
       <w>falta</w>
       <w>fecha</w>
+      <w>historial</w>
       <w>ingresar</w>
       <w>inicio</w>
       <w>insp</w>
@@ -16,6 +19,7 @@
       <w>porcent</w>
       <w>seleccionar</w>
       <w>sqlite</w>
+      <w>transporte</w>
       <w>usuario</w>
     </words>
   </dictionary>

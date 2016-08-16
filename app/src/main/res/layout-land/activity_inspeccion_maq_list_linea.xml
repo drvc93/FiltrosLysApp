@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/coordinatorlayout"
+    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.filtroslys.filtroslysapp.InspeccionMaqListLinea"
+    android:background="@drawable/bg_silver">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Maq:"
+                android:id="@+id/textView8"
+                android:textSize="18dp"
+                android:background="#FF6C6C6C"
+                android:textColor="#ffffff" />
+
+            <Spinner
+                android:layout_width="200dp"
+                android:layout_height="35dp"
+                android:id="@+id/spMaquina"
+                android:spinnerMode="dialog"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/spiner_style" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="C.C.:"
+                android:id="@+id/textView11"
+                android:textSize="18dp"
+                android:background="#FF6C6C6C"
+                android:textColor="#ffffff"
+                android:layout_marginLeft="10dp" />
+
+            <Spinner
+                android:layout_width="200dp"
+                android:layout_height="35dp"
+                android:id="@+id/spCentroC"
+                android:spinnerMode="dialog"
+                android:background="@drawable/spiner_style"
+                android:layout_marginLeft="25dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="F.I.:"
+                android:id="@+id/textView16"
+                android:textSize="18dp"
+                android:background="#FF6C6C6C"
+                android:textColor="#ffffff" />
+
+            <EditText
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtFinicio"
+                android:background="@drawable/edittext_round_border"
+                android:layout_marginLeft="35dp"
+                android:focusableInTouchMode="false"
+                android:padding="5dp"
+                android:clickable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="F.F.:"
+                android:id="@+id/textView22"
+                android:textSize="18dp"
+                android:background="#FF6C6C6C"
+                android:textColor="#ffffff"
+                android:layout_marginLeft="10dp" />
+
+            <EditText
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtFFin"
+                android:background="@drawable/edittext_round_border"
+                android:layout_marginLeft="25dp"
+                android:focusableInTouchMode="false"
+                android:padding="5dp"
+                android:clickable="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/LVHistorialInsp" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

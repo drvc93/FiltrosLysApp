@@ -171,6 +171,23 @@ public class ProdMantDataBase {
 
     }
 
+    public  ContentValues CentroCostoContentValues(CentroCostoDB c){
+         ContentValues contentValues= new ContentValues();
+         contentValues.put(ConstasDB.MTP_CENTRO_C_COMPANIA,c.getC_compania());
+        contentValues.put(ConstasDB.MTP_CENTRO_C_COD_CCOSTO,c.getC_centrocosto());
+        contentValues.put(ConstasDB.MTP_CENTRO_C_DESCRIPCION, c.getC_descripcion());
+        contentValues.put(ConstasDB.MTP_CENTRO_C_ESTADO,c.getC_estado());
+        return  contentValues;
+
+    }
+
+    public  long InsertCentroCosto (CentroCostoDB c){
+
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_CENTROCOSTO_NAME, null,CentroCostoContentValues(c));
+        this.CloseDB();
+        return  rowid;
+    }
 
     public  long InsertInspecciomMaqDet (InspeccionMaqDetalle det) {
 
@@ -270,6 +287,53 @@ public class ProdMantDataBase {
         return  res;
     }
 
+
+    public  ArrayList<CentroCostoDB> GetCemtroCostos (){
+
+        String query  = "SELECT * FROM MTP_CENTROCOSTO";
+        ArrayList<CentroCostoDB> lisCentroC = new ArrayList<CentroCostoDB>();
+        this.OpenWritableDB();
+        Cursor c = db.rawQuery(query,null);
+        while (c.moveToNext()){
+            CentroCostoDB costo = new CentroCostoDB();
+             costo.setC_compania( c.getString(1));
+            costo.setC_centrocosto(c.getString(2));
+            costo.setC_descripcion(c.getString(3));
+            costo.setC_estado(c.getString(4));
+            lisCentroC.add(costo);
+
+        }
+
+        return  lisCentroC;
+
+    }
+
+    public  ArrayList<MaquinaDB> GetMaquinasALL (){
+
+        String query = "SELECT * FROM MTP_MAQUINAS";
+        ArrayList<MaquinaDB> lisMaq = new ArrayList<MaquinaDB>();
+        this.OpenWritableDB();
+        Cursor c = db.rawQuery(query,null);
+        while (c.moveToNext()){
+
+            MaquinaDB m = new MaquinaDB();
+            m.setC_ompania(c.getString(1));
+            m.setC_maquina(c.getString(2));
+            m.setC_descripcion(c.getString(3));
+            m.setC_codigobarras(c.getString(4));
+            m.setC_familiainspeccion(c.getString(5));
+            m.setC_centrocosto(c.getString(6));
+            m.setC_estado(c.getString(7));
+            m.setC_ultimousuario(c.getString(8));
+            m.setD_ultimafechamodificacion(c.getString(9));
+            lisMaq.add(m);
+
+        }
+
+        return  lisMaq;
+
+
+    }
 
     public ArrayList<PeriodoInspeccionDB>  PeriodosInspeccionList (){
         String query = "SELECT * FROM MTP_PERIODOINSPECCION";

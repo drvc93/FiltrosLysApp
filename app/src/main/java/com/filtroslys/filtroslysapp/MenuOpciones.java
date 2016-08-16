@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import DataBase.AccesosDB;
+import DataBase.CentroCostoDB;
 import DataBase.InspeccionDB;
 import DataBase.MaquinaDB;
 import DataBase.MenuDB;
@@ -37,6 +38,7 @@ import DataBase.UsuarioDB;
 import Model.Permisos;
 import Model.SubMenuBotones;
 import Tasks.GetAccesosDataTask;
+import Tasks.GetCentroCostoTask;
 import Tasks.GetInspeccionesTask;
 import Tasks.GetMaquinasTask;
 import Tasks.GetMenuDataTask;
@@ -203,6 +205,12 @@ public class MenuOpciones extends AppCompatActivity {
 
 
            }
+
+        }
+
+        if (var_concatenado.equals("010103")){
+            Intent intent = new Intent(MenuOpciones.this,InspeccionMaqListLinea.class);
+            startActivity(intent);
 
         }
 
@@ -396,10 +404,24 @@ public class MenuOpciones extends AppCompatActivity {
         }
 
 
+        ArrayList<CentroCostoDB> listCentroCosto = new ArrayList<CentroCostoDB>();
+        AsyncTask<String,String,ArrayList<CentroCostoDB>> asyncTaskCentroCosto ;
+        GetCentroCostoTask getCentroCostoTask  = new GetCentroCostoTask();
+
+        try {
+            asyncTaskCentroCosto = getCentroCostoTask.execute();
+            listCentroCosto = (ArrayList<CentroCostoDB>) asyncTaskCentroCosto.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+
         Log.i("Pre ejecuion de maestroTask",".");
         // progress dialog with asynctask
         AsyncTask<Void,Void,Void> asyncMaestros;
-        SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this,progressDialogo,listMaquinas,listPeriodos,listInspecciones);
+        SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this,progressDialogo,listMaquinas,listPeriodos,listInspecciones,listCentroCosto);
          asyncMaestros = sincroMaestrosTask.execute();
         Log.i("Post ejecuion de maestroTask",".");
     }

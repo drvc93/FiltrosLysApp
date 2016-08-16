@@ -4,10 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.view.animation.PathInterpolator;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import DataBase.CentroCostoDB;
 import DataBase.ConstasDB;
 import DataBase.DBHelper;
 import DataBase.InspeccionDB;
@@ -25,13 +27,15 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
     ArrayList<MaquinaDB> listMaquina  ;
     ArrayList<PeriodoInspeccionDB> listPeriodos;
     ArrayList<InspeccionDB> listInspecciones;
+    ArrayList<CentroCostoDB>listCcosto;
 
     public SincronizarMaestrosTask(Context context, ProgressDialog progressDialog, ArrayList<MaquinaDB> listMaquina,
-                                   ArrayList<PeriodoInspeccionDB> listPeriodos, ArrayList<InspeccionDB>listInspecciones) {
+                                   ArrayList<PeriodoInspeccionDB> listPeriodos, ArrayList<InspeccionDB>listInspecciones, ArrayList<CentroCostoDB>listCcosto) {
         this.context = context;
         this.listMaquina = listMaquina;
         this.progressDialog = progressDialog;
         this.listPeriodos = listPeriodos;
+        this.listCcosto = listCcosto;
         this.listInspecciones = listInspecciones;
     }
 
@@ -45,6 +49,7 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_MAQUINAS_NAME);
         dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME);
         dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_INSPECCION_NAME);
+        dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_CENTROCOSTO_NAME);
         dbBase.close();
         // prodMantDataBase.deleteTableMaquina();
 
@@ -74,6 +79,15 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
 
                 prodMantDataBase.InsertInspeccion(listInspecciones.get(i));
             }
+        }
+
+        if (listCcosto !=null && listCcosto.size()>0){
+
+            for (int i = 0; i < listCcosto.size(); i++) {
+
+                prodMantDataBase.InsertCentroCosto(listCcosto.get(i));
+            }
+
         }
 
         return null;
