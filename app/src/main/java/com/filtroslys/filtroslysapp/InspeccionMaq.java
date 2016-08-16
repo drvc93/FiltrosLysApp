@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
@@ -37,6 +38,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,16 +49,23 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 import DataBase.InspeccionDB;
 import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
 import Model.InspeccionMaqCabecera;
 import Model.InspeccionMaqDetalle;
+import Tasks.EnviarInspMaqCabTask;
+import Tasks.EnviarInspMaqDetTask;
+import Tasks.GetCorrelativoTask;
+import Tasks.GuardarImagenTask;
 import Util.Constans;
 
 public class InspeccionMaq extends AppCompatActivity {
@@ -715,17 +725,89 @@ public class InspeccionMaq extends AppCompatActivity {
                 if (tipoGuardado==SOLO_GUARDAR){
                     if (cont>0){
                         CreateCustomToast("Se guardo correctamente",Constans.icon_succes,Constans.icon_succes);
+                        super.onBackPressed();
                     }
 
                 }
                 else if (tipoGuardado==GUARDAR_Y_ENVIAR_){
-
+                    EnviarInspeccion(cabecerasEnvio,detallesEnvio);
+                    super.onBackPressed();
 
                 }
+
             }
 
 
 
+    }
+
+
+    public  void EnviarInspeccion (InspeccionMaqCabecera cabecera , ArrayList<InspeccionMaqDetalle> listdetalles){
+
+        String correlativo = "";
+        String resulInsertCab = "";
+
+        // obetener correlativo
+        GetCorrelativoTask getCorrelativoTask = new GetCorrelativoTask();
+        AsyncTask<String,String,String> asyncTaskCorrelativo ;
+
+        try {
+            asyncTaskCorrelativo = getCorrelativoTask.execute();
+            correlativo = (String) asyncTaskCorrelativo.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // insertar cabecera
+        AsyncTask<String,String,String> asyncTaskCabeceraInsp ;
+        EnviarInspMaqCabTask enviarInspMaqCabTask = new EnviarInspMaqCabTask();
+
+
+        try {
+            asyncTaskCabeceraInsp = enviarInspMaqCabTask.execute(correlativo,cabecera.getCompania(),cabecera.getCodMaquina(),cabecera.getCondicionMaq(),
+                    cabecera.getComentario(),cabecera.getEstado(),cabecera.getFechaInicioInsp(),cabecera.getFechFinInsp(),
+                    cabecera.getPeriodoInsp(),cabecera.getUsuarioInsp(),cabecera.getUsuarioEnv(),cabecera.getUltUsuairo());
+            resulInsertCab = (String)  asyncTaskCabeceraInsp.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        int cont = 0;
+        // insertar detalle
+        for (int i = 0; i < listdetalles.size(); i++) {
+            String res = "";
+            InspeccionMaqDetalle d = listdetalles.get(i);
+            if (d.getPorcentInspec().equals("")|| d.getPorcentInspec()==null){
+                d.setPorcentInspec("0");
+            }
+            EnviarInspMaqDetTask enviarInspMaqDetTask = new EnviarInspMaqDetTask();
+            AsyncTask <String,String,String> asyncDetalle ;
+            asyncDetalle = enviarInspMaqDetTask.execute(d.getCompania(),correlativo,d.getLinea(),d.getCod_inspeccion(),d.getTipo_inspecicon(),
+                             d.getPorcentMin(),d.getPorcentMax(),d.getPorcentInspec(),d.getEstado(),d.getComentario(),d.getRutaFoto(),d.getUltimoUser());
+            try {
+                res = (String) asyncDetalle.get();
+
+                if (res.equals("OK")){
+                    cont = cont +1;
+
+                    Log.i("Detalle enviado nº >", String.valueOf(cont) );
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (cont>0){
+            GuardarImagenServer(listdetalles);
+            CreateCustomToast("Se envio el reporte de inspección correctamente",Constans.icon_succes,Constans.layout_success );
+        }
     }
 
 
@@ -781,6 +863,7 @@ public class InspeccionMaq extends AppCompatActivity {
         }
         else {
          porcenInsp = precision.format(Integer.valueOf(porcenInsp));
+            porcenInsp = porcenInsp.replace(",",".");
          }
         return  porcenInsp;
     }
@@ -800,18 +883,39 @@ public class InspeccionMaq extends AppCompatActivity {
         else {
             cab.setEstado("E");
         }
-        cab.setFechaInicioInsp(lblFechaInicio.getText().toString());
-        cab.setFechFinInsp(FechaActual());
+        cab.setFechaInicioInsp(FechaFormatEng(lblFechaInicio.getText().toString()));
+        cab.setFechFinInsp(FechaFormatEng(FechaActual()));
         cab.setPeriodoInsp(indexPeriodoInspeccion);
         cab.setUsuarioInsp(codUser);
         cab.setUsuarioEnv(codUser);
-        cab.setFechaEnv(FechaActual());
+        cab.setFechaEnv(FechaFormatEng(FechaActual()));
         cab.setUltUsuairo(codUser);
-        cab.setUltFechaMod(FechaActual());
+        cab.setUltFechaMod(FechaFormatEng( FechaActual()));
 
         return  cab;
     }
 
+    public  String FechaFormatEng (String stringdate){
+
+        String inputPattern = "dd/MM/yyyy HH:mm:ss";
+        String outputPattern = "MM/dd/yyyy HH:mm:ss";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(stringdate);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Log.i("fecha format > " ,str);
+        return str;
+
+
+    }
 
     public boolean ValidarCabecera (){
         boolean result = true;
@@ -863,5 +967,44 @@ public class InspeccionMaq extends AppCompatActivity {
 
     }
 
+    public  void GuardarImagenServer (ArrayList<InspeccionMaqDetalle> listDet ){
+        Log.i("Metodo Guardar  ", "pass");
+        String fileCarp = "/storage/sdcard0/LysConfig/Fotos/";
+        for (int i = 0 ; i<listDet.size();i++){
+            if (listDet.get(i).getRutaFoto()==null || listDet.get(i).getRutaFoto().equals("")){
+
+            }
+
+            else {
+                Log.i("Metodo GuardarImagen == >" , listDet.get(i).getRutaFoto());
+                String fileName = listDet.get(i).getRutaFoto();
+                String filePath = fileCarp+fileName;
+                File file = new File(filePath);
+
+                byte [] bytes = new byte[(int)file.length()];
+                try {
+                    bytes =  FileUtils.readFileToByteArray(file);
+                    AsyncTask asyncTask = null;
+                    GuardarImagenTask guardarImagenTask = new GuardarImagenTask(bytes,listDet.get(i).getRutaFoto());
+                    Log.i("Parmaetro exex GuardarTask ===>" , listDet.get(i).getRutaFoto());
+                    asyncTask = guardarImagenTask.execute();
+                    String resp = (String) asyncTask.get();
+                   // Toast.makeText(MantInspeccionT.this, resp, Toast.LENGTH_SHORT).show();
+                    Log.i("foto guardada ===>" , resp);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+
+
+    }
 
 }

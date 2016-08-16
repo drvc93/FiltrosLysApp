@@ -159,7 +159,7 @@ public class ProdMantDataBase {
         contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_TIP_INSP,det.getTipo_inspecicon());
         contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_PORCENT_MIN,det.getPorcentMin());
         contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_PORCENT_MAX,det.getPorcentMax());
-        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_PORCEN_INSP,det.getCod_inspeccion());
+        contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_PORCEN_INSP,det.getPorcentInspec());
         contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_ESTADO,det.getEstado());
         contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_COMENTARIO,det.getComentario());
         contentValues.put(ConstasDB.MTP_INSP_MAQ_DET_RUTA_FOTO,det.getRutaFoto());
