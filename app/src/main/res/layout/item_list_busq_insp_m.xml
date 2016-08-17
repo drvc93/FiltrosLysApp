@@ -131,7 +131,7 @@
                 android:textSize="18dp"
                 android:background="#006c6c6c"
                 android:textColor="#000"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginLeft="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -161,11 +161,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="EST:"
+            android:id="@+id/textView44"
+            android:textSize="18dp"
+            android:background="#006c6c6c"
+            android:textColor="#000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="PE"
+            android:id="@+id/txtHMestado"
+            android:layout_marginLeft="5dp"
+            android:textColor="#777777"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="OBS:"
             android:id="@+id/textView24"
             android:textSize="18dp"
             android:background="#006c6c6c"
-            android:textColor="#000" />
+            android:textColor="#000"
+            android:layout_marginLeft="8dp" />
 
         <TextView
             android:layout_width="fill_parent"

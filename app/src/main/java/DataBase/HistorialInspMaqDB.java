@@ -11,11 +11,12 @@ public class HistorialInspMaqDB {
     private String  frecuencia;
     private String usuario ;
     private String comentario ;
+    private String estado;
 
     public HistorialInspMaqDB() {
     }
 
-    public HistorialInspMaqDB(String numero, String fecha, String cod_maquina, String centro_costo, String frecuencia, String usuario, String comentario) {
+    public HistorialInspMaqDB(String numero, String fecha, String cod_maquina, String centro_costo, String frecuencia, String usuario, String comentario, String estado) {
         this.numero = numero;
         this.fecha = fecha;
         this.cod_maquina = cod_maquina;
@@ -23,6 +24,15 @@ public class HistorialInspMaqDB {
         this.frecuencia = frecuencia;
         this.usuario = usuario;
         this.comentario = comentario;
+        this.estado = estado;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public String getNumero() {

@@ -60,10 +60,11 @@ public class GetHistorialInspMaqTask extends AsyncTask<String,String,ArrayList<H
                 ht.setCentro_costo(ic.getProperty(0).toString());
                 ht.setCod_maquina(ic.getProperty(1).toString());
                 ht.setComentario(ic.getProperty(2).toString());
-                ht.setFecha(ic.getProperty(3).toString());
-                ht.setFrecuencia(ic.getProperty(4).toString());
-                ht.setNumero(ic.getProperty(5).toString());
-                ht.setUsuario(ic.getProperty(6).toString());
+                ht.setEstado(ic.getProperty(3).toString());
+                ht.setFecha(ic.getProperty(4).toString());
+                ht.setFrecuencia(ic.getProperty(5).toString());
+                ht.setNumero(ic.getProperty(6).toString());
+                ht.setUsuario(ic.getProperty(7).toString());
 
 
 

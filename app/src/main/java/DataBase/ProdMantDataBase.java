@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -335,6 +336,55 @@ public class ProdMantDataBase {
 
     }
 
+    public ArrayList<HistorialInspMaqDB> GetHistorialInspList(String accion, String maq, String cenctroC, String FIni, String FFin) {
+        String query = "";
+        ArrayList<HistorialInspMaqDB> listResul = new ArrayList<HistorialInspMaqDB>();
+        this.OpenWritableDB();
+        Cursor c;
+        switch (accion) {
+            case "1":
+                query = "select cab.n_correlativo , substr(cab.d_fechaInicioInspeccion,0,11 ) Fecha, cab.c_maquina, maq.c_centrocosto, per.c_descripcion,cab.c_ultimousuario,cab.c_comentario,cab.c_estado  from MTP_INSPECCIONMAQUINA_CAB cab " +
+                        "inner join  MTP_MAQUINAS maq on cab.c_maquina  = maq.c_maquina " +
+                        " inner join  MTP_PERIODOINSPECCION per on per.c_periodoinspeccion = cab.c_periodoinspeccion";
+
+                break;
+            case "2":
+                query = "select cab.n_correlativo , substr(cab.d_fechaInicioInspeccion,0,11 ) Fecha, cab.c_maquina, maq.c_centrocosto, per.c_descripcion,cab.c_ultimousuario,cab.c_comentario,cab.c_estado  from MTP_INSPECCIONMAQUINA_CAB cab " +
+                        "inner join  MTP_MAQUINAS maq on cab.c_maquina  = maq.c_maquina " +
+                        " inner join  MTP_PERIODOINSPECCION per on per.c_periodoinspeccion = cab.c_periodoinspeccion where cab.c_maquina='" + maq + "'";
+                break;
+            case "3":
+                query = "select cab.n_correlativo , substr(cab.d_fechaInicioInspeccion,0,11 ) Fecha, cab.c_maquina, maq.c_centrocosto, per.c_descripcion,cab.c_ultimousuario,cab.c_comentario,cab.c_estado  from MTP_INSPECCIONMAQUINA_CAB cab " +
+                        "inner join  MTP_MAQUINAS maq on cab.c_maquina  = maq.c_maquina " +
+                        " inner join  MTP_PERIODOINSPECCION per on per.c_periodoinspeccion = cab.c_periodoinspeccion where cab.c_maquina='" + maq + "'" + " and maq.c_centrocosto='" + cenctroC + "'";
+                break;
+            case "4":
+                query = "select cab.n_correlativo , substr(cab.d_fechaInicioInspeccion,0,11 ) Fecha, cab.c_maquina, maq.c_centrocosto, per.c_descripcion,cab.c_ultimousuario,cab.c_comentario,cab.c_estado    from MTP_INSPECCIONMAQUINA_CAB cab " +
+                        "inner join  MTP_MAQUINAS maq on cab.c_maquina  = maq.c_maquina " +
+                        "inner join  MTP_PERIODOINSPECCION per on per.c_periodoinspeccion = cab.c_periodoinspeccion " +
+                        "where datetime (substr(cab.d_fechaInicioInspeccion,7,4 )||'-'|| substr(cab.d_fechaInicioInspeccion,1,2 )|| '-' ||substr(cab.d_fechaInicioInspeccion,4,2 ) ) between '" + FIni + "' and '" + FFin + "'";
+                Log.i("fecha ini global", FIni);
+                Log.i("Fecha fin global", FFin);
+                break;
+
+        }
+
+        c = db.rawQuery(query, null);
+        while (c.moveToNext()) {
+            HistorialInspMaqDB h = new HistorialInspMaqDB();
+            h.setNumero(c.getString(0));
+            h.setFecha(c.getString(1));
+            h.setCod_maquina(c.getString(2));
+            h.setCentro_costo(c.getString(3));
+            h.setFrecuencia(c.getString(4));
+            h.setUsuario(c.getString(5));
+            h.setComentario(c.getString(6));
+            h.setEstado(c.getString(7));
+            listResul.add(h);
+        }
+        return listResul;
+
+    }
     public ArrayList<PeriodoInspeccionDB>  PeriodosInspeccionList (){
         String query = "SELECT * FROM MTP_PERIODOINSPECCION";
         ArrayList<PeriodoInspeccionDB> listResult =  new ArrayList<PeriodoInspeccionDB>();

@@ -42,6 +42,7 @@ public class HistorialInspMaqAdapater extends ArrayAdapter<HistorialInspMaqDB> {
         TextView lblFrecuencia ;
         TextView lblUsuario ;
         TextView lblObserv ;
+        TextView lblEstado;
     }
 
     @Override
@@ -61,6 +62,7 @@ public class HistorialInspMaqAdapater extends ArrayAdapter<HistorialInspMaqDB> {
             viewHolder.lblFrecuencia = (TextView)convertView.findViewById(R.id.txtHMFrec);
             viewHolder.lblUsuario = (TextView)convertView.findViewById(R.id.txtHMUsuario);
             viewHolder.lblObserv = (TextView)convertView.findViewById(R.id.txtHMobservaciones);
+            viewHolder.lblEstado = (TextView) convertView.findViewById(R.id.txtHMestado);
 
             convertView.setTag(viewHolder);
 
@@ -78,6 +80,7 @@ public class HistorialInspMaqAdapater extends ArrayAdapter<HistorialInspMaqDB> {
         viewHolder.lblFrecuencia.setText(h.getFrecuencia());
         viewHolder.lblUsuario.setText(h.getUsuario());
         viewHolder.lblObserv.setText(h.getComentario());
+        viewHolder.lblEstado.setText(h.getEstado());
 
         return convertView;
     }

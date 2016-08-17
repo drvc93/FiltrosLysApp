@@ -66,6 +66,7 @@ import Tasks.EnviarInspMaqCabTask;
 import Tasks.EnviarInspMaqDetTask;
 import Tasks.GetCorrelativoTask;
 import Tasks.GuardarImagenTask;
+import Tasks.TransferirInspeccionTask;
 import Util.Constans;
 
 public class InspeccionMaq extends AppCompatActivity {
@@ -80,6 +81,7 @@ public class InspeccionMaq extends AppCompatActivity {
     ArrayList<InspeccionMaqDetalle> dataGlobal;
     int posCamara;
     String comentDialog = "";
+    String tipoMant = "";
     EditText txtComentario;
     String codUser, codMaquina, NomMaquina, FamMaquina;
     Spinner spPeriodo, spCondMaq;
@@ -107,6 +109,7 @@ public class InspeccionMaq extends AppCompatActivity {
         NomMaquina = preferences.getString("NomMaquina", null);
         FamMaquina = preferences.getString("FamMaquina", null);
 
+        tipoMant = getIntent().getExtras().getString("tipoMant");
 
         // lblMaquina = (TextView)findViewById(R.id.lblMaquina);
         lblInspector = (TextView) findViewById(R.id.lblnspector);
@@ -724,7 +727,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
                 if (tipoGuardado==SOLO_GUARDAR){
                     if (cont>0){
-                        CreateCustomToast("Se guardo correctamente",Constans.icon_succes,Constans.icon_succes);
+                        CreateCustomToast("Se guardo correctamente", Constans.icon_succes, Constans.layout_success);
                         super.onBackPressed();
                     }
 
@@ -802,8 +805,22 @@ public class InspeccionMaq extends AppCompatActivity {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
+
+
         }
 
+        AsyncTask<String, String, String> asyncTaskTranferirs;
+        TransferirInspeccionTask transferirInspeccionTask = new TransferirInspeccionTask();
+
+        try {
+            asyncTaskTranferirs = transferirInspeccionTask.execute("MAQ", correlativo);
+            String trasf = (String) asyncTaskTranferirs.get();
+            Log.i("Transferido > ", trasf);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         if (cont>0){
             GuardarImagenServer(listdetalles);
             CreateCustomToast("Se envio el reporte de inspección correctamente",Constans.icon_succes,Constans.layout_success );

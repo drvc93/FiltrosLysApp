@@ -163,6 +163,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Est:"
+            android:id="@+id/textView31"
+            android:textSize="18dp"
+            android:background="#00ffffff"
+            android:textColor="#010101"
+            android:layout_marginLeft="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="PE"
+            android:id="@+id/txtHMestado"
+            android:layout_marginLeft="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Obs:"
             android:id="@+id/textView24"
             android:textSize="18dp"
