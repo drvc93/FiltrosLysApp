@@ -1,28 +1,50 @@
 <component name="ProjectDictionaryState">
   <dictionary name="dvillanueva">
     <words>
+      <w>cabacera</w>
+      <w>cambios</w>
       <w>cargar</w>
       <w>centro</w>
+      <w>centrocosto</w>
+      <w>codigo</w>
+      <w>codigousuario</w>
+      <w>coment</w>
       <w>condicion</w>
       <w>corrlativo</w>
       <w>costo</w>
+      <w>descrip</w>
       <w>detalle</w>
       <w>detalles</w>
+      <w>enviado</w>
       <w>falta</w>
       <w>fecha</w>
+      <w>foto</w>
+      <w>hashmaps</w>
       <w>historial</w>
+      <w>indexvalue</w>
       <w>ingresar</w>
       <w>inicio</w>
       <w>insp</w>
       <w>inspeccion</w>
+      <w>llenar</w>
+      <w>maquinas</w>
+      <w>obteniendo</w>
       <w>periodo</w>
       <w>periodoinspeccion</w>
+      <w>porcen</w>
       <w>porcent</w>
+      <w>porque</w>
+      <w>puede</w>
+      <w>realizar</w>
+      <w>reporte</w>
       <w>seleccionar</w>
+      <w>spiner</w>
       <w>sqlite</w>
+      <w>tipo</w>
       <w>tranferir</w>
       <w>transporte</w>
       <w>usuario</w>
+      <w>xindex</w>
     </words>
   </dictionary>
 </component>

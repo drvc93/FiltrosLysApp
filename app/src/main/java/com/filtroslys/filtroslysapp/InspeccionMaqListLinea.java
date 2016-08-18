@@ -2,6 +2,7 @@ package com.filtroslys.filtroslysapp;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -49,6 +51,7 @@ public class InspeccionMaqListLinea extends AppCompatActivity {
     ArrayList<CentroCostoDB> listCentroCosto;
     CoordinatorLayout coord ;
     ListView LVhistiral;
+    HistorialInspMaqAdapater adapater;
     String tipoSincro = "";
     boolean isTouch = false;
 
@@ -81,6 +84,29 @@ public class InspeccionMaqListLinea extends AppCompatActivity {
                 SelecFecha(txtFechaIni, "Inicio");
             }
         });
+
+
+        LVhistiral.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                HistorialInspMaqDB h = adapater.getItem(i);
+                if (h.getEstado().equals("I")) {
+
+                    Intent intent = new Intent(InspeccionMaqListLinea.this, InspeccionMaq.class);
+                    intent.putExtra("tipoMant", "Editar");
+                    intent.putExtra("Xcorrelativo", h.getNumero());
+                    intent.putExtra("XcodMaq", h.getCod_maquina());
+                    startActivity(intent);
+                } else if (h.getEstado().equals("E")) {
+                    Intent intent = new Intent(InspeccionMaqListLinea.this, InspeccionMaq.class);
+                    intent.putExtra("tipoMant", "Visor");
+                    intent.putExtra("Xcorrelativo", h.getNumero());
+                    intent.putExtra("XcodMaq", h.getCod_maquina());
+                    startActivity(intent);
+                }
+            }
+        });
+
 
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -292,7 +318,7 @@ public class InspeccionMaqListLinea extends AppCompatActivity {
 
         ArrayList<HistorialInspMaqDB> listHisto = db.GetHistorialInspList(accion, maq, cenctroC, FIni, FFin);
         if (listHisto != null) {
-            HistorialInspMaqAdapater adapater = new HistorialInspMaqAdapater(InspeccionMaqListLinea.this, R.layout.item_list_busq_insp_m, listHisto);
+            adapater = new HistorialInspMaqAdapater(InspeccionMaqListLinea.this, R.layout.item_list_busq_insp_m, listHisto);
             adapater.setDropDownViewResource(R.layout.item_list_busq_insp_m);
             LVhistiral.setAdapter(adapater);
         } else {
@@ -311,7 +337,7 @@ public class InspeccionMaqListLinea extends AppCompatActivity {
             asyncHistorial = getHistorialTask.execute(accion,maq,cenctroC,FIni,FFin);
             listHisto=(ArrayList<HistorialInspMaqDB>)asyncHistorial.get();
             if (listHisto != null) {
-            HistorialInspMaqAdapater adapater  = new HistorialInspMaqAdapater(InspeccionMaqListLinea.this,R.layout.item_list_busq_insp_m,listHisto);
+                adapater = new HistorialInspMaqAdapater(InspeccionMaqListLinea.this, R.layout.item_list_busq_insp_m, listHisto);
             adapater.setDropDownViewResource(R.layout.item_list_busq_insp_m);
                 LVhistiral.setAdapter(adapater);
             } else {

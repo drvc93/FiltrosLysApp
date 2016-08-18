@@ -84,4 +84,10 @@ public class HistorialInspMaqAdapater extends ArrayAdapter<HistorialInspMaqDB> {
 
         return convertView;
     }
+
+    public HistorialInspMaqDB GetItem(int position) {
+
+        return data.get(position);
+
+    }
 }

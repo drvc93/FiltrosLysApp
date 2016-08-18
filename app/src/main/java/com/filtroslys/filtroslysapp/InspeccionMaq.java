@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import DataBase.InspeccionDB;
+import DataBase.MaquinaDB;
 import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
 import Model.InspeccionMaqCabecera;
@@ -71,7 +72,8 @@ import Util.Constans;
 
 public class InspeccionMaq extends AppCompatActivity {
 
-    TextView lblInspector, lblFechaInicio;
+    TextView lblInspector, lblFechaInicio, lblFechaFin, lblEstadoCaB;
+    String correlativo_update = "";
     int SOLO_GUARDAR = 0;
     String indexPeriodoInspeccion="";
     int GUARDAR_Y_ENVIAR_ = 1;
@@ -118,8 +120,19 @@ public class InspeccionMaq extends AppCompatActivity {
         spPeriodo = (Spinner) findViewById(R.id.spPeriodo);
         txtComentario = (EditText) findViewById(R.id.txtCometario);
         lblFechaInicio = (TextView) findViewById(R.id.lblFechaInicio);
+        lblFechaFin = (TextView) findViewById(R.id.lblFechaFin);
+        lblEstadoCaB = (TextView) findViewById(R.id.txtEstadoCab);
 
-        CargarCabecera();
+
+        if (tipoMant.equals("NEW")) {
+            CargarCabecera();
+        } else {
+            String correlativo = getIntent().getExtras().getString("Xcorrelativo");
+            String codMaquina = getIntent().getExtras().getString("XcodMaq");
+            correlativo_update = correlativo;
+            CargarCabecera(correlativo, codMaquina);
+
+        }
 
 
         txtComentario.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +152,9 @@ public class InspeccionMaq extends AppCompatActivity {
                     indexPeriodoInspeccion = strNumerFormat;
                     Log.d("Number perdiodo => ", strNumerFormat);
                     // Toast.makeText(InspeccionMaq.this, strNumerFormat, Toast.LENGTH_SHORT).show();
-                    InsertRowsListView(strNumerFormat);
+                    if (tipoMant.equals("NEW")) {
+                        InsertRowsListView(strNumerFormat);
+                    }
                 }
             }
 
@@ -195,9 +210,94 @@ public class InspeccionMaq extends AppCompatActivity {
         LoadSpinerCondicionMaquina();
         LoadSpinnerPeriodo();
         //LoadListViewDetall();
-
-
         lblFechaInicio.setText(FechaActual());
+    }
+
+    public void CargarCabecera(String correlativo, String codMaquina) {
+
+        HashMap<Integer, Integer> xindexSpiner = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> xindexIconComent = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> xindexIconFoto = new HashMap<Integer, Integer>();
+        HashMap<Integer, Boolean> xindexEnableSpiner = new HashMap<Integer, Boolean>();
+        HashMap<Integer, String> xindexvaluesTextBoxs = new HashMap<Integer, String>();
+
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionMaq.this);
+        MaquinaDB m = db.GetMaquinaPorCodigoMaquina(codMaquina);
+        setTitle(m.getC_maquina() + " - " + m.getC_descripcion());
+        LoadSpinerCondicionMaquina();
+        LoadSpinnerPeriodo();
+
+        // obteniendo  cabacera
+        InspeccionMaqCabecera inpCab = db.GetInspMaqCabeceraPorCorrelativo(correlativo);
+        if (inpCab.getCondicionMaq().equals("A")) {
+            spCondMaq.setSelection(1);
+        } else {
+            spCondMaq.setSelection(2);
+        }
+        if (inpCab.getEstado().equals("E")) {
+            lblEstadoCaB.setText("Enviada");
+        } else {
+            lblEstadoCaB.setText("Ingresada");
+        }
+
+
+        txtComentario.setText(inpCab.getComentario());
+        spPeriodo.setSelection(Integer.valueOf(inpCab.getPeriodoInsp()));
+        lblFechaInicio.setText(inpCab.getFechaInicioInsp());
+        lblFechaFin.setText(inpCab.getFechFinInsp());
+        lblInspector.setText(inpCab.getUsuarioInsp());
+        // fin cabecera
+
+        // obteniendo detalle
+        ArrayList<InspeccionMaqDetalle> InspDet = db.GetInspeccionMaqDetallePorCorrelativo(correlativo);
+        for (int i = 0; i < InspDet.size(); i++) {
+            String descripcion = db.GetDescripcionInspPorCodigo(InspDet.get(i).getCod_inspeccion());
+            InspDet.get(i).setDescripcionInspecion(descripcion);
+
+        }
+
+        // llenar hashmaps
+
+        for (int i = 0; i < InspDet.size(); i++) {
+
+            InspeccionMaqDetalle d = InspDet.get(i);
+            Double porcent = Double.parseDouble(d.getPorcentMax());
+            if (d.getEstado().equals("O")) {
+                xindexSpiner.put(i, 1);
+            } else if (d.getEstado().equals("F")) {
+                xindexSpiner.put(i, 2);
+            }
+            if (porcent.intValue() > 0) {
+                xindexEnableSpiner.put(i, false);
+            } else {
+                xindexEnableSpiner.put(i, true);
+            }
+            if (d.getComentario().equals("")) {
+                xindexIconComent.put(i, R.drawable.icn_pencil_32);
+            } else {
+                xindexIconComent.put(i, R.drawable.comentario_ok_32);
+            }
+            if (d.getRutaFoto().equals("")) {
+                xindexIconFoto.put(i, R.drawable.icn_camera_32);
+            } else {
+                xindexIconFoto.put(i, R.drawable.icn_camera_ok);
+            }
+            if (InspDet.get(i).getPorcentInspec().equals("")) {
+                xindexvaluesTextBoxs.put(i, "");
+            } else {
+                xindexvaluesTextBoxs.put(i, InspDet.get(i).getPorcentInspec());
+            }
+
+        }
+
+        detalleMaqAdap = new DetalleMaqAdapter(InspeccionMaq.this, R.layout.inspeccion_maquina_det, InspDet);
+        detalleMaqAdap.indexSpiner = xindexSpiner;
+        detalleMaqAdap.indexEnableSpiner = xindexEnableSpiner;
+        detalleMaqAdap.indexIconComent = xindexIconComent;
+        detalleMaqAdap.indexIconFoto = xindexIconFoto;
+        detalleMaqAdap.indexvalueTexBoxs = xindexvaluesTextBoxs;
+        LVdetalleM.setAdapter(detalleMaqAdap);
+
     }
 
 
@@ -370,13 +470,17 @@ public class InspeccionMaq extends AppCompatActivity {
         private Spinner   spEstado;
         private ImageView  imgFoto;
         private ImageView imgComent;
+        private int index;
+
 
     }
+
     public class DetalleMaqAdapter extends ArrayAdapter<InspeccionMaqDetalle> {
-        HashMap<Integer,Integer> indexSpiner = new HashMap<Integer, Integer>();
-        HashMap<Integer,Integer> indexIconComent = new HashMap<Integer, Integer>();
-        HashMap<Integer,Integer> indexIconFoto = new HashMap<Integer, Integer>();
-        HashMap<Integer,Boolean> indexEnableSpiner =new HashMap<Integer, Boolean>();
+        public HashMap<Integer, Integer> indexSpiner = new HashMap<Integer, Integer>();
+        public HashMap<Integer, Integer> indexIconComent = new HashMap<Integer, Integer>();
+        public HashMap<Integer, Integer> indexIconFoto = new HashMap<Integer, Integer>();
+        public HashMap<Integer, Boolean> indexEnableSpiner = new HashMap<Integer, Boolean>();
+        public HashMap<Integer, String> indexvalueTexBoxs = new HashMap<Integer, String>();
 
         SharedPreferences preferences;
         Context context;
@@ -390,6 +494,7 @@ public class InspeccionMaq extends AppCompatActivity {
             LoadHaspIconComentFoto();
             preferences= PreferenceManager.getDefaultSharedPreferences(context);
             FillHashMapEnableSpiner();
+            FillHashMapTextValues();
         }
 
 
@@ -416,6 +521,8 @@ public class InspeccionMaq extends AppCompatActivity {
                 viewHolder.lblPorcenMax = (TextView)convertView.findViewById(R.id.lblDetPorcMax);
                 viewHolder.txtPorcentInsp = (EditText)convertView.findViewById(R.id.txtPorcInsp);
                 viewHolder.txtPorcentInsp.setInputType(InputType.TYPE_CLASS_NUMBER);
+                viewHolder.index = position;
+
                 viewHolder.spEstado  = (Spinner)convertView.findViewById(R.id.spDetEsado);
                 viewHolder.imgFoto = (ImageView)convertView.findViewById(R.id.imgDetFoto);
                 viewHolder.imgComent = (ImageView)convertView.findViewById(R.id.imgDetComent);
@@ -451,11 +558,18 @@ public class InspeccionMaq extends AppCompatActivity {
                 viewHolder.txtPorcentInsp.setEnabled(true);
                 viewHolder.txtPorcentInsp.setHint("LLenar");
 
+
                 indexEnableSpiner.put(position,false);
             }
             else {
                 viewHolder.txtPorcentInsp.setEnabled(false);
                 viewHolder.txtPorcentInsp.setHint("");
+
+            }
+
+            if (data.get(viewHolder.index).getPorcentInspec().length() > 0) {
+                Double var_porcent = Double.parseDouble(indexvalueTexBoxs.get(viewHolder.index));
+                viewHolder.txtPorcentInsp.setText(String.valueOf(var_porcent.intValue()));
             }
 
             viewHolder.spEstado.setEnabled(indexEnableSpiner.get(position));
@@ -484,6 +598,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
 
             final Spinner sp_aux = viewHolder.spEstado;
+            final int var_index = viewHolder.index;
             viewHolder.txtPorcentInsp.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -493,16 +608,17 @@ public class InspeccionMaq extends AppCompatActivity {
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if (charSequence.equals("") || charSequence.length()==0){
-                            Log.i("no thing .","");
+                        Log.i("no thing .", "");
 
                     }
                     else {
                         String varChar = String.valueOf(charSequence);
-                        data.get(position).setPorcentInspec(varChar);
+                        data.get(var_index).setPorcentInspec(varChar);
                         if (Integer.valueOf(varChar) > porcent.intValue()) {
                             indexSpiner.put(position, 2);
                             sp_aux.setSelection(2);
-                         //  Log.i("var_porcentIns .",charSequence);
+                            indexvalueTexBoxs.put(var_index, varChar);
+                            // Log.i("var_porcentIns .",charSequence);
                         }
 
                         else {
@@ -539,6 +655,26 @@ public class InspeccionMaq extends AppCompatActivity {
             });
 
 
+            viewHolder.spEstado.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    indexSpiner.put(position, i);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+            viewHolder.imgComent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShowCometarioCabDialog(position, imgv);
+                }
+            });
+
+
             viewHolder.imgFoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -549,10 +685,27 @@ public class InspeccionMaq extends AppCompatActivity {
                 }
             });
 
+            if (indexvalueTexBoxs.get(position).length() > 0) {
+                Double x_porcent = Double.parseDouble(indexvalueTexBoxs.get(position));
+
+
+            }
             return convertView;
         }
 
 
+        public void SetTextEditText(EditText txtEdit, int position) {
+
+            if (indexvalueTexBoxs.get(position) == null || indexvalueTexBoxs.get(position).equals("")) {
+                txtEdit.setText("");
+            } else {
+                Double x_porcent = Double.parseDouble(indexvalueTexBoxs.get(position));
+
+                txtEdit.setText(String.valueOf(x_porcent.intValue()));
+
+            }
+
+        }
         public  void  ShowCometarioCabDialog (final int pos, final ImageView imgV){
 
             final Dialog dialog = new Dialog(context);
@@ -606,12 +759,21 @@ public class InspeccionMaq extends AppCompatActivity {
             }
         }
 
+        public void FillHashMapTextValues() {
+
+            for (int i = 0; i < data.size(); i++) {
+                indexvalueTexBoxs.put(i, "");
+
+            }
+        }
+
         public  void  FillHashMapEnableSpiner (){
             for (int i = 0; i <data.size() ; i++) {
 
                 indexEnableSpiner.put(i,true);
             }
         }
+
 
     }
 
@@ -670,7 +832,11 @@ public class InspeccionMaq extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.Guardar) {
 
-            SeleccionarOpcionDeGuardar();
+            if (tipoMant.equals("Visor")) {
+                CreateCustomToast("No se puede realizar cambios porque el reporte ya fue enviado", Constans.icon_warning, Constans.layot_warning);
+            } else {
+                SeleccionarOpcionDeGuardar();
+            }
 
             return true;
         }
@@ -690,11 +856,56 @@ public class InspeccionMaq extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int item) {
 
              //   Toast.makeText(InspeccionMaq.this, String.valueOf(item), Toast.LENGTH_SHORT).show();
+                if (tipoMant.equals("NEW")) {
                 Guardar(item);
+                } else if (tipoMant.equals("Editar")) {
+                    Actualizar(item);
+
+                }
                 dialog.dismiss();
 
             }
         }).show();
+    }
+
+    public void Actualizar(int tipoGuardado) {
+
+        int cont = 0;
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionMaq.this);
+        InspeccionMaqCabecera cabecerasEnvio = new InspeccionMaqCabecera();
+        ArrayList<InspeccionMaqDetalle> detallesEnvio = new ArrayList<InspeccionMaqDetalle>();
+        if (ValidarCabecera() == true && ValidarDetalle() == true) {
+            InspeccionMaqCabecera cab = GetCabecera(tipoGuardado);
+            cab.setCorrlativo(correlativo_update);
+            cabecerasEnvio = cab;
+            boolean result = db.deleteInspMaq(correlativo_update);
+            long rowid = db.InsertInspeccionMaqCab(cab);
+            if (rowid > 0) {
+                Log.i("delete =>", String.valueOf(result));
+                for (int i = 0; i < detalleMaqAdap.getCount(); i++) {
+                    InspeccionMaqDetalle det = GetDetalle(Long.valueOf(correlativo_update), i);
+                    detallesEnvio.add(det);
+                    long detalleID = db.InsertInspecciomMaqDet(det);
+                    Log.i("ID DETALLE INSP MAQ > ", String.valueOf(detalleID));
+                    cont = cont + 1;
+                }
+            }
+
+            if (tipoGuardado == SOLO_GUARDAR) {
+                if (cont > 0) {
+                    CreateCustomToast("Se actualizo correctamente", Constans.icon_succes, Constans.layout_success);
+                    super.onBackPressed();
+                }
+
+            } else if (tipoGuardado == GUARDAR_Y_ENVIAR_) {
+                EnviarInspeccion(cabecerasEnvio, detallesEnvio);
+                super.onBackPressed();
+
+            }
+
+
+        }
+
     }
 
     public  void  Guardar (int tipoGuardado){
@@ -900,7 +1111,11 @@ public class InspeccionMaq extends AppCompatActivity {
         else {
             cab.setEstado("E");
         }
-        cab.setFechaInicioInsp(FechaFormatEng(lblFechaInicio.getText().toString()));
+        if (tipoMant.equals("NEW")) {
+            cab.setFechaInicioInsp(FechaFormatEng(lblFechaInicio.getText().toString()));
+        } else {
+            cab.setFechaInicioInsp(lblFechaInicio.getText().toString());
+        }
         cab.setFechFinInsp(FechaFormatEng(FechaActual()));
         cab.setPeriodoInsp(indexPeriodoInspeccion);
         cab.setUsuarioInsp(codUser);

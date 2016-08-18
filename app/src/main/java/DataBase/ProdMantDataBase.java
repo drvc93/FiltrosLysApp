@@ -203,6 +203,9 @@ public class ProdMantDataBase {
         this.OpenWritableDB();
         long rowid = db.insert(ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME,null,InspeccionMaquinaCabValues(inspeccionMaqCabecera));
         this.CloseDB();
+        if (rowid > 0) {
+            rowid = Long.valueOf(inspeccionMaqCabecera.getCorrlativo());
+        }
         return  rowid;
     }
 
@@ -510,6 +513,103 @@ public class ProdMantDataBase {
 
     }
 
+    public String GetDescripcionInspPorCodigo(String codInsp) {
+        String query = "select c_descripcion  from MTP_INSPECCION where c_inspeccion = '" + codInsp + "'";
+        String result = "";
+        Cursor c = db.rawQuery(query, null);
+        while (c.moveToNext()) {
+            result = c.getString(0);
+        }
+        return result;
+
+    }
+
+
+    public ArrayList<InspeccionMaqDetalle> GetInspeccionMaqDetallePorCorrelativo(String correlativo) {
+        ArrayList<InspeccionMaqDetalle> listResult = new ArrayList<InspeccionMaqDetalle>();
+        String query = "SELECT * FROM MTP_INSPECCIONMAQUINA_DET   where n_correlativo = '" + correlativo + "'";
+        this.OpenWritableDB();
+        Cursor c = db.rawQuery(query, null);
+        while (c.moveToNext()) {
+            InspeccionMaqDetalle det = new InspeccionMaqDetalle();
+            det.setCompania(c.getString(1));
+            det.setCorrelativo(c.getString(2));
+            det.setLinea(c.getString(3));
+            det.setCod_inspeccion(c.getString(4));
+            det.setTipo_inspecicon(c.getString(5));
+            det.setPorcentMin(c.getString(6));
+            det.setPorcentMax(c.getString(7));
+            det.setPorcentInspec(c.getString(8));
+            det.setEstado(c.getString(9));
+            det.setComentario(c.getString(10));
+            det.setRutaFoto(c.getString(11));
+            det.setUltimoUser(c.getString(12));
+            det.setUltimaFechaMod(c.getString(13));
+            listResult.add(det);
+
+        }
+        return listResult;
+    }
+
+    public InspeccionMaqCabecera GetInspMaqCabeceraPorCorrelativo(String correlativo) {
+
+        InspeccionMaqCabecera inp = new InspeccionMaqCabecera();
+        String query = "SELECT * FROM MTP_INSPECCIONMAQUINA_CAB   where n_correlativo = '" + correlativo + "'";
+        this.OpenWritableDB();
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            inp.setCompania(cursor.getString(1));
+            inp.setCorrlativo(cursor.getString(2));
+            inp.setCodMaquina(cursor.getString(3));
+            inp.setCondicionMaq(cursor.getString(4));
+            inp.setComentario(cursor.getString(5));
+            inp.setEstado(cursor.getString(6));
+            inp.setFechaInicioInsp(cursor.getString(7));
+            inp.setFechFinInsp(cursor.getString(8));
+            inp.setPeriodoInsp(cursor.getString(9));
+            inp.setUsuarioInsp(cursor.getString(10));
+            inp.setUsuarioEnv(cursor.getString(11));
+            inp.setFechaEnv(cursor.getString(12));
+            inp.setUltUsuairo(cursor.getString(13));
+            inp.setUltFechaMod(cursor.getString(14));
+
+        }
+
+        return inp;
+
+
+    }
+
+    public MaquinaDB GetMaquinaPorCodigoMaquina(String codMaquina) {
+        String query = "SELECT * FROM MTP_MAQUINAS where c_maquina ='" + codMaquina + "'";
+        this.OpenWritableDB();
+        ArrayList<MaquinaDB> listMaquina = new ArrayList<MaquinaDB>();
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            MaquinaDB m = new MaquinaDB();
+            m.setC_ompania(cursor.getString(1));
+            m.setC_maquina(cursor.getString(2));
+            m.setC_descripcion(cursor.getString(3));
+            m.setC_codigobarras(cursor.getString(4));
+            m.setC_familiainspeccion(cursor.getString(5));
+            m.setC_centrocosto(cursor.getString(6));
+            m.setC_estado(cursor.getString(7));
+            m.setC_ultimousuario(cursor.getString(8));
+            m.setD_ultimafechamodificacion(cursor.getString(9));
+            listMaquina.add(m);
+
+        }
+        MaquinaDB res = null;
+
+        if (listMaquina.size() > 0) {
+            res = listMaquina.get(0);
+        } else {
+
+        }
+
+        return res;
+
+    }
 
     public  ArrayList<InspeccionDB> GetInspecciones(String famInspeccion,String periodoInso){
 
@@ -561,6 +661,15 @@ public class ProdMantDataBase {
 
         return result;
 
+    }
+
+    public boolean deleteInspMaq(String correlativo) {
+        boolean res = false;
+        this.OpenWritableDB();
+        res = db.delete(ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME, ConstasDB.MTP_INSP_MAQ_CAB_CORRELATIVO + "=" + correlativo, null) > 0;
+        res = db.delete(ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_DET_NAME, ConstasDB.MTP_INSP_MAQ_DET_CORRELATIVO + "=" + correlativo, null) > 0;
+        this.CloseDB();
+        return res;
     }
 
     public void deleteTables() {

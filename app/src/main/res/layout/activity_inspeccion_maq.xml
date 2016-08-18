@@ -125,10 +125,10 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="----"
-                android:id="@+id/textView20"
                 android:textColor="#000"
                 android:background="#00ffffff"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginLeft="5dp"
+                android:id="@+id/lblFechaFin" />
         </LinearLayout>
 
         <LinearLayout
