@@ -1086,13 +1086,20 @@ public class InspeccionMaq extends AppCompatActivity {
     public  String DecimalFormtPorcentInspeccion (InspeccionMaqDetalle det ){
         DecimalFormat precision = new DecimalFormat("0.000000");
         String porcenInsp = det.getPorcentInspec();
+        if (porcenInsp.length() > 0) {
+
+
+            Double porcent = Double.parseDouble(porcenInsp);
         if (porcenInsp.equals("")){
 
         }
         else {
-         porcenInsp = precision.format(Integer.valueOf(porcenInsp));
+            porcenInsp = precision.format(porcent.intValue());
             porcenInsp = porcenInsp.replace(",",".");
          }
+        } else {
+            porcenInsp = "";
+        }
         return  porcenInsp;
     }
 
