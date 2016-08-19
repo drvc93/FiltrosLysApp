@@ -2,6 +2,7 @@ package com.filtroslys.filtroslysapp;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -956,7 +957,7 @@ public class InspeccionMaq extends AppCompatActivity {
     }
 
 
-    public  void EnviarInspeccion (InspeccionMaqCabecera cabecera , ArrayList<InspeccionMaqDetalle> listdetalles){
+    public void EnviarInspeccion(InspeccionMaqCabecera cabecera, ArrayList<InspeccionMaqDetalle> listdetalles) {
 
         String correlativo = "";
         String resulInsertCab = "";
@@ -1017,7 +1018,6 @@ public class InspeccionMaq extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
         }
 
         AsyncTask<String, String, String> asyncTaskTranferirs;
@@ -1036,6 +1036,7 @@ public class InspeccionMaq extends AppCompatActivity {
             GuardarImagenServer(listdetalles);
             CreateCustomToast("Se envio el reporte de inspección correctamente",Constans.icon_succes,Constans.layout_success );
         }
+
     }
 
 

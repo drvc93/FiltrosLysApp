@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".InspeccionGen">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="TIP.INSP:"
+                android:id="@+id/textView10" />
+
+            <Spinner
+                android:layout_width="120dp"
+                android:layout_height="35dp"
+                android:id="@+id/spTipoIns"
+                android:background="@drawable/spiner_style"
+                android:layout_marginLeft="10dp"
+                android:spinnerMode="dialog" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="MAQ:"
+                android:id="@+id/lblSPMAQCC"
+                android:layout_marginLeft="10dp" />
+
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="35dp"
+                android:id="@+id/spMaqCC"
+                android:background="@drawable/spiner_style"
+                android:layout_marginLeft="5dp"
+                android:spinnerMode="dialog" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <EditText
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/txtProbDet"
+                android:focusableInTouchMode="false"
+                android:clickable="true"
+                android:background="@drawable/edittext_round_border"
+                android:padding="5dp"
+                android:hint="Problema detectado" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/txtAreaG"
+                android:focusableInTouchMode="false"
+                android:clickable="true"
+                android:background="@drawable/edittext_round_border"
+                android:padding="5dp"
+                android:layout_marginLeft="9dp"
+                android:hint="Area del problema" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="F.INSP:"
+                android:id="@+id/textView33" />
+
+            <EditText
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/txtFechaInsG"
+                android:focusableInTouchMode="false"
+                android:clickable="true"
+                android:background="@drawable/edittext_round_border"
+                android:padding="5dp"
+                android:textSize="16dp"
+                android:layout_marginLeft="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Inspector:"
+                android:id="@+id/textView35"
+                android:layout_marginLeft="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="DVILLANUEV"
+                android:id="@+id/lblInspectorG"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/LVInspeccionGen" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
