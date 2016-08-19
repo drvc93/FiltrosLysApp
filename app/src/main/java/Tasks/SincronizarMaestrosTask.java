@@ -16,6 +16,7 @@ import DataBase.InspeccionDB;
 import DataBase.MaquinaDB;
 import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
+import DataBase.TipoRevisionGBD;
 
 /**
  * Created by dvillanueva on 08/08/2016.
@@ -28,15 +29,18 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
     ArrayList<PeriodoInspeccionDB> listPeriodos;
     ArrayList<InspeccionDB> listInspecciones;
     ArrayList<CentroCostoDB>listCcosto;
+    ArrayList<TipoRevisionGBD> listTipoRevision;
 
     public SincronizarMaestrosTask(Context context, ProgressDialog progressDialog, ArrayList<MaquinaDB> listMaquina,
-                                   ArrayList<PeriodoInspeccionDB> listPeriodos, ArrayList<InspeccionDB>listInspecciones, ArrayList<CentroCostoDB>listCcosto) {
+                                   ArrayList<PeriodoInspeccionDB> listPeriodos, ArrayList<InspeccionDB> listInspecciones, ArrayList<CentroCostoDB> listCcosto,
+                                   ArrayList<TipoRevisionGBD> listTipoRevision) {
         this.context = context;
         this.listMaquina = listMaquina;
         this.progressDialog = progressDialog;
         this.listPeriodos = listPeriodos;
         this.listCcosto = listCcosto;
         this.listInspecciones = listInspecciones;
+        this.listTipoRevision = listTipoRevision;
     }
 
     @Override
@@ -50,6 +54,7 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME);
         dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_INSPECCION_NAME);
         dbBase.execSQL("DELETE FROM "+ ConstasDB.TABLA_MTP_CENTROCOSTO_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_TIPOREVISION_NAME);
         dbBase.close();
         // prodMantDataBase.deleteTableMaquina();
 
@@ -88,6 +93,13 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
                 prodMantDataBase.InsertCentroCosto(listCcosto.get(i));
             }
 
+        }
+
+        if (listTipoRevision != null && listTipoRevision.size() > 0) {
+
+            for (int i = 0; i < listTipoRevision.size(); i++) {
+                prodMantDataBase.InsertTipoRevision(listTipoRevision.get(i));
+            }
         }
 
         return null;

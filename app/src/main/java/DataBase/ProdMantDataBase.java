@@ -182,6 +182,26 @@ public class ProdMantDataBase {
 
     }
 
+    public ContentValues TipoRevisionContentValues(TipoRevisionGBD t) {
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstasDB.MTP_TIPOREVISION_COD, t.getCod_tiporevision());
+        contentValues.put(ConstasDB.MTP_TIPOREVISION_DESCRIPCION, t.getDescripcion());
+        contentValues.put(ConstasDB.MTP_TIPOREVISION_ESTADO, t.getEstado());
+        contentValues.put(ConstasDB.MTP_TIPOREVISION_ULT_USER, t.getUltimoUsuario());
+        contentValues.put(ConstasDB.MTP_TIPOREVISION_ULT_FECHAMOD, t.getUltFechaMod());
+
+        return contentValues;
+    }
+
+    public long InsertTipoRevision(TipoRevisionGBD tp) {
+
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_TIPOREVISION_NAME, null, TipoRevisionContentValues(tp));
+        this.CloseDB();
+        return rowid;
+    }
+
     public  long InsertCentroCosto (CentroCostoDB c){
 
         this.OpenWritableDB();
@@ -580,6 +600,20 @@ public class ProdMantDataBase {
 
     }
 
+    public ArrayList<TipoRevisionGBD> GetAllTipoReivision() {
+        String query = "SELECT * FROM MTP_TIPOREVISIONG";
+        this.OpenWritableDB();
+        ArrayList<TipoRevisionGBD> listTipoRev = new ArrayList<TipoRevisionGBD>();
+        Cursor c = db.rawQuery(query, null);
+        while (c.moveToNext()) {
+            TipoRevisionGBD t = new TipoRevisionGBD();
+            t.setCod_tiporevision(c.getString(1));
+            t.setDescripcion(c.getString(2));
+            t.setEstado(c.getString(3));
+            listTipoRev.add(t);
+        }
+        return listTipoRev;
+    }
     public MaquinaDB GetMaquinaPorCodigoMaquina(String codMaquina) {
         String query = "SELECT * FROM MTP_MAQUINAS where c_maquina ='" + codMaquina + "'";
         this.OpenWritableDB();

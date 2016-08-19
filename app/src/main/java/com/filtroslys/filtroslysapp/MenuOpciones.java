@@ -34,6 +34,7 @@ import DataBase.MaquinaDB;
 import DataBase.MenuDB;
 import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
+import DataBase.TipoRevisionGBD;
 import DataBase.UsuarioDB;
 import Model.Permisos;
 import Model.SubMenuBotones;
@@ -43,6 +44,7 @@ import Tasks.GetInspeccionesTask;
 import Tasks.GetMaquinasTask;
 import Tasks.GetMenuDataTask;
 import Tasks.GetPeriodosInspTask;
+import Tasks.GetTipoRevisionGTask;
 import Tasks.GetUsuariosTask;
 import Tasks.SincronizarAccesosTask;
 import Tasks.SincronizarMaestrosTask;
@@ -431,10 +433,24 @@ public class MenuOpciones extends AppCompatActivity {
         }
 
 
+        //  list tipo revision
+        AsyncTask<String, String, ArrayList<TipoRevisionGBD>> asyncTipoRevision;
+        GetTipoRevisionGTask getTipoRevisionGTask = new GetTipoRevisionGTask();
+        ArrayList<TipoRevisionGBD> listTipoRevision = new ArrayList<TipoRevisionGBD>();
+
+        try {
+            asyncTipoRevision = getTipoRevisionGTask.execute();
+            listTipoRevision = (ArrayList<TipoRevisionGBD>) asyncTipoRevision.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         Log.i("Pre ejecuion de maestroTask",".");
         // progress dialog with asynctask
         AsyncTask<Void,Void,Void> asyncMaestros;
-        SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this,progressDialogo,listMaquinas,listPeriodos,listInspecciones,listCentroCosto);
+        SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this, progressDialogo, listMaquinas, listPeriodos, listInspecciones, listCentroCosto, listTipoRevision);
          asyncMaestros = sincroMaestrosTask.execute();
         Log.i("Post ejecuion de maestroTask",".");
     }

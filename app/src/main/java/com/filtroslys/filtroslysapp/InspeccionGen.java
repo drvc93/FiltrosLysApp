@@ -1,6 +1,7 @@
 package com.filtroslys.filtroslysapp;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -8,6 +9,7 @@ import android.os.CountDownTimer;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -31,6 +33,7 @@ import java.util.Calendar;
 import DataBase.CentroCostoDB;
 import DataBase.MaquinaDB;
 import DataBase.ProdMantDataBase;
+import DataBase.TipoRevisionGBD;
 
 public class InspeccionGen extends AppCompatActivity {
 
@@ -40,6 +43,8 @@ public class InspeccionGen extends AppCompatActivity {
     ActionBar actionBar;
     int INSP_MAQUINA = 2;
     int INSP_OTROS = 1;
+    int var_tipoIsnpeccion = 0;
+    public CharSequence[] listTipoRevision;
 
 
     @Override
@@ -74,7 +79,7 @@ public class InspeccionGen extends AppCompatActivity {
             actionBar.hide();
 
         }
-
+        listTipoRevision = GettListTipoRevision();
         LoadSpinerTipoInsp();
         LoadSpinerMaqCC(0);
 
@@ -84,11 +89,33 @@ public class InspeccionGen extends AppCompatActivity {
                 ShowCometarioCabDialog(txtArea, "Area afectada");
             }
         });
+        txtProblemadetect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShowCometarioCabDialog(txtProblemadetect, "Problema detectado");
+            }
+        });
 
         spTipoInsp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 LoadSpinerMaqCC(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        spMaqCC.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String codMaq = spMaqCC.getSelectedItem().toString();
+                codMaq = codMaq.substring(0, 7);
+                codMaq = codMaq.trim();
+                AsignarCodCcostoTexBox(codMaq);
+
+
             }
 
             @Override
@@ -113,7 +140,23 @@ public class InspeccionGen extends AppCompatActivity {
         if (id == R.id.Guardar) {
 
         }
+        if (id == R.id.Agregar) {
+            AlertAddDetail();
+        }
         return true;
+    }
+
+
+    public CharSequence[] GettListTipoRevision() {
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
+        ArrayList<TipoRevisionGBD> listTipoRev = db.GetAllTipoReivision();
+        CharSequence[] result = new CharSequence[listTipoRev.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = listTipoRev.get(i).getCod_tiporevision() + "  -  " + listTipoRev.get(i).getDescripcion();
+        }
+
+        return result;
+
     }
 
     public void LoadSpinerTipoInsp() {
@@ -138,9 +181,12 @@ public class InspeccionGen extends AppCompatActivity {
 
         if (selecTipoInsp == INSP_OTROS) {
             data = new ArrayList<String>();
+            var_tipoIsnpeccion = INSP_OTROS;
             liscCcosto = db.GetCemtroCostos();
             msjPrompt = "SELECCIONE CENTRO DE COSTO";
             lblSPCCMaq.setText("C.C.:");
+            txtProblemadetect.setEnabled(true);
+            txtProblemadetect.setText("");
             for (int i = 0; i < liscCcosto.size(); i++) {
                 data.add(liscCcosto.get(i).getC_centrocosto() + "  -   " + liscCcosto.get(i).getC_descripcion());
 
@@ -148,8 +194,11 @@ public class InspeccionGen extends AppCompatActivity {
             }
 
         } else if (selecTipoInsp == INSP_MAQUINA) {
+            var_tipoIsnpeccion = INSP_MAQUINA;
             lblSPCCMaq.setText("MAQ:");
             msjPrompt = "SELECCIONE MAQUINA";
+            txtProblemadetect.setEnabled(false);
+            txtProblemadetect.setText("");
             data = new ArrayList<String>();
             listMaq = db.GetMaquinasALL();
             for (int i = 0; i < listMaq.size(); i++) {
@@ -274,6 +323,36 @@ public class InspeccionGen extends AppCompatActivity {
 
 
     }
+
+    public void AsignarCodCcostoTexBox(String codMaq) {
+        Log.i("Cod Maquina", codMaq);
+        if (var_tipoIsnpeccion == INSP_MAQUINA) {
+            ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
+            MaquinaDB mq = db.GetMaquinaPorCodigoMaquina(codMaq);
+            txtProblemadetect.setText(mq.getC_centrocosto());
+
+        }
+
+    }
+
+    public void AlertAddDetail() {
+
+
+        final CharSequence[] items = listTipoRevision;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(InspeccionGen.this);
+        builder.setTitle("Seleccione el tipo de rivisión");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+
+
+                dialog.dismiss();
+
+            }
+        }).show();
+    }
+
+
 
 
 }

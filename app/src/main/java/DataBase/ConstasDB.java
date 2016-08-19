@@ -243,6 +243,26 @@ public class ConstasDB {
                     MTP_CENTRO_C_DESCRIPCION+ " TEXT , " +
                     MTP_CENTRO_C_ESTADO + " TEXT ); " ;
 
+    //tipo revision 
+
+    public static final String TABLA_MTP_TIPOREVISION_NAME = "MTP_TIPOREVISIONG";
+    public static final String MTP_TIPOREVISION_ID = "_id";
+    public static final String MTP_TIPOREVISION_COD = "c_tiporevisiong";
+    public static final String MTP_TIPOREVISION_DESCRIPCION = "c_descripcion";
+    public static final String MTP_TIPOREVISION_ESTADO = "c_estado";
+    public static final String MTP_TIPOREVISION_ULT_USER = "ultimousuario";
+    public static final String MTP_TIPOREVISION_ULT_FECHAMOD = "ultimafechamodificacion";
+    public static final String TABLA_MTP_TIPOREVISION_SQL =
+            "CREATE TABLE " + TABLA_MTP_TIPOREVISION_NAME +
+                    " ( " + MTP_TIPOREVISION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    MTP_TIPOREVISION_COD + " TEXT , " +
+                    MTP_TIPOREVISION_DESCRIPCION + " TEXT , " +
+                    MTP_TIPOREVISION_ESTADO + " TEXT , " +
+                    MTP_TIPOREVISION_ULT_USER + " TEXT , " +
+                    MTP_TIPOREVISION_ULT_FECHAMOD + " TEXT ); ";
+
+
+
             
 
     
