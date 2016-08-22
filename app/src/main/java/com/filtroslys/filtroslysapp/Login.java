@@ -82,7 +82,7 @@ public class Login extends AppCompatActivity {
 
         }
         copyFile();
-      //ShowDialogAlert();
+        //ShowDialogAlert();
 
         // instanciando controles
         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);

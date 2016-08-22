@@ -76,8 +76,9 @@ public class InspeccionMaq extends AppCompatActivity {
     TextView lblInspector, lblFechaInicio, lblFechaFin, lblEstadoCaB;
     String correlativo_update = "";
     int SOLO_GUARDAR = 0;
-    String indexPeriodoInspeccion="";
     int GUARDAR_Y_ENVIAR_ = 1;
+    String indexPeriodoInspeccion="";
+
     SharedPreferences preferences;
     private static final int CAMERA_REQUEST = 1888;
     DetalleMaqAdapter detalleMaqAdap;

@@ -8,6 +8,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import Model.InspeccionGenCabecera;
+import Model.InspeccionGenDetalle;
 import Model.InspeccionMaqCabecera;
 import Model.InspeccionMaqDetalle;
 import Model.Menu;
@@ -194,6 +196,59 @@ public class ProdMantDataBase {
         return contentValues;
     }
 
+    public ContentValues InspGenCabContentValues(InspeccionGenCabecera cab) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_COMPANIA, cab.getCompania());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_CORRELATIVO, cab.getCorrelativo());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_TIP_INSP, cab.getTipoInspeccion());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_COD_MAQ, cab.getCod_maquina());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_COD_CCOSTO, cab.getCentroCosto());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_COD_COMENTARIO, cab.getComentario());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_USUARIO_INSP, cab.getUsuarioInsp());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_FECHA_INSP, cab.getFechaInsp());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_ESTADO, cab.getEstado());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_USUARIO_ENV, cab.getUsuarioEnvio());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_FECHA_ENV, cab.getFechaEnvia());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_ULT_USER, cab.getUltUsuario());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_FECHA_MOD, cab.getUltFechaMod());
+
+        return contentValues;
+    }
+
+
+    public ContentValues InspGenDetContentValues(InspeccionGenDetalle det) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstasDB.MTP_INSP_GEN_DET_COMPANIA, det.getCompania());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_DET_CORRELATIVO, det.getCorrelativo());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_DET_LINEA, det.getLinea());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_DET_COMENTARIO, det.getComentario());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_DET_RUTA_FOTO, det.getRutaFoto());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_DET_ULT_USUARIO, det.getUltUsuario());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_DET_ULT_FECHA_MOD, det.getUltFechaMod());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_DET_TIPO_REVISION, det.getTipoRevision());
+        contentValues.put(ConstasDB.MTP_INSP_GEN_DET_FLAG_ADIC, det.getFlagadictipo());
+        return contentValues;
+
+    }
+
+    public long InsertInspGenDet(InspeccionGenDetalle det) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_INSPECCIONGENERAL_DET_NAME, null, InspGenDetContentValues(det));
+        this.CloseDB();
+        return rowid;
+
+    }
+
+    public long InsertInspGenCab(InspeccionGenCabecera insp) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TABLA_MTP_INSPECCIONGENERAL_CAB_NAME, null, InspGenCabContentValues(insp));
+
+        this.CloseDB();
+        return rowid;
+
+
+    }
+
     public long InsertTipoRevision(TipoRevisionGBD tp) {
 
         this.OpenWritableDB();
@@ -309,6 +364,26 @@ public class ProdMantDataBase {
         res = res+1;
 
         return  res;
+    }
+
+    public int CorrelativoInspGen() {
+        int res = 0;
+
+        String query = "SELECT MAX(n_correlativo) FROM MTP_INSPECCIONGENERAL_CAB ";
+        this.OpenWritableDB();
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            while (c.moveToNext()) {
+                if (c.getString(0) != null) {
+                    String var = c.getString(0);
+                    res = Integer.valueOf(var);
+                }
+            }
+        }
+
+        res = res + 1;
+
+        return res;
     }
 
 

@@ -5,13 +5,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
@@ -45,15 +48,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import DataBase.CentroCostoDB;
+import DataBase.ConstasDB;
 import DataBase.MaquinaDB;
 import DataBase.ProdMantDataBase;
 import DataBase.TipoRevisionGBD;
+import Model.InspeccionGenCabecera;
 import Model.InspeccionGenDetalle;
+import Tasks.EnviarInspGenCabTask;
+import Tasks.GetCorrelativoTask;
 import Util.Constans;
 import Util.HistorialInspMaqAdapater;
 
@@ -67,12 +77,14 @@ public class InspeccionGen extends AppCompatActivity {
     int INSP_MAQUINA = 2;
     int INSP_OTROS = 1;
     int postItemFoto;
-    String tipoMant = "";
+    int SOLO_GUARDAR = 0;
+    int GUARDAR_Y_ENVIAR_ = 1;
+    String codUser, tipoMant = "";
     int var_tipoIsnpeccion = 0;
     public CharSequence[] listTipoRevision;
     ListView LVInspGen;
     DetalleGenAdapater detalleAdapter;
-
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +103,9 @@ public class InspeccionGen extends AppCompatActivity {
         tipoMant = getIntent().getExtras().getString("tipoMant");
         spMaqCC.setEnabled(false);
         txtProblemadetect.setEnabled(false);
+        preferences = PreferenceManager.getDefaultSharedPreferences(InspeccionGen.this);
+        codUser = preferences.getString("UserCod", null);
+
 
         txtFechaInsp.setText(FechaActual());
 
@@ -177,12 +192,187 @@ public class InspeccionGen extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.Guardar) {
-
+            SeleccionarOpcionDeGuardar();
         }
         if (id == R.id.Agregar) {
             AlertAddDetail();
         }
         return true;
+    }
+
+
+    public void GuardarReporte(int TipoGuardado) {
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
+        InspeccionGenCabecera cabEnvio;
+        ArrayList<InspeccionGenDetalle> detalleEnvio = new ArrayList<InspeccionGenDetalle>();
+        int cont = 0;
+        if (ValidarCabecera() == true || ValidarDetalle() == true) {
+
+            InspeccionGenCabecera cab = GetCabecera(TipoGuardado);
+            cabEnvio = cab;
+            long idCab = db.InsertInspGenCab(cab);
+            Log.i("Id insp gen cab >", String.valueOf(idCab));
+            if (idCab > 0) {
+                String correlativo = cab.getCorrelativo();
+                ArrayList<InspeccionGenDetalle> listdetalles = GetDetalle(correlativo);
+                for (int i = 0; i < listdetalles.size(); i++) {
+
+                    long detID = db.InsertInspGenDet(listdetalles.get(i));
+                    Log.i("Id insp gen det >", String.valueOf(detID));
+                    if (detID > 0) {
+                        cont = cont + 1;
+                    }
+
+                }
+
+                if (TipoGuardado == SOLO_GUARDAR && cont > 0) {
+                    CreateCustomToast("Se guardo correctamente el reporte ", Constans.icon_succes, Constans.layout_success);
+                    super.onBackPressed();
+                } else if (TipoGuardado == GUARDAR_Y_ENVIAR_ && cont > 0) {
+                    EnviarReporteInspGeneral(cabEnvio, detalleEnvio);
+                }
+            }
+
+
+        }
+
+    }
+
+    public void EnviarReporteInspGeneral(InspeccionGenCabecera cab, ArrayList<InspeccionGenDetalle> detalles) {
+
+        // get correlativo
+        GetCorrelativoTask getcorrelativoTask = new GetCorrelativoTask();
+        AsyncTask<String, String, String> asyncCorrelativo;
+        String correlativo = "";
+
+
+        try {
+            asyncCorrelativo = getcorrelativoTask.execute();
+            correlativo = (String) asyncCorrelativo.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        EnviarInspGenCabTask enviarCabeceratTask = new EnviarInspGenCabTask();
+        AsyncTask<String, String, String> asyncEnviarCab;
+        String resulCab = "";
+
+
+        try {
+            asyncEnviarCab = enviarCabeceratTask.execute(cab.getCompania(), correlativo, cab.getTipoInspeccion(),
+                    cab.getCod_maquina(), cab.getCentroCosto(), cab.getComentario(), cab.getUsuarioInsp(), cab.getFechaInsp(),
+                    cab.getEstado(), cab.getUsuarioEnvio(), cab.getUltUsuario());
+            resulCab = asyncEnviarCab.get();
+            Log.i("result envio insp gen cab ==> ", resulCab);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if (Integer.valueOf(resulCab) > 0) {
+            CreateCustomToast("Se realizó el envio del reporte correctamente", Constans.icon_succes, Constans.layout_success);
+            super.onBackPressed();
+        }
+
+
+    }
+
+    public ArrayList<InspeccionGenDetalle> GetDetalle(String correlativo) {
+        ArrayList<InspeccionGenDetalle> detalles = detalleAdapter.Alldata();
+        for (int i = 0; i < detalles.size(); i++) {
+
+            detalles.get(i).setCorrelativo(correlativo);
+            detalles.get(i).setUltUsuario(codUser);
+            detalles.get(i).setUltFechaMod(FechaFormatEng(FechaActual()));
+            detalles.get(i).setFlagadictipo("N");
+
+        }
+
+        return detalles;
+
+    }
+
+    public InspeccionGenCabecera GetCabecera(int TipoGuardado) {
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
+        int getcorrelativo = db.CorrelativoInspGen();
+
+        InspeccionGenCabecera cab = new InspeccionGenCabecera();
+        cab.setCompania(Constans.NroConpania);
+        cab.setCorrelativo(String.valueOf(getcorrelativo));
+        cab.setFechaInsp(FechaFormatEng(txtFechaInsp.getText().toString()));
+        if (spTipoInsp.getSelectedItemPosition() == INSP_MAQUINA) {
+            cab.setCod_maquina(GetCodSpinerMaqCC("MAQ"));
+            cab.setCentroCosto(txtProblemadetect.getText().toString());
+        } else if (spTipoInsp.getSelectedItemPosition() == INSP_OTROS) {
+            cab.setCentroCosto(GetCodSpinerMaqCC("CC"));
+            cab.setCod_maquina(txtProblemadetect.getText().toString());
+        }
+        if (spTipoInsp.getSelectedItemPosition() == INSP_OTROS) {
+            cab.setTipoInspeccion("OT");
+        } else {
+            cab.setTipoInspeccion("MQ");
+        }
+
+        cab.setComentario(txtArea.getText().toString());
+        cab.setUsuarioInsp(codUser);
+        cab.setUsuarioEnvio(codUser);
+        if (TipoGuardado == SOLO_GUARDAR) {
+            cab.setEstado("I");
+            cab.setFechaEnvia("-");
+        } else {
+            cab.setEstado("E");
+            cab.setFechaEnvia(FechaFormatEng(FechaActual()));
+        }
+        cab.setUltUsuario(codUser);
+        cab.setUltFechaMod(FechaFormatEng(FechaActual()));
+        return cab;
+
+    }
+
+    public String GetCodSpinerMaqCC(String tip) {
+        String result = "";
+        String str = "";
+        if (tip.equals("MAQ")) {
+            str = spMaqCC.getSelectedItem().toString();
+            result = str.substring(0, 7);
+            result = result.trim();
+        } else if (tip.equals("CC")) {
+
+            str = spMaqCC.getSelectedItem().toString();
+            result = str.substring(0, 5);
+            result = result.trim();
+        }
+        Log.i("Get cod spiner => ", result);
+        return result;
+
+    }
+
+    public void SeleccionarOpcionDeGuardar() {
+
+
+        final CharSequence[] items = {" Solo guardar", "Guardar y enviar"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(InspeccionGen.this);
+        builder.setTitle("Seleccione la opción que desea realizar");
+        builder.setIcon(R.drawable.icn_save32);
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+
+                //  Toast.makeText(InspeccionGen.this, String.valueOf(item), Toast.LENGTH_SHORT).show();
+                if (tipoMant.equals("NEW")) {
+                    GuardarReporte(item);
+                } else if (tipoMant.equals("Editar")) {
+                    // Actualizar(item);
+
+                }
+                dialog.dismiss();
+
+            }
+        }).show();
     }
 
 
@@ -216,6 +406,7 @@ public class InspeccionGen extends AppCompatActivity {
 
 
     }
+
 
     public String GenerarCodigoFoto() {
 
@@ -347,6 +538,7 @@ public class InspeccionGen extends AppCompatActivity {
 
 
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -515,6 +707,50 @@ public class InspeccionGen extends AppCompatActivity {
 
     }
 
+    public boolean ValidarCabecera() {
+        boolean result = true;
+        if (spTipoInsp.getSelectedItemPosition() == 0) {
+            result = false;
+            CreateCustomToast("Seleccione tipo de inspección ", Constans.icon_error, Constans.layout_error);
+        }
+
+
+        return result;
+    }
+
+    public boolean ValidarDetalle() {
+        boolean result = true;
+        if (detalleAdapter == null || detalleAdapter.data.size() == 0) {
+            result = false;
+            CreateCustomToast("Debe agregar al menos un detalle  a la inspección", Constans.icon_error, Constans.layout_error);
+        }
+
+        return result;
+
+    }
+
+    public String FechaFormatEng(String stringdate) {
+
+        String inputPattern = "dd/MM/yyyy HH:mm:ss";
+        String outputPattern = "MM/dd/yyyy HH:mm:ss";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(stringdate);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Log.i("fecha format > ", str);
+        return str;
+
+
+    }
+
     public class DetalleGenAdapater extends ArrayAdapter<InspeccionGenDetalle> {
 
         Context context;
@@ -528,6 +764,7 @@ public class InspeccionGen extends AppCompatActivity {
             this.data = data;
 
         }
+
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
@@ -544,6 +781,8 @@ public class InspeccionGen extends AppCompatActivity {
                 viewHolder.imgfoto = (ImageView) convertView.findViewById(R.id.imgInspGenCam);
                 viewHolder.imgEliminar = (ImageView) convertView.findViewById(R.id.imgInspGenEliminar);
                 viewHolder.index = position;
+                data.get(position).setLinea(String.valueOf(position + 1));
+                data.get(position).setCompania(Constans.NroConpania);
 
                 convertView.setTag(viewHolder);
             } else {
@@ -587,6 +826,10 @@ public class InspeccionGen extends AppCompatActivity {
             return convertView;
         }
 
+        public ArrayList<InspeccionGenDetalle> Alldata() {
+
+            return data;
+        }
 
         public void ShowCometarioCabDialog(final int pos, final EditText txtComent) {
 

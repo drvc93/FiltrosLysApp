@@ -262,10 +262,67 @@ public class ConstasDB {
                     MTP_TIPOREVISION_ULT_FECHAMOD + " TEXT ); ";
 
 
+    // tabla inspeccion general cab
+    public static final String TABLA_MTP_INSPECCIONGENERAL_CAB_NAME = "MTP_INSPECCIONGENERAL_CAB";
+    public static final String MTP_INSP_GEN_CAB_ID = "_id";
+    public static final String MTP_INSP_GEN_CAB_COMPANIA = "c_compania";
+    public static final String MTP_INSP_GEN_CAB_CORRELATIVO = "n_correlativo";
+    public static final String MTP_INSP_GEN_CAB_TIP_INSP = "c_tipoinspeccion";
+    public static final String MTP_INSP_GEN_CAB_COD_MAQ = "c_maquina";
+    public static final String MTP_INSP_GEN_CAB_COD_CCOSTO = "c_centrocosto";
+    public static final String MTP_INSP_GEN_CAB_COD_COMENTARIO = "c_comentario";
+    public static final String MTP_INSP_GEN_CAB_USUARIO_INSP = "c_usuarioinspeccion";
+    public static final String MTP_INSP_GEN_CAB_FECHA_INSP = "d_fechainspeccion";
+    public static final String MTP_INSP_GEN_CAB_ESTADO = "c_estado";
+    public static final String MTP_INSP_GEN_CAB_USUARIO_ENV = "c_usuarioenvio";
+    public static final String MTP_INSP_GEN_CAB_FECHA_ENV = "d_fechaenvio";
+    public static final String MTP_INSP_GEN_CAB_ULT_USER = "c_ultimousuario";
+    public static final String MTP_INSP_GEN_CAB_FECHA_MOD = "d_ultimafechamodificacion";
 
-            
+    public static final String TABLA_MTP_INSPECCIONGENERAL_CAB_SQL =
+            " CREATE TABLE " + TABLA_MTP_INSPECCIONGENERAL_CAB_NAME +
+                    " ( " + MTP_INSP_GEN_CAB_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,  " +
+                    MTP_INSP_GEN_CAB_COMPANIA + " TEXT , " +
+                    MTP_INSP_GEN_CAB_CORRELATIVO + " TEXT , " +
+                    MTP_INSP_GEN_CAB_TIP_INSP + " TEXT , " +
+                    MTP_INSP_GEN_CAB_COD_MAQ + " TEXT , " +
+                    MTP_INSP_GEN_CAB_COD_CCOSTO + " TEXT , " +
+                    MTP_INSP_GEN_CAB_COD_COMENTARIO + " TEXT , " +
+                    MTP_INSP_GEN_CAB_USUARIO_INSP + " TEXT , " +
+                    MTP_INSP_GEN_CAB_FECHA_INSP + " TEXT , " +
+                    MTP_INSP_GEN_CAB_ESTADO + " TEXT , " +
+                    MTP_INSP_GEN_CAB_USUARIO_ENV + " TEXT , " +
+                    MTP_INSP_GEN_CAB_FECHA_ENV + " TEXT , " +
+                    MTP_INSP_GEN_CAB_ULT_USER + " TEXT , " +
+                    MTP_INSP_GEN_CAB_FECHA_MOD + " TEXT );";
 
-    
+
+    // tabla inspeccion general detalle 
+    public static final String TABLA_MTP_INSPECCIONGENERAL_DET_NAME = "MTP_INSPECCIONGENERAL_DET";
+    public static final String MTP_INSP_GEN_DET_ID = "_id";
+    public static final String MTP_INSP_GEN_DET_COMPANIA = "c_compania";
+    public static final String MTP_INSP_GEN_DET_CORRELATIVO = "n_correlativo";
+    public static final String MTP_INSP_GEN_DET_LINEA = "n_linea";
+    public static final String MTP_INSP_GEN_DET_COMENTARIO = "c_comentario";
+    public static final String MTP_INSP_GEN_DET_RUTA_FOTO = "c_rutafoto";
+    public static final String MTP_INSP_GEN_DET_ULT_USUARIO = "c_ultimousuario";
+    public static final String MTP_INSP_GEN_DET_ULT_FECHA_MOD = "d_ultimafechamodificacion";
+    public static final String MTP_INSP_GEN_DET_TIPO_REVISION = "c_tiporevisiong";
+    public static final String MTP_INSP_GEN_DET_FLAG_ADIC = "c_flagadictipo";
+
+    public static final String TABLA_MTP_INSPECCIONGENERAL_DET_SQL =
+            " CREATE TABLE " + TABLA_MTP_INSPECCIONGENERAL_DET_NAME +
+                    " ( " + MTP_INSP_GEN_DET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,  " +
+                    MTP_INSP_GEN_DET_COMPANIA + " TEXT , " +
+                    MTP_INSP_GEN_DET_CORRELATIVO + " TEXT , " +
+                    MTP_INSP_GEN_DET_LINEA + " TEXT , " +
+                    MTP_INSP_GEN_DET_COMENTARIO + " TEXT , " +
+                    MTP_INSP_GEN_DET_RUTA_FOTO + " TEXT , " +
+                    MTP_INSP_GEN_DET_ULT_USUARIO + " TEXT , " +
+                    MTP_INSP_GEN_DET_ULT_FECHA_MOD + " TEXT , " +
+                    MTP_INSP_GEN_DET_TIPO_REVISION + " TEXT , " +
+                    MTP_INSP_GEN_DET_FLAG_ADIC + " TEXT ); ";
+
 
 
 
