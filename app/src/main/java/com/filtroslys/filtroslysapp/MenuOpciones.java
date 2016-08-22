@@ -226,6 +226,7 @@ public class MenuOpciones extends AppCompatActivity {
 
         if (var_concatenado.equals("010201")) {
             Intent intent = new Intent(MenuOpciones.this, InspeccionGen.class);
+            intent.putExtra("tipoMant", "NEW");
             startActivity(intent);
         }
 
