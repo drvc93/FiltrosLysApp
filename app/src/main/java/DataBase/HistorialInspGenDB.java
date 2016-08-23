@@ -12,11 +12,14 @@ public class HistorialInspGenDB {
     private String usarioInp;
     private String fecha;
     private String comentario;
+    private String estado;
+
+
 
     public HistorialInspGenDB() {
     }
 
-    public HistorialInspGenDB(String numero, String tipoInsp, String codMaq, String codCosto, String usarioInp, String fecha, String comentario) {
+    public HistorialInspGenDB(String numero, String tipoInsp, String codMaq, String codCosto, String usarioInp, String fecha, String comentario, String estado) {
         this.numero = numero;
         this.tipoInsp = tipoInsp;
         this.codMaq = codMaq;
@@ -24,6 +27,7 @@ public class HistorialInspGenDB {
         this.usarioInp = usarioInp;
         this.fecha = fecha;
         this.comentario = comentario;
+        this.estado = estado;
     }
 
     public String getNumero() {
@@ -82,5 +86,12 @@ public class HistorialInspGenDB {
         this.comentario = comentario;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 
 }

@@ -30,7 +30,7 @@
             android:layout_height="match_parent">
 
             <EditText
-                android:layout_width="500dp"
+                android:layout_width="470dp"
                 android:layout_height="fill_parent"
                 android:id="@+id/txtInspGComent"
                 android:focusableInTouchMode="false"

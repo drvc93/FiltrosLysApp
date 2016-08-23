@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -18,10 +19,16 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import DataBase.HistorialInspGenDB;
+import Tasks.GetHistorialInspGenTask;
+import Util.HistorialInspGenAdapater;
 
 public class InspeccionGenListLinea extends AppCompatActivity {
 
@@ -29,7 +36,8 @@ public class InspeccionGenListLinea extends AppCompatActivity {
     Spinner spTipoInsp;
     String FinicioGlobal, FFinGlobal;
     EditText txtFInicio, txtFFin;
-
+    ListView LVHinspeGen;
+    HistorialInspGenAdapater adapater;
     CoordinatorLayout coord;
 
     @Override
@@ -40,7 +48,9 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         spTipoInsp = (Spinner) findViewById(R.id.spHGTipoInsp);
         txtFInicio = (EditText) findViewById(R.id.txtHGFInici);
         txtFFin = (EditText) findViewById(R.id.txtHGFFin);
+        LVHinspeGen = (ListView) findViewById(R.id.LVHInspGen);
         tipoSincro = getIntent().getExtras().getString("tipoSincro");
+
         ActionBar actionBar = getSupportActionBar();
 
         if (tipoSincro.equals("Online")) {
@@ -92,7 +102,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         switch (eventaction) {
             case MotionEvent.ACTION_DOWN:
 
-                //isTouch = true;
+                CreateSnackabar();
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -129,7 +139,8 @@ public class InspeccionGenListLinea extends AppCompatActivity {
                     public void onClick(View view) {
                         // Toast.makeText(InspeccionMaqListLinea.this, "click", Toast.LENGTH_SHORT).show();
                         if (tipoSincro.equals("Online")) {
-                            //   SelectedFiltersOnline();
+
+                            SelectedFiltersOnline();
                         } else {
                             // SelectedFiltersOffline();
                         }
@@ -139,6 +150,64 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         snakbar.show();
 
     }
+
+    public void SelectedFiltersOnline() {
+
+        AsyncTask<String, String, ArrayList<HistorialInspGenDB>> asyncTaskOnline;
+        GetHistorialInspGenTask getHistorialInspGenTask = new GetHistorialInspGenTask();
+        ArrayList<HistorialInspGenDB> lisdata = new ArrayList<HistorialInspGenDB>();
+        int spinerTipIndex = spTipoInsp.getSelectedItemPosition();
+        String fechaInicio = txtFInicio.getText().toString();
+        String fechaFin = txtFFin.getText().toString();
+        String accion = "";
+
+        if (spinerTipIndex > 0 && fechaFin.equals("") && fechaInicio.equals("")) {
+            accion = "1";
+        }
+
+        if (spinerTipIndex > 0 && fechaFin.length() > 0 && fechaInicio.length() > 0) {
+
+            accion = "2";
+        }
+
+        if (spinerTipIndex == 0 && fechaFin.length() > 0 && fechaInicio.length() > 0) {
+
+            accion = "3";
+        }
+
+        if (spinerTipIndex == 0 && fechaFin.equals("") && fechaInicio.equals("")) {
+            accion = "4";
+        }
+
+        try {
+            asyncTaskOnline = getHistorialInspGenTask.execute(accion, GetValueSpiner(), fechaInicio, fechaFin);
+            lisdata = (ArrayList<HistorialInspGenDB>) asyncTaskOnline.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        adapater = new HistorialInspGenAdapater(InspeccionGenListLinea.this, R.layout.item_list_busq_insp_gen, lisdata);
+        LVHinspeGen.setAdapter(adapater);
+
+    }
+
+    public String GetValueSpiner() {
+        String result = "";
+        if (spTipoInsp.getSelectedItemPosition() == 1) {
+            result = "OT";
+        } else if (spTipoInsp.getSelectedItemPosition() == 2) {
+            result = "MQ";
+        } else {
+            result = "TODOS";
+        }
+        return result;
+    }
+
+
+
+
 
     public double GetDisplaySize() {
         DisplayMetrics dm = new DisplayMetrics();

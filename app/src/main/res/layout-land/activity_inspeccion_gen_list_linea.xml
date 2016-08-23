@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/coordLayoutGen"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_silver">
 
     <LinearLayout
         android:orientation="vertical"
@@ -24,7 +25,7 @@
                 android:id="@+id/textView20" />
 
             <Spinner
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="35dp"
                 android:id="@+id/spHGTipoInsp"
                 android:background="@drawable/spiner_style"
@@ -89,7 +90,7 @@
             <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/listView" />
+                android:id="@+id/LVHInspGen" />
         </LinearLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
