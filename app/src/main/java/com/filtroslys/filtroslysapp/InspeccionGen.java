@@ -44,6 +44,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,8 +64,12 @@ import DataBase.ProdMantDataBase;
 import DataBase.TipoRevisionGBD;
 import Model.InspeccionGenCabecera;
 import Model.InspeccionGenDetalle;
+import Model.InspeccionMaqDetalle;
 import Tasks.EnviarInspGenCabTask;
+import Tasks.EnviarInspGenDetTask;
 import Tasks.GetCorrelativoTask;
+import Tasks.GuardarImagenTask;
+import Tasks.TransferirInspeccionTask;
 import Util.Constans;
 import Util.HistorialInspMaqAdapater;
 
@@ -216,7 +222,7 @@ public class InspeccionGen extends AppCompatActivity {
                 String correlativo = cab.getCorrelativo();
                 ArrayList<InspeccionGenDetalle> listdetalles = GetDetalle(correlativo);
                 for (int i = 0; i < listdetalles.size(); i++) {
-
+                    detalleEnvio.add(listdetalles.get(i));
                     long detID = db.InsertInspGenDet(listdetalles.get(i));
                     Log.i("Id insp gen det >", String.valueOf(detID));
                     if (detID > 0) {
@@ -273,9 +279,52 @@ public class InspeccionGen extends AppCompatActivity {
             e.printStackTrace();
         }
 
+
         if (Integer.valueOf(resulCab) > 0) {
-            CreateCustomToast("Se realizó el envio del reporte correctamente", Constans.icon_succes, Constans.layout_success);
-            super.onBackPressed();
+            String resultDet = "";
+            int contDet = 0;
+            for (int i = 0; i < detalles.size(); i++) {
+                InspeccionGenDetalle d = detalles.get(i);
+                AsyncTask<String, String, String> asyncDetalle;
+                EnviarInspGenDetTask enviarDetalleTask = new EnviarInspGenDetTask();
+
+                try {
+                    asyncDetalle = enviarDetalleTask.execute(d.getCompania(), correlativo, d.getLinea(),
+                            d.getComentario(), d.getRutaFoto(), d.getUltUsuario(), d.getTipoRevision(), d.getFlagadictipo());
+
+                    resultDet = (String) asyncDetalle.get();
+                    Log.i("Resul insert inp gen det =>", resultDet);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                if (resultDet.equals("OK")) {
+                    contDet = contDet + 1;
+                }
+
+
+            }
+
+            if (contDet > 0) {
+
+                TransferirInspeccionTask trasnferirInspTask = new TransferirInspeccionTask();
+                AsyncTask<String, String, String> asynckTrans;
+
+                try {
+                    asynckTrans = trasnferirInspTask.execute("GEN", correlativo);
+                    String resTrans = (String) asynckTrans.get();
+                    Log.d("Result transf Insp Det => ", resTrans);
+                    GuardarImagenServer(detalles);
+                } catch (InterruptedException e) {
+                    //  e.printStackTrace();
+                } catch (ExecutionException e) {
+                    // e.printStackTrace();
+                }
+                CreateCustomToast("Se realizó el envio del reporte correctamente", Constans.icon_succes, Constans.layout_success);
+                super.onBackPressed();
+            }
         }
 
 
@@ -351,6 +400,42 @@ public class InspeccionGen extends AppCompatActivity {
 
     }
 
+    public void GuardarImagenServer(ArrayList<InspeccionGenDetalle> listDet) {
+        Log.i("Metodo Guardar  ", "pass");
+        String fileCarp = "/storage/sdcard0/LysConfig/Fotos/";
+        for (int i = 0; i < listDet.size(); i++) {
+            if (listDet.get(i).getRutaFoto() == null || listDet.get(i).getRutaFoto().equals("")) {
+
+            } else {
+                Log.i("Metodo GuardarImagen == >", listDet.get(i).getRutaFoto());
+                String fileName = listDet.get(i).getRutaFoto();
+                String filePath = fileCarp + fileName;
+                File file = new File(filePath);
+
+                byte[] bytes = new byte[(int) file.length()];
+                try {
+                    bytes = FileUtils.readFileToByteArray(file);
+                    AsyncTask asyncTask = null;
+                    GuardarImagenTask guardarImagenTask = new GuardarImagenTask(bytes, listDet.get(i).getRutaFoto());
+                    Log.i("Parmaetro exex GuardarTask ===>", listDet.get(i).getRutaFoto());
+                    asyncTask = guardarImagenTask.execute();
+                    String resp = (String) asyncTask.get();
+                    // Toast.makeText(MantInspeccionT.this, resp, Toast.LENGTH_SHORT).show();
+                    Log.i("foto guardada ===>", resp);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+
+    }
     public void SeleccionarOpcionDeGuardar() {
 
 
@@ -415,6 +500,11 @@ public class InspeccionGen extends AppCompatActivity {
         SimpleDateFormat df = new SimpleDateFormat("ddMMyyyyHHmmss");
         String code = df.format(c.getTime());
         //code = codMaquina+""+code;
+        if (spTipoInsp.getSelectedItemPosition() == INSP_OTROS) {
+            code = "OT-" + code;
+        } else {
+            code = "MQ-" + code;
+        }
         return code;
 
     }

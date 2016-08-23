@@ -229,6 +229,16 @@ public class MenuOpciones extends AppCompatActivity {
             intent.putExtra("tipoMant", "NEW");
             startActivity(intent);
         }
+        if (var_concatenado.equals("010202")) {
+            Intent intent = new Intent(MenuOpciones.this, InspeccionGenListLinea.class);
+            intent.putExtra("tipoSincro", "Online");
+            startActivity(intent);
+        }
+        if (var_concatenado.equals("010203")) {
+            Intent intent = new Intent(MenuOpciones.this, InspeccionGenListLinea.class);
+            intent.putExtra("tipoSincro", "Offline");
+            startActivity(intent);
+        }
 
         if (var_concatenado.equals("030101")){
 
