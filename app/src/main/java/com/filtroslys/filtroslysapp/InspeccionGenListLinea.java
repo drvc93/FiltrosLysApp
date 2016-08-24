@@ -108,6 +108,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
                     intent.putExtra("tipoMant", "Visor");
                     intent.putExtra("tipoSincro", tipoSincro);
                     intent.putExtra("xcorrelativo", h.getNumero());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
 
                 } else if (h.getEstado().equals("I")) {
@@ -115,6 +116,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
                     intent.putExtra("tipoMant", "Editar");
                     intent.putExtra("tipoSincro", tipoSincro);
                     intent.putExtra("xcorrelativo", h.getNumero());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
 
                 }

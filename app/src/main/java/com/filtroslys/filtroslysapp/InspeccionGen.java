@@ -73,6 +73,9 @@ import Model.InspeccionMaqDetalle;
 import Tasks.EnviarInspGenCabTask;
 import Tasks.EnviarInspGenDetTask;
 import Tasks.GetCorrelativoTask;
+import Tasks.GetFotoTask;
+import Tasks.GetInspGenCabTask;
+import Tasks.GetInspGenDetTask;
 import Tasks.GuardarImagenTask;
 import Tasks.TransferirInspeccionTask;
 import Util.Constans;
@@ -228,9 +231,42 @@ public class InspeccionGen extends AppCompatActivity {
 
 
     public void ActualizarReporte(int TipoGuardado) {
-
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
         InspeccionGenCabecera cabEnvio;
         ArrayList<InspeccionGenDetalle> detalleEnvio = new ArrayList<>();
+        if (ValidarCabecera() == true && ValidarDetalle() == true) {
+            InspeccionGenCabecera cab = GetCabecera(TipoGuardado);
+            cab.setFechaInsp(txtFechaInsp.getText().toString());
+            cab.setCorrelativo(xcorrelativo);
+            cabEnvio = cab;
+            db.deleteInspGen(xcorrelativo);
+            long cabId = db.InsertInspGenCab(cab);
+            long detID = 0;
+            int cont = 0;
+            Log.i("ID INSPE GEN CAB ID >", String.valueOf(cabId));
+            if (cabId > 0) {
+                ArrayList<InspeccionGenDetalle> list = detalleAdapter.Alldata();
+                for (int i = 0; i < list.size(); i++) {
+                    detalleEnvio.add(list.get(i));
+                    detID = db.InsertInspGenDet(list.get(i));
+                    Log.i("ID INSPE GEN DET ID >", String.valueOf(detID));
+                    if (detID > 0) {
+                        cont = cont + 1;
+                    }
+                }
+            }
+            if (TipoGuardado == SOLO_GUARDAR && cont > 0) {
+
+                CreateCustomToast("Se actualizo correctamente los datos", Constans.icon_succes, Constans.layout_success);
+
+
+            } else if (TipoGuardado == GUARDAR_Y_ENVIAR_ && cont > 0) {
+
+                EnviarReporteInspGeneral(cabEnvio, detalleEnvio);
+            }
+
+
+        }
 
 
     }
@@ -479,7 +515,7 @@ public class InspeccionGen extends AppCompatActivity {
                 if (tipoMant.equals("NEW")) {
                     GuardarReporte(item);
                 } else if (tipoMant.equals("Editar")) {
-                    // Actualizar(item);
+                    ActualizarReporte(item);
 
                 } else if (tipoMant.equals("Visor")) {
                     CreateCustomToast("No se puede  modificar el reporte porque ya fue enviado ", Constans.layot_warning, Constans.layot_warning);
@@ -552,6 +588,39 @@ public class InspeccionGen extends AppCompatActivity {
 
 
         } else {
+            ArrayList<InspeccionGenCabecera> listCab = null;
+            AsyncTask<String, String, ArrayList<InspeccionGenCabecera>> asyncCabecera;
+            GetInspGenCabTask getInspeGenCabTask = new GetInspGenCabTask();
+
+            try {
+                asyncCabecera = getInspeGenCabTask.execute(xcorrelativo);
+                listCab = asyncCabecera.get();
+                //  asyncCabecera = getInspeGenCabTask.execute(xcorrelativo);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            if (listCab != null) {
+                cab = listCab.get(0);
+                ArrayList<InspeccionGenDetalle> listdet = null;
+                AsyncTask<String, String, ArrayList<InspeccionGenDetalle>> asynckDetalle;
+                GetInspGenDetTask getInpGentDetTask = new GetInspGenDetTask();
+
+
+                try {
+                    asynckDetalle = getInpGentDetTask.execute(xcorrelativo);
+                    listdet = (ArrayList<InspeccionGenDetalle>) asynckDetalle.get();
+                    if (listdet != null) {
+                        detalles = listdet;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            }
 
 
         }
@@ -953,11 +1022,31 @@ public class InspeccionGen extends AppCompatActivity {
 
     }
 
+
     public void showImage(String filename) {
 
+        Bitmap bitmap = null;
+        if (tipoSincro.equals("Offline")) {
         String filePath = "/storage/sdcard0/LysConfig/Fotos/" + filename;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            bitmap = BitmapFactory.decodeFile(filePath);
+        } else if (tipoSincro.equals("Online")) {
+            AsyncTask<String, String, byte[]> asynckGetFoto;
+            GetFotoTask getFotoTask = new GetFotoTask();
+            byte[] result = null;
+
+
+            try {
+                asynckGetFoto = getFotoTask.execute(filename);
+                result = (byte[]) asynckGetFoto.get();
+                bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+        }
         Dialog builder = new Dialog(this);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.getWindow().setBackgroundDrawable(

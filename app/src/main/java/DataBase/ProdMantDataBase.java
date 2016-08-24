@@ -885,6 +885,16 @@ public class ProdMantDataBase {
         return res;
     }
 
+    public boolean deleteInspGen(String correlativo) {
+
+        boolean res = false;
+        this.OpenWritableDB();
+        res = db.delete(ConstasDB.TABLA_MTP_INSPECCIONGENERAL_CAB_NAME, ConstasDB.MTP_INSP_GEN_CAB_CORRELATIVO + "=" + correlativo, null) > 0;
+        res = db.delete(ConstasDB.TABLA_MTP_INSPECCIONGENERAL_DET_NAME, ConstasDB.MTP_INSP_GEN_DET_CORRELATIVO + "=" + correlativo, null) > 0;
+        this.CloseDB();
+        return res;
+    }
+
     public void deleteTables() {
 
         this.OpenWritableDB();
