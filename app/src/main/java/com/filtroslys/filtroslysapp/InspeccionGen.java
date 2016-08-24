@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.AsyncTask;
@@ -32,6 +34,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -40,6 +43,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +81,8 @@ import Util.HistorialInspMaqAdapater;
 public class InspeccionGen extends AppCompatActivity {
 
     Spinner spMaqCC, spTipoInsp;
+    String tipoSincro, xcorrelativo;
+    String value_spiner_seletec = "";
     TextView lblSPCCMaq, lblProblemaDetec, lblInspector;
     private static final int CAMERA_REQUEST = 1888;
     EditText txtFechaInsp, txtArea, txtProblemadetect;
@@ -131,8 +138,15 @@ public class InspeccionGen extends AppCompatActivity {
         }
         listTipoRevision = GettListTipoRevision();
         LoadSpinerTipoInsp();
-        LoadSpinerMaqCC(0);
-        LoadListView();
+
+        if (tipoMant.equals("NEW")) {
+            LoadListView();
+            LoadSpinerMaqCC(0);
+        } else {
+            tipoSincro = getIntent().getExtras().getString("tipoSincro");
+            xcorrelativo = getIntent().getExtras().getString("xcorrelativo");
+            LoadListView(xcorrelativo, tipoSincro);
+        }
 
 
         txtArea.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +165,9 @@ public class InspeccionGen extends AppCompatActivity {
         spTipoInsp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                LoadSpinerMaqCC(i);
+                if (tipoMant.equals("NEW")) {
+                    LoadSpinerMaqCC(i);
+                }
             }
 
             @Override
@@ -162,11 +178,14 @@ public class InspeccionGen extends AppCompatActivity {
         spMaqCC.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String codMaq = spMaqCC.getSelectedItem().toString();
-                codMaq = codMaq.substring(0, 7);
-                codMaq = codMaq.trim();
-                AsignarCodCcostoTexBox(codMaq);
-
+                if (i > 0) {
+                    if (tipoMant.equals("NEW")) {
+                        String codMaq = spMaqCC.getSelectedItem().toString();
+                        codMaq = codMaq.substring(0, 7);
+                        codMaq = codMaq.trim();
+                        AsignarCodCcostoTexBox(codMaq);
+                    }
+                }
 
             }
 
@@ -198,6 +217,7 @@ public class InspeccionGen extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.Guardar) {
+
             SeleccionarOpcionDeGuardar();
         }
         if (id == R.id.Agregar) {
@@ -206,6 +226,14 @@ public class InspeccionGen extends AppCompatActivity {
         return true;
     }
 
+
+    public void ActualizarReporte(int TipoGuardado) {
+
+        InspeccionGenCabecera cabEnvio;
+        ArrayList<InspeccionGenDetalle> detalleEnvio = new ArrayList<>();
+
+
+    }
 
     public void GuardarReporte(int TipoGuardado) {
         ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
@@ -453,6 +481,8 @@ public class InspeccionGen extends AppCompatActivity {
                 } else if (tipoMant.equals("Editar")) {
                     // Actualizar(item);
 
+                } else if (tipoMant.equals("Visor")) {
+                    CreateCustomToast("No se puede  modificar el reporte porque ya fue enviado ", Constans.layot_warning, Constans.layot_warning);
                 }
                 dialog.dismiss();
 
@@ -509,6 +539,58 @@ public class InspeccionGen extends AppCompatActivity {
 
     }
 
+    public void LoadListView(String correlativo, String tipoSincro) {
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
+        InspeccionGenCabecera cab = new InspeccionGenCabecera();
+        ArrayList<InspeccionGenDetalle> detalles = new ArrayList<InspeccionGenDetalle>();
+        int indexSPMaqCC = 0;
+        if (tipoSincro.equals("Offline")) {
+            cab = db.GetInspGenCabeceraPorCorrelativo(correlativo);
+            if (cab != null) {
+                detalles = db.GetInspeccionGenDetallePorCorrelativo(correlativo);
+            }
+
+
+        } else {
+
+
+        }
+
+        if (cab != null && detalles != null) {
+            //  cabecera
+            int indexSPTipo = 0;
+            String getValueForSp = "";
+            String problemaDetec = "";
+
+            if (cab.getTipoInspeccion().equals("OT")) {
+                indexSPTipo = 1;
+                getValueForSp = cab.getCentroCosto();
+                problemaDetec = cab.getCod_maquina();
+            } else {
+                indexSPTipo = 2;
+                getValueForSp = cab.getCod_maquina();
+                problemaDetec = cab.getCentroCosto();
+            }
+            spTipoInsp.setSelection(indexSPTipo);
+            LoadSpinerMaqCC(indexSPTipo);
+            indexSPMaqCC = SetSelectionItemSpMaqCC(getValueForSp);
+            Log.i("Problema detectado ===> ", problemaDetec);
+            txtProblemadetect.setText(problemaDetec);
+            txtArea.setText(cab.getComentario());
+            lblInspector.setText(cab.getUsuarioInsp());
+            txtFechaInsp.setText(cab.getFechaInsp());
+            spMaqCC.setSelection(indexSPMaqCC);
+
+            detalleAdapter = new DetalleGenAdapater(InspeccionGen.this, R.layout.inspeccion_general_det, detalles);
+            LVInspGen.setAdapter(detalleAdapter);
+
+
+        }
+    }
+
+
+
+
     public void LoadListView() {
         ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
         ArrayList<TipoRevisionGBD> list = db.GetAllTipoReivision();
@@ -527,6 +609,36 @@ public class InspeccionGen extends AppCompatActivity {
 
     }
 
+
+    public int SetSelectionItemSpMaqCC(String valueSP) {
+        int result = 0;
+        for (int i = 0; i < spMaqCC.getCount(); i++) {
+
+            String item = "";
+            if (spTipoInsp.getSelectedItemPosition() == 1) {
+                item = spMaqCC.getItemAtPosition(i).toString();
+                item = item.substring(0, 5);
+                item = item.trim();
+                if (valueSP.equals(item)) {
+
+                    result = i;
+                    value_spiner_seletec = spMaqCC.getItemAtPosition(i).toString();
+                }
+            } else if (spTipoInsp.getSelectedItemPosition() == 2) {
+                item = spMaqCC.getItemAtPosition(i).toString();
+                item = item.substring(0, 7);
+                item = item.trim();
+                if (valueSP.equals(item)) {
+                    //spMaqCC.setSelection(i);
+                    result = i;
+                    value_spiner_seletec = spMaqCC.getItemAtPosition(i).toString();
+                }
+
+            }
+
+        }
+        return result;
+    }
     public void AddTiporevision(String tipo_revision) {
         InspeccionGenDetalle res = null;
         ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
@@ -841,6 +953,30 @@ public class InspeccionGen extends AppCompatActivity {
 
     }
 
+    public void showImage(String filename) {
+
+        String filePath = "/storage/sdcard0/LysConfig/Fotos/" + filename;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+        Dialog builder = new Dialog(this);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //nothing;
+            }
+        });
+
+        ImageView imageView = new ImageView(this);
+        imageView.setImageBitmap(bitmap);
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
+    }
+
     public class DetalleGenAdapater extends ArrayAdapter<InspeccionGenDetalle> {
 
         Context context;
@@ -873,7 +1009,7 @@ public class InspeccionGen extends AppCompatActivity {
                 viewHolder.index = position;
                 data.get(position).setLinea(String.valueOf(position + 1));
                 data.get(position).setCompania(Constans.NroConpania);
-
+                viewHolder.txtComentario.setText(data.get(position).getComentario());
                 convertView.setTag(viewHolder);
             } else {
 
@@ -907,9 +1043,15 @@ public class InspeccionGen extends AppCompatActivity {
             viewHolder.imgfoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (tipoMant.equals("NEW") || tipoMant.equals("Editar")) {
                     postItemFoto = position;
                     Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                    } else if (data.get(position).getRutaFoto().length() > 0 && tipoMant.equals("Visor")) {
+
+                        showImage(data.get(position).getRutaFoto());
+                    }
+
                 }
             });
 

@@ -2,6 +2,7 @@ package com.filtroslys.filtroslysapp;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -16,25 +17,33 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import DataBase.HistorialInspGenDB;
+import DataBase.ProdMantDataBase;
 import Tasks.GetHistorialInspGenTask;
+import Util.Constans;
 import Util.HistorialInspGenAdapater;
 
 public class InspeccionGenListLinea extends AppCompatActivity {
 
     String tipoSincro = "";
     Spinner spTipoInsp;
-    String FinicioGlobal, FFinGlobal;
+    String FinicioGlobal = "", FFinGlobal = "";
     EditText txtFInicio, txtFFin;
     ListView LVHinspeGen;
     HistorialInspGenAdapater adapater;
@@ -89,8 +98,34 @@ public class InspeccionGenListLinea extends AppCompatActivity {
             }
         });
 
+
+        LVHinspeGen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                HistorialInspGenDB h = adapater.GetItem(i);
+                if (h.getEstado().equals("E") || h.getEstado().equals("PE")) {
+                    Intent intent = new Intent(InspeccionGenListLinea.this, InspeccionGen.class);
+                    intent.putExtra("tipoMant", "Visor");
+                    intent.putExtra("tipoSincro", tipoSincro);
+                    intent.putExtra("xcorrelativo", h.getNumero());
+                    startActivity(intent);
+
+                } else if (h.getEstado().equals("I")) {
+                    Intent intent = new Intent(InspeccionGenListLinea.this, InspeccionGen.class);
+                    intent.putExtra("tipoMant", "Editar");
+                    intent.putExtra("tipoSincro", tipoSincro);
+                    intent.putExtra("xcorrelativo", h.getNumero());
+                    startActivity(intent);
+
+                }
+            }
+        });
         CreateSnackabar();
         LoadSpiner();
+        if (tipoSincro.equals("Offline")) {
+
+            SelectedFiltersOffline();
+        }
     }
 
     @Override
@@ -142,7 +177,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
 
                             SelectedFiltersOnline();
                         } else {
-                            // SelectedFiltersOffline();
+                            SelectedFiltersOffline();
                         }
                     }
                 });
@@ -151,6 +186,44 @@ public class InspeccionGenListLinea extends AppCompatActivity {
 
     }
 
+    public void SelectedFiltersOffline() {
+        ProdMantDataBase db = new ProdMantDataBase(InspeccionGenListLinea.this);
+        ArrayList<HistorialInspGenDB> lisdata = new ArrayList<HistorialInspGenDB>();
+        int spinerTipIndex = spTipoInsp.getSelectedItemPosition();
+        String fechaInicio = FinicioGlobal;
+        String fechaFin = FFinGlobal;
+        String accion = "";
+
+        if (spinerTipIndex > 0 && fechaFin.equals("") && fechaInicio.equals("")) {
+            accion = "1";
+        }
+
+        if (spinerTipIndex > 0 && fechaFin.length() > 0 && fechaInicio.length() > 0) {
+
+            accion = "2";
+
+        }
+
+        if (spinerTipIndex == 0 && fechaFin.length() > 0 && fechaInicio.length() > 0) {
+
+            accion = "3";
+        }
+
+        if (spinerTipIndex == 0 && fechaFin.equals("") && fechaInicio.equals("")) {
+            accion = "4";
+        }
+
+        lisdata = db.GetHistorialInsGenpList(accion, GetValueSpiner(), fechaInicio, fechaFin);
+        if (lisdata != null && lisdata.size() > 0) {
+
+            adapater = new HistorialInspGenAdapater(InspeccionGenListLinea.this, R.layout.item_list_busq_insp_gen, lisdata);
+            LVHinspeGen.setAdapter(adapater);
+        } else {
+            CreateCustomToast("No se encontro resultados ", Constans.icon_warning, Constans.layot_warning);
+
+        }
+
+    }
     public void SelectedFiltersOnline() {
 
         AsyncTask<String, String, ArrayList<HistorialInspGenDB>> asyncTaskOnline;
@@ -188,8 +261,13 @@ public class InspeccionGenListLinea extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        adapater = new HistorialInspGenAdapater(InspeccionGenListLinea.this, R.layout.item_list_busq_insp_gen, lisdata);
-        LVHinspeGen.setAdapter(adapater);
+        if (lisdata != null) {
+            adapater = new HistorialInspGenAdapater(InspeccionGenListLinea.this, R.layout.item_list_busq_insp_gen, lisdata);
+            LVHinspeGen.setAdapter(adapater);
+        } else {
+            CreateCustomToast("No se encontro resultados ", Constans.icon_warning, Constans.layot_warning);
+
+        }
 
     }
 
@@ -204,9 +282,6 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         }
         return result;
     }
-
-
-
 
 
     public double GetDisplaySize() {
@@ -244,9 +319,11 @@ public class InspeccionGenListLinea extends AppCompatActivity {
                         txtFecha.setText(mes + "/" + dia + "/" + String.valueOf(year));
                         if (etiqueta.equals("Inicio")) {
                             FinicioGlobal = String.valueOf(year) + "-" + mes + "-" + dia;
+                            Log.i("Fecha global inicio => ", FinicioGlobal);
                         } else {
 
                             FFinGlobal = String.valueOf(year) + "-" + mes + "-" + dia;
+                            Log.i("Fecha global FIN => ", FFinGlobal);
                         }
                         dialog.cancel();
 
@@ -255,5 +332,30 @@ public class InspeccionGenListLinea extends AppCompatActivity {
                 }).show();
     }
 
+
+    public void CreateCustomToast(String msj, int icon, int backgroundLayout) {
+
+        LayoutInflater infator = getLayoutInflater();
+        View layout = infator.inflate(R.layout.toast_alarm_success, (ViewGroup) findViewById(R.id.toastlayout));
+        TextView toastText = (TextView) layout.findViewById(R.id.txtDisplayToast);
+        ImageView imgIcon = (ImageView) layout.findViewById(R.id.imgToastSucc);
+        LinearLayout parentLayout = (LinearLayout) layout.findViewById(R.id.toastlayout);
+        imgIcon.setImageResource(icon);
+        final int sdk = android.os.Build.VERSION.SDK_INT;
+        if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            parentLayout.setBackgroundDrawable(getResources().getDrawable(backgroundLayout));
+        } else {
+            parentLayout.setBackground(getResources().getDrawable(backgroundLayout));
+        }
+
+
+        toastText.setText(msj);
+        Toast toast = new Toast(InspeccionGenListLinea.this);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
+
+    }
 }
 

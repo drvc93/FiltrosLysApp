@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+
+import com.filtroslys.filtroslysapp.InspeccionGen;
 
 import java.util.ArrayList;
 
@@ -483,6 +486,54 @@ public class ProdMantDataBase {
         return listResul;
 
     }
+
+    public ArrayList<HistorialInspGenDB> GetHistorialInsGenpList(String accion, String tipoInsp, String fechaIni, String fechFin) {
+
+
+        String query = "";
+        ArrayList<HistorialInspGenDB> list = new ArrayList<HistorialInspGenDB>();
+        this.OpenWritableDB();
+        Cursor c;
+        switch (accion) {
+
+            case "1":
+                query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado "
+                        + "FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "'";
+                break;
+            case "2":
+                query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado" +
+                        " FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "' and datetime (substr(d_fechainspeccion,7,4 )||'-'|| substr(d_fechainspeccion,1,2 )|| '-' ||substr(d_fechainspeccion,4,2 ) ) between '" + fechaIni + "'  and '" + fechFin + "'";
+                break;
+            case "3":
+                query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado" +
+                        " FROM  MTP_INSPECCIONGENERAL_CAB where  datetime (substr(d_fechainspeccion,7,4 )||'-'|| substr(d_fechainspeccion,1,2 )|| '-' ||substr(d_fechainspeccion,4,2 ) ) between '" + fechaIni + "'  and '" + fechFin + "'";
+                break;
+            case "4":
+                query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado" +
+                        " FROM  MTP_INSPECCIONGENERAL_CAB ";
+                break;
+
+
+        }
+
+        c = db.rawQuery(query, null);
+        while (c.moveToNext()) {
+            HistorialInspGenDB h = new HistorialInspGenDB();
+            h.setNumero(c.getString(0));
+            h.setTipoInsp(c.getString(1));
+            h.setCodMaq(c.getString(2));
+            h.setCodCosto(c.getString(3));
+            h.setUsarioInp(c.getString(4));
+            h.setFecha(c.getString(5));
+            h.setComentario(c.getString(6));
+            h.setEstado(c.getString(7));
+            list.add(h);
+
+        }
+
+        return list;
+
+    }
     public ArrayList<PeriodoInspeccionDB>  PeriodosInspeccionList (){
         String query = "SELECT * FROM MTP_PERIODOINSPECCION";
         ArrayList<PeriodoInspeccionDB> listResult =  new ArrayList<PeriodoInspeccionDB>();
@@ -619,6 +670,31 @@ public class ProdMantDataBase {
 
     }
 
+    public ArrayList<InspeccionGenDetalle> GetInspeccionGenDetallePorCorrelativo(String correlativo) {
+        ArrayList<InspeccionGenDetalle> result = new ArrayList<InspeccionGenDetalle>();
+        String query = "SELECT * FROM MTP_INSPECCIONGENERAL_DET where n_correlativo = '" + correlativo + "'";
+        this.OpenWritableDB();
+        Cursor c = db.rawQuery(query, null);
+        while (c.moveToNext()) {
+
+            InspeccionGenDetalle d = new InspeccionGenDetalle();
+            d.setCompania(c.getString(1));
+            d.setCorrelativo(c.getString(2));
+            d.setLinea(c.getString(3));
+            d.setComentario(c.getString(4));
+            d.setRutaFoto(c.getString(5));
+            d.setUltUsuario(c.getString(6));
+            d.setUltFechaMod(c.getString(7));
+            d.setTipoRevision(c.getString(8));
+            d.setFlagadictipo(c.getString(9));
+            result.add(d);
+
+        }
+        this.CloseDB();
+        return result;
+
+    }
+
 
     public ArrayList<InspeccionMaqDetalle> GetInspeccionMaqDetallePorCorrelativo(String correlativo) {
         ArrayList<InspeccionMaqDetalle> listResult = new ArrayList<InspeccionMaqDetalle>();
@@ -643,9 +719,37 @@ public class ProdMantDataBase {
             listResult.add(det);
 
         }
+        this.CloseDB();
         return listResult;
     }
 
+    public InspeccionGenCabecera GetInspGenCabeceraPorCorrelativo(String correlativo) {
+
+        InspeccionGenCabecera cab = new InspeccionGenCabecera();
+        String query = "SELECT * FROM MTP_INSPECCIONGENERAL_CAB where n_correlativo = '" + correlativo + "'";
+        this.OpenWritableDB();
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+
+            cab.setCompania(cursor.getString(1));
+            cab.setCorrelativo(cursor.getString(2));
+            cab.setTipoInspeccion(cursor.getString(3));
+            cab.setCod_maquina(cursor.getString(4));
+            cab.setCentroCosto(cursor.getString(5));
+            cab.setComentario(cursor.getString(6));
+            cab.setUsuarioInsp(cursor.getString(7));
+            cab.setFechaInsp(cursor.getString(8));
+            cab.setEstado(cursor.getString(9));
+            cab.setUsuarioEnvio(cursor.getString(10));
+            cab.setFechaEnvia(cursor.getString(11));
+            cab.setUltUsuario(cursor.getString(12));
+            cab.setUltFechaMod(cursor.getString(13));
+
+        }
+        this.CloseDB();
+        return cab;
+
+    }
     public InspeccionMaqCabecera GetInspMaqCabeceraPorCorrelativo(String correlativo) {
 
         InspeccionMaqCabecera inp = new InspeccionMaqCabecera();
