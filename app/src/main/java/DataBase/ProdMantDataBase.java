@@ -662,10 +662,12 @@ public class ProdMantDataBase {
     public String GetDescripcionInspPorCodigo(String codInsp) {
         String query = "select c_descripcion  from MTP_INSPECCION where c_inspeccion = '" + codInsp + "'";
         String result = "";
+        this.OpenWritableDB();
         Cursor c = db.rawQuery(query, null);
         while (c.moveToNext()) {
             result = c.getString(0);
         }
+        this.CloseDB();
         return result;
 
     }

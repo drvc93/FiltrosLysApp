@@ -26,7 +26,8 @@
         <activity android:name=".InspeccionMaq" />
         <activity android:name=".InspeccionMaqListLinea" />
         <activity android:name=".InspeccionGen" />
-        <activity android:name=".InspeccionGenListLinea"></activity>
+        <activity android:name=".InspeccionGenListLinea" />
+        <activity android:name=".Configuracion"></activity>
     </application>
 
 </manifest>

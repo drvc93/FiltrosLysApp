@@ -168,6 +168,11 @@ public class Login extends AppCompatActivity {
             super.onBackPressed();
             return true;
         }
+        if (id == R.id.Config) {
+
+            Intent intent = new Intent(Login.this, Configuracion.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 

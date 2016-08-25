@@ -214,12 +214,14 @@ public class MenuOpciones extends AppCompatActivity {
         if (var_concatenado.equals("010103")){
             Intent intent = new Intent(MenuOpciones.this,InspeccionMaqListLinea.class);
             intent.putExtra("TipoSync", "Online");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
 
         }
         if (var_concatenado.equals("010104")) {
             Intent intent = new Intent(MenuOpciones.this, InspeccionMaqListLinea.class);
             intent.putExtra("TipoSync", "Offline");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
 
         }

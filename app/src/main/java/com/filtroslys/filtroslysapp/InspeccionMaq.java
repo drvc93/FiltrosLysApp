@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -27,6 +29,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -35,6 +38,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,9 +71,11 @@ import Model.InspeccionMaqDetalle;
 import Tasks.EnviarInspMaqCabTask;
 import Tasks.EnviarInspMaqDetTask;
 import Tasks.GetCorrelativoTask;
+import Tasks.GetFotoTask;
 import Tasks.GetInspMaqCabTask;
 import Tasks.GetInspMaqDetTask;
 import Tasks.GuardarImagenTask;
+import Tasks.GuardarImgLocalTask;
 import Tasks.TransferirInspeccionTask;
 import Util.Constans;
 
@@ -215,7 +221,6 @@ public class InspeccionMaq extends AppCompatActivity {
         lblInspector.setText(codUser);
         LoadSpinerCondicionMaquina();
         LoadSpinnerPeriodo();
-        //LoadListViewDetall();
         lblFechaInicio.setText(FechaActual());
     }
 
@@ -327,12 +332,12 @@ public class InspeccionMaq extends AppCompatActivity {
             } else {
                 xindexEnableSpiner.put(i, true);
             }
-            if (d.getComentario().equals("")) {
+            if (d.getComentario().equals("") || d.getComentario().equals("anyType{}")) {
                 xindexIconComent.put(i, R.drawable.icn_pencil_32);
             } else {
                 xindexIconComent.put(i, R.drawable.comentario_ok_32);
             }
-            if (d.getRutaFoto().equals("")) {
+            if (d.getRutaFoto().equals("") || d.getRutaFoto().equals("anyType{}")) {
                 xindexIconFoto.put(i, R.drawable.icn_camera_32);
             } else {
                 xindexIconFoto.put(i, R.drawable.icn_camera_ok);
@@ -623,6 +628,7 @@ public class InspeccionMaq extends AppCompatActivity {
             }
 
             if (data.get(viewHolder.index).getPorcentInspec().length() > 0) {
+                //       int pos = position;
                 Double var_porcent = Double.parseDouble(indexvalueTexBoxs.get(viewHolder.index));
                 viewHolder.txtPorcentInsp.setText(String.valueOf(var_porcent.intValue()));
             }
@@ -635,7 +641,7 @@ public class InspeccionMaq extends AppCompatActivity {
                 viewHolder.spEstado.setSelection(indexSpiner.get(position));
             }
 
-            if ( data.get(position).getComentario().equals("")){
+            if (data.get(position).getComentario().equals("") || data.get(position).getComentario().equals("anyType{}")) {
 
             }
             else {
@@ -644,7 +650,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
             }
 
-            if (data.get(position).getRutaFoto().equals("")){
+            if (data.get(position).getRutaFoto().equals("") || data.get(position).getRutaFoto().equals("anyType{}")) {
 
             }
             else {
@@ -669,10 +675,11 @@ public class InspeccionMaq extends AppCompatActivity {
                     else {
                         String varChar = String.valueOf(charSequence);
                         data.get(var_index).setPorcentInspec(varChar);
+                        indexvalueTexBoxs.put(var_index, varChar);
                         if (Integer.valueOf(varChar) > porcent.intValue()) {
                             indexSpiner.put(position, 2);
                             sp_aux.setSelection(2);
-                            indexvalueTexBoxs.put(var_index, varChar);
+
                             // Log.i("var_porcentIns .",charSequence);
                         }
 
@@ -733,10 +740,15 @@ public class InspeccionMaq extends AppCompatActivity {
             viewHolder.imgFoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    posCamara = position;
-                    dataGlobal = data;
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent,CAMERA_REQUEST);
+                    if (tipoMant.equals("Visor")) {
+                        String ruta = data.get(position).getRutaFoto();
+                        showImage(ruta);
+                    } else {
+                        posCamara = position;
+                        dataGlobal = data;
+                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                    }
                 }
             });
 
@@ -1298,7 +1310,68 @@ public class InspeccionMaq extends AppCompatActivity {
         }
 
 
+    }
 
+    public void showImage(String filename) {
+
+        Bitmap bitmap = null;
+        if (tipoSincro.equals("Offline")) {
+            String filePath = "/storage/sdcard0/LysConfig/Fotos/" + filename;
+
+            bitmap = BitmapFactory.decodeFile(filePath);
+        } else if (tipoSincro.equals("Online")) {
+            AsyncTask<String, String, byte[]> asynckGetFoto;
+            GetFotoTask getFotoTask = new GetFotoTask();
+            //String result = null;
+            byte[] bytes = null;
+
+
+            try {
+                asynckGetFoto = getFotoTask.execute(filename);
+                bytes = (byte[]) asynckGetFoto.get();
+                // bytes = result.getBytes(Charset.forName("UTF-8"));
+                // bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            AsyncTask<byte[], String, String> asyncSaveImglocal;
+            GuardarImgLocalTask guardarImgLocalTask = new GuardarImgLocalTask(filename, bytes);
+
+            try {
+                asyncSaveImglocal = guardarImgLocalTask.execute(bytes);
+                String resSaveImg = (String) asyncSaveImglocal.get();
+                Log.i("result save imag local => ", resSaveImg);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            String filePath2 = "/storage/sdcard0/LysConfig/Fotos/" + filename;
+
+            bitmap = BitmapFactory.decodeFile(filePath2);
+
+        }
+        Dialog builder = new Dialog(this);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //nothing;
+            }
+        });
+
+        ImageView imageView = new ImageView(this);
+        imageView.setImageBitmap(bitmap);
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
     }
 
 }
