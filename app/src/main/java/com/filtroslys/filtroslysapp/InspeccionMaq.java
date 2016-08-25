@@ -67,6 +67,8 @@ import Model.InspeccionMaqDetalle;
 import Tasks.EnviarInspMaqCabTask;
 import Tasks.EnviarInspMaqDetTask;
 import Tasks.GetCorrelativoTask;
+import Tasks.GetInspMaqCabTask;
+import Tasks.GetInspMaqDetTask;
 import Tasks.GuardarImagenTask;
 import Tasks.TransferirInspeccionTask;
 import Util.Constans;
@@ -90,6 +92,7 @@ public class InspeccionMaq extends AppCompatActivity {
     String codUser, codMaquina, NomMaquina, FamMaquina;
     Spinner spPeriodo, spCondMaq;
     ListView LVdetalleM;
+    String tipoSincro = "";
     ArrayList<PeriodoInspeccionDB> listPeriodos;
 
     @Override
@@ -131,6 +134,7 @@ public class InspeccionMaq extends AppCompatActivity {
         } else {
             String correlativo = getIntent().getExtras().getString("Xcorrelativo");
             String codMaquina = getIntent().getExtras().getString("XcodMaq");
+            tipoSincro = getIntent().getExtras().getString("tipoSincro");
             correlativo_update = correlativo;
             CargarCabecera(correlativo, codMaquina);
 
@@ -217,6 +221,8 @@ public class InspeccionMaq extends AppCompatActivity {
 
     public void CargarCabecera(String correlativo, String codMaquina) {
 
+        InspeccionMaqCabecera inpCab = null;
+        ArrayList<InspeccionMaqDetalle> InspDet = new ArrayList<InspeccionMaqDetalle>();
         HashMap<Integer, Integer> xindexSpiner = new HashMap<Integer, Integer>();
         HashMap<Integer, Integer> xindexIconComent = new HashMap<Integer, Integer>();
         HashMap<Integer, Integer> xindexIconFoto = new HashMap<Integer, Integer>();
@@ -230,7 +236,30 @@ public class InspeccionMaq extends AppCompatActivity {
         LoadSpinnerPeriodo();
 
         // obteniendo  cabacera
-        InspeccionMaqCabecera inpCab = db.GetInspMaqCabeceraPorCorrelativo(correlativo);
+        if (tipoSincro.equals("Online")) {
+            GetInspMaqCabTask getInspMaqCabTask = new GetInspMaqCabTask();
+            AsyncTask<String, String, ArrayList<InspeccionMaqCabecera>> asyncTaskCab;
+            ArrayList<InspeccionMaqCabecera> listCab = null;
+
+            try {
+                asyncTaskCab = getInspMaqCabTask.execute(correlativo);
+                listCab = (ArrayList<InspeccionMaqCabecera>) asyncTaskCab.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            if (listCab != null) {
+
+                inpCab = listCab.get(0);
+            }
+        } else {
+            inpCab = db.GetInspMaqCabeceraPorCorrelativo(correlativo);
+
+        }
+
+
         if (inpCab.getCondicionMaq().equals("A")) {
             spCondMaq.setSelection(1);
         } else {
@@ -251,7 +280,31 @@ public class InspeccionMaq extends AppCompatActivity {
         // fin cabecera
 
         // obteniendo detalle
-        ArrayList<InspeccionMaqDetalle> InspDet = db.GetInspeccionMaqDetallePorCorrelativo(correlativo);
+
+        if (tipoSincro.equals("Online")) {
+
+            AsyncTask<String, String, ArrayList<InspeccionMaqDetalle>> asyncTaskDetalle;
+            GetInspMaqDetTask getInspMaqDetTask = new GetInspMaqDetTask();
+            ArrayList<InspeccionMaqDetalle> listDet = null;
+
+            try {
+                asyncTaskDetalle = getInspMaqDetTask.execute(correlativo);
+                listDet = (ArrayList<InspeccionMaqDetalle>) asyncTaskDetalle.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            if (listDet != null && listDet.size() > 0) {
+
+                InspDet = listDet;
+            }
+        } else {
+            InspDet = db.GetInspeccionMaqDetallePorCorrelativo(correlativo);
+
+        }
+
         for (int i = 0; i < InspDet.size(); i++) {
             String descripcion = db.GetDescripcionInspPorCodigo(InspDet.get(i).getCod_inspeccion());
             InspDet.get(i).setDescripcionInspecion(descripcion);

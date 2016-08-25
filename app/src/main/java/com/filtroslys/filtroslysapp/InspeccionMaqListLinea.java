@@ -96,12 +96,16 @@ public class InspeccionMaqListLinea extends AppCompatActivity {
                     intent.putExtra("tipoMant", "Editar");
                     intent.putExtra("Xcorrelativo", h.getNumero());
                     intent.putExtra("XcodMaq", h.getCod_maquina());
+                    intent.putExtra("tipoSincro", tipoSincro);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
-                } else if (h.getEstado().equals("E")) {
+                } else if (h.getEstado().equals("E") || h.getEstado().equals("PE")) {
                     Intent intent = new Intent(InspeccionMaqListLinea.this, InspeccionMaq.class);
                     intent.putExtra("tipoMant", "Visor");
                     intent.putExtra("Xcorrelativo", h.getNumero());
                     intent.putExtra("XcodMaq", h.getCod_maquina());
+                    intent.putExtra("tipoSincro", tipoSincro);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
                 }
             }

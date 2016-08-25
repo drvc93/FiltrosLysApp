@@ -9,6 +9,9 @@ import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import Util.Constans;
 
 /**
@@ -42,9 +45,10 @@ public class GetFotoTask extends AsyncTask<String, String, byte[]> {
 
             SoapPrimitive resultado_xml = (SoapPrimitive) envelope.getResponse();
             String res = resultado_xml.toString();
-            byte[] r = res.getBytes();
-            Log.i("next correlativo > ", res);
-            result = r;
+            result = res.getBytes();
+            Log.i(" byte resoap > ", res);
+            Log.i(" byte result convert > ", String.valueOf(result));
+
 
 
         } catch (Exception e) {

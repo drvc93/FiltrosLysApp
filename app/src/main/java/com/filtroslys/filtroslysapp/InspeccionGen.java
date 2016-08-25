@@ -49,12 +49,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,6 +79,7 @@ import Tasks.GetFotoTask;
 import Tasks.GetInspGenCabTask;
 import Tasks.GetInspGenDetTask;
 import Tasks.GuardarImagenTask;
+import Tasks.GuardarImgLocalTask;
 import Tasks.TransferirInspeccionTask;
 import Util.Constans;
 import Util.HistorialInspMaqAdapater;
@@ -1033,18 +1036,37 @@ public class InspeccionGen extends AppCompatActivity {
         } else if (tipoSincro.equals("Online")) {
             AsyncTask<String, String, byte[]> asynckGetFoto;
             GetFotoTask getFotoTask = new GetFotoTask();
-            byte[] result = null;
+            //String result = null;
+            byte[] bytes = null;
 
 
             try {
                 asynckGetFoto = getFotoTask.execute(filename);
-                result = (byte[]) asynckGetFoto.get();
-                bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
+                bytes = (byte[]) asynckGetFoto.get();
+                // bytes = result.getBytes(Charset.forName("UTF-8"));
+                // bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
+
+            AsyncTask<byte[], String, String> asyncSaveImglocal;
+            GuardarImgLocalTask guardarImgLocalTask = new GuardarImgLocalTask(filename, bytes);
+
+            try {
+                asyncSaveImglocal = guardarImgLocalTask.execute(bytes);
+                String resSaveImg = (String) asyncSaveImglocal.get();
+                Log.i("result save imag local => ", resSaveImg);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            String filePath2 = "/storage/sdcard0/LysConfig/Fotos/" + filename;
+
+            bitmap = BitmapFactory.decodeFile(filePath2);
 
         }
         Dialog builder = new Dialog(this);
@@ -1104,8 +1126,8 @@ public class InspeccionGen extends AppCompatActivity {
 
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            viewHolder.lblDescripcion.setText(data.get(position).getDescripcionInspGen());
-            if (inp.getRutaFoto().equals("")) {
+            viewHolder.lblDescripcion.setText(data.get(viewHolder.index).getDescripcionInspGen());
+            if (inp.getRutaFoto().equals("") || inp.getRutaFoto().equals("anyType{}")) {
                 viewHolder.imgfoto.setImageResource(R.drawable.icn_camera_32);
             } else {
                 viewHolder.imgfoto.setImageResource(R.drawable.icn_camera_ok);
