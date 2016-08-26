@@ -10,108 +10,114 @@
     tools:context="com.filtroslys.filtroslysapp.Configuracion"
     android:background="@drawable/bg_silver_2">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView3">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Ruta de carpeta de fotos:"
-            android:id="@+id/textView45"
-            android:textColor="#000000"
-            android:textSize="22dp"
-            android:layout_marginLeft="10dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/txtRutaFoto"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@android:drawable/editbox_background"
-            android:padding="10dp"
-            android:hint="Ruta de carpeta"
-            android:layout_marginTop="10dp"
-            android:textSize="22dp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Ruta de carpeta de fotos:"
+                android:id="@+id/textView45"
+                android:textColor="#000000"
+                android:textSize="22dp"
+                android:layout_marginLeft="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Ip Local"
-            android:id="@+id/textView47"
-            android:textColor="#000000"
-            android:textSize="22dp"
-            android:layout_marginLeft="10dp" />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/txtRutaFoto"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:drawable/editbox_background"
+                android:padding="10dp"
+                android:hint="Ruta de carpeta"
+                android:layout_marginTop="10dp"
+                android:textSize="22dp"
+                android:textStyle="bold" />
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/txtIpLocal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@android:drawable/editbox_background"
-            android:padding="10dp"
-            android:hint="Ip Local"
-            android:layout_marginTop="10dp"
-            android:textSize="22dp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Ip Local"
+                android:id="@+id/textView47"
+                android:textColor="#000000"
+                android:textSize="22dp"
+                android:layout_marginLeft="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Ip externa"
-            android:id="@+id/textView49"
-            android:textColor="#000000"
-            android:textSize="22dp"
-            android:layout_marginLeft="10dp" />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/txtIpLocal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:drawable/editbox_background"
+                android:padding="10dp"
+                android:hint="Ip Local"
+                android:layout_marginTop="10dp"
+                android:textSize="22dp"
+                android:textStyle="bold" />
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/txtIpPublica"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@android:drawable/editbox_background"
-            android:padding="10dp"
-            android:hint="IP publica"
-            android:layout_marginTop="10dp"
-            android:textSize="22dp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Ip externa"
+                android:id="@+id/textView49"
+                android:textColor="#000000"
+                android:textSize="22dp"
+                android:layout_marginLeft="10dp" />
 
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Guardar"
-            android:id="@+id/btnGuardarConfig"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/boton_rojo"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp" />
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/txtIpPublica"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:drawable/editbox_background"
+                android:padding="10dp"
+                android:hint="IP publica"
+                android:layout_marginTop="10dp"
+                android:textSize="22dp"
+                android:textStyle="bold" />
 
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Salir"
-            android:id="@+id/btnSalirConfig"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/boton_rojo"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp" />
-    </LinearLayout>
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Guardar"
+                android:id="@+id/btnGuardarConfig"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/boton_rojo"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Salir"
+                android:id="@+id/btnSalirConfig"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/boton_rojo"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
