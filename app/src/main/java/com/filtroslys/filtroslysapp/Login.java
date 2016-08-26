@@ -70,7 +70,9 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setTitle("Login");
+
          preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
+        Constans.ifExistCreateFile();
          currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
             actionBar = getSupportActionBar();
@@ -170,8 +172,7 @@ public class Login extends AppCompatActivity {
         }
         if (id == R.id.Config) {
 
-            Intent intent = new Intent(Login.this, Configuracion.class);
-            startActivity(intent);
+            SeleccionarModoTrabajo();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -331,6 +332,57 @@ public class Login extends AppCompatActivity {
         toast.setView(layout);
         toast.show();
 
+
+    }
+
+
+    public void SeleccionarModoTrabajo() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+        CharSequence[] data = {"Local", "Externo"};
+
+        builder.setTitle("Modo de trabajo")
+
+
+                .setSingleChoiceItems(data, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                    }
+
+                })
+
+                // Set the action buttons
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String Ipserver = "";
+                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        if (selectedPosition == 0) {
+                            Ipserver = Constans.ReaderFileLocal();
+                        } else {
+
+                            Ipserver = Constans.ReaderFileExterno();
+
+                        }
+
+                        Constans.SetConexion("P", Ipserver);
+                        int i = android.os.Process.myPid();
+                        android.os.Process.killProcess(i);
+                        //  showToast("selectedPosition: " + selectedPosition);
+
+                    }
+                })
+
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // removes the dialog from the screen
+
+                    }
+                })
+
+                .show();
 
     }
 }

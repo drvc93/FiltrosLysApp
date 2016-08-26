@@ -36,6 +36,7 @@ import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
 import DataBase.TipoRevisionGBD;
 import DataBase.UsuarioDB;
+import Model.Menu;
 import Model.Permisos;
 import Model.SubMenuBotones;
 import Tasks.GetAccesosDataTask;
@@ -252,6 +253,11 @@ public class MenuOpciones extends AppCompatActivity {
         if (var_concatenado.equals("030102")){
 
             AlertSyncro("ACCESOS");
+        }
+        if (var_concatenado.equals("040101")) {
+
+            Intent intent = new Intent(MenuOpciones.this, Configuracion.class);
+            startActivity(intent);
         }
 
 

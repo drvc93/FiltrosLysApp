@@ -1,7 +1,9 @@
 package com.filtroslys.filtroslysapp;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,7 +24,7 @@ public class Configuracion extends AppCompatActivity {
 
     SharedPreferences preferences;
     Button btnSalir, btnGuardar;
-    EditText txtRuta;
+    EditText txtRuta, txtIpLocal, txtIpPublica;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,9 @@ public class Configuracion extends AppCompatActivity {
         btnGuardar = (Button) findViewById(R.id.btnGuardarConfig);
         btnSalir = (Button) findViewById(R.id.btnSalirConfig);
         txtRuta = (EditText) findViewById(R.id.txtRutaFoto);
+        txtIpLocal = (EditText) findViewById(R.id.txtIpLocal);
+        txtIpPublica = (EditText) findViewById(R.id.txtIpPublica);
+
         if (preferences.getString("RutaFoto", null) == null) {
             CrearRuta();
         } else {
@@ -40,19 +45,14 @@ public class Configuracion extends AppCompatActivity {
             txtRuta.setText(ruta);
         }
 
+        txtIpLocal.setText(Constans.UrlServerLocal);
+        txtIpPublica.setText(Constans.UrlServerExterno);
+
+
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (txtRuta.getText().toString().equals("")) {
-
-                    CreateCustomToast("Debe escribir la ruta de la carpeta para guardar", Constans.icon_error, Constans.layout_error);
-                } else if (txtRuta.getText().toString().length() > 0) {
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("RutaFoto", txtRuta.getText().toString());
-                    editor.commit();
-                    finish();
-
-                }
+                AlertSave();
             }
         });
 
@@ -65,6 +65,23 @@ public class Configuracion extends AppCompatActivity {
 
     }
 
+    public void GuardarCambios() {
+
+        if (txtRuta.getText().toString().equals("")) {
+
+            CreateCustomToast("Debe escribir la ruta de la carpeta para guardar", Constans.icon_error, Constans.layout_error);
+        } else if (txtRuta.getText().toString().length() > 0) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("RutaFoto", txtRuta.getText().toString());
+            editor.commit();
+            Constans.SetConexion("L", txtIpLocal.getText().toString());
+            Constans.SetConexion("E", txtIpPublica.getText().toString());
+            int i = android.os.Process.myPid();
+            android.os.Process.killProcess(i);
+
+        }
+    }
+
     public void Salir() {
 
         super.onBackPressed();
@@ -74,6 +91,8 @@ public class Configuracion extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("RutaFoto", "//IBSERVER_1/Servidor de Archivos/Fotos_Tablet/");
         editor.commit();
+        int i = android.os.Process.myPid();
+        android.os.Process.killProcess(i);
     }
 
     public void CreateCustomToast(String msj, int icon, int backgroundLayout) {
@@ -101,5 +120,29 @@ public class Configuracion extends AppCompatActivity {
 
     }
 
+
+    public void AlertSave() {
+
+
+        new AlertDialog.Builder(Configuracion.this)
+                .setTitle("Advertencia")
+                .setMessage("¿Desea Guardar los cambios?")
+                .setIcon(R.drawable.icn_alert)
+                .setPositiveButton("SI",
+                        new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                GuardarCambios();
+                            }
+                        })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+                    }
+                }).show();
+    }
 
 }

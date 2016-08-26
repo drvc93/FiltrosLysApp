@@ -23,9 +23,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import DataBase.ConstasDB;
 import DataBase.ProdMantDataBase;
 import Model.Menu;
 import Model.SubMenu;
+import Util.Constans;
 import Util.ExpandibleListMenuAdapater;
 
 public class MenuPrincipal extends AppCompatActivity {
@@ -36,11 +38,15 @@ public class MenuPrincipal extends AppCompatActivity {
    String codUser;
     ArrayList<Menu> MenuFinalList;
     ExpandableListView menuExpListView;
+    SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
 
+        String var = Constans.UrlServer;
+
+        Log.i("test aplicaction context", var);
         final ActionBar actionBar;
         int currentapiVersion;
         currentapiVersion = android.os.Build.VERSION.SDK_INT;

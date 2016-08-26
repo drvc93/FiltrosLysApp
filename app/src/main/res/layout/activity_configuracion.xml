@@ -40,6 +40,56 @@
             android:textSize="22dp"
             android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Ip Local"
+            android:id="@+id/textView47"
+            android:textColor="#000000"
+            android:textSize="22dp"
+            android:layout_marginLeft="10dp" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/txtIpLocal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:drawable/editbox_background"
+            android:padding="10dp"
+            android:hint="Ip Local"
+            android:layout_marginTop="10dp"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Ip externa"
+            android:id="@+id/textView49"
+            android:textColor="#000000"
+            android:textSize="22dp"
+            android:layout_marginLeft="10dp" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/txtIpPublica"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:drawable/editbox_background"
+            android:padding="10dp"
+            android:hint="IP publica"
+            android:layout_marginTop="10dp"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

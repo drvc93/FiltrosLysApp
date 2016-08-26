@@ -638,7 +638,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
 
             if (indexSpiner.get(position) != null) {
-                viewHolder.spEstado.setSelection(indexSpiner.get(position));
+                viewHolder.spEstado.setSelection(indexSpiner.get(viewHolder.index));
             }
 
             if (data.get(position).getComentario().equals("") || data.get(position).getComentario().equals("anyType{}")) {
