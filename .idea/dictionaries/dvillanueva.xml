@@ -1,19 +1,26 @@
 <component name="ProjectDictionaryState">
   <dictionary name="dvillanueva">
     <words>
+      <w>abierta</w>
+      <w>actualizar</w>
+      <w>actualizo</w>
       <w>afectada</w>
       <w>agregó</w>
       <w>cabacera</w>
+      <w>camara</w>
       <w>cambios</w>
       <w>cargar</w>
       <w>ccosto</w>
       <w>centro</w>
       <w>centrocosto</w>
+      <w>cerrada</w>
       <w>codigo</w>
       <w>codigousuario</w>
       <w>coment</w>
+      <w>comentarios</w>
       <w>condicion</w>
       <w>contraseña</w>
+      <w>correctamente</w>
       <w>corrlativo</w>
       <w>costo</w>
       <w>descrip</w>
@@ -22,20 +29,26 @@
       <w>detec</w>
       <w>detectado</w>
       <w>dispositivo</w>
+      <w>editar</w>
       <w>encontro</w>
       <w>enviado</w>
+      <w>enviar</w>
       <w>este</w>
       <w>falta</w>
       <w>fecha</w>
       <w>foto</w>
+      <w>guardar</w>
       <w>hashmaps</w>
       <w>historial</w>
       <w>incorrecta</w>
+      <w>indexs</w>
       <w>indexvalue</w>
       <w>ingresar</w>
       <w>inicio</w>
+      <w>insertar</w>
       <w>insp</w>
       <w>inspeccion</w>
+      <w>lenar</w>
       <w>llenar</w>
       <w>maquinas</w>
       <w>numero</w>
@@ -48,11 +61,15 @@
       <w>problema</w>
       <w>problemadetect</w>
       <w>puede</w>
+      <w>pulgadas</w>
       <w>realizar</w>
       <w>reporte</w>
       <w>resultados</w>
       <w>revisión</w>
+      <w>selecccione</w>
       <w>seleccionar</w>
+      <w>seleccione</w>
+      <w>sincro</w>
       <w>spiner</w>
       <w>sqlite</w>
       <w>tipo</w>
@@ -60,6 +77,7 @@
       <w>tranferir</w>
       <w>transporte</w>
       <w>usuario</w>
+      <w>xcorrelativo</w>
       <w>xindex</w>
     </words>
   </dictionary>

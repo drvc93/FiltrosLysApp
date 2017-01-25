@@ -1,8 +1,6 @@
 package com.filtroslys.filtroslysapp;
-
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +12,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,16 +39,11 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.apache.commons.io.FileUtils;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -61,7 +53,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
-
 import DataBase.InspeccionDB;
 import DataBase.MaquinaDB;
 import DataBase.PeriodoInspeccionDB;
@@ -105,16 +96,12 @@ public class InspeccionMaq extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspeccion_maq);
-        ActionBar actionBar = getSupportActionBar();
 
         if (ChangeOrientationScreen() < 6) {
 
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            //  getWindow().setStatusBarColor(Color.BLACK);
-        }
+
 
         preferences = PreferenceManager.getDefaultSharedPreferences(InspeccionMaq.this);
         codUser = preferences.getString("UserCod", null);
@@ -124,7 +111,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
         tipoMant = getIntent().getExtras().getString("tipoMant");
 
-        // lblMaquina = (TextView)findViewById(R.id.lblMaquina);
+
         lblInspector = (TextView) findViewById(R.id.lblnspector);
         spCondMaq = (Spinner) findViewById(R.id.spCondMaquina);
         LVdetalleM = (ListView) findViewById(R.id.LVDetInspM);
@@ -163,7 +150,7 @@ public class InspeccionMaq extends AppCompatActivity {
                     String strNumerFormat = format.format(i);
                     indexPeriodoInspeccion = strNumerFormat;
                     Log.d("Number perdiodo => ", strNumerFormat);
-                    // Toast.makeText(InspeccionMaq.this, strNumerFormat, Toast.LENGTH_SHORT).show();
+
                     if (tipoMant.equals("NEW")) {
                         InsertRowsListView(strNumerFormat);
                     }
@@ -385,7 +372,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
         ProdMantDataBase db = new ProdMantDataBase(InspeccionMaq.this);
         listPeriodos = db.PeriodosInspeccionList();
-        ArrayList<String> listString = new ArrayList<String>();
+        ArrayList<String> listString = new ArrayList<>();
         listString.add("-- SELECCIONE --");
         for (int i = 0 ; i<listPeriodos.size();i++){
             listString.add(listPeriodos.get(i).getC_descripcion());
@@ -427,7 +414,6 @@ public class InspeccionMaq extends AppCompatActivity {
         Button btnSsalir = (Button) dialog.findViewById(R.id.btnDiaglogSalir);
         Button btnAceptar = (Button) dialog.findViewById(R.id.btnDialogOK);
         dialog.show();
-        //dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.icn_alert);
 
 
         btnAceptar.setOnClickListener(new View.OnClickListener() {
