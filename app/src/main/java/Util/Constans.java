@@ -169,7 +169,7 @@ public class Constans {
             if (redvalext.toString() == null || redvalext == "") {
                 //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
 
-                String data = "http://100.100.100.57:8080/LysWsRest/SOAPLYS?wsdl/";
+                String data = "http://190.187.181.56:80/LysWsRest/SOAPLYS?wsdl/";
 
 
                 File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + "ext.txt");

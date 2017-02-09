@@ -83,8 +83,8 @@ public class Login extends AppCompatActivity {
         } else{
 
         }
-        copyFile();
-        //ShowDialogAlert();
+      //  copyFile();
+      //  ShowDialogAlert();
 
         // instanciando controles
         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);
@@ -123,12 +123,16 @@ public class Login extends AppCompatActivity {
         btnIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String Sync;
+                String Sync ;
                 ProdMantDataBase db =  new ProdMantDataBase(Login.this);
                 String user  = txtUser.getText().toString();
                 String pass = txtPassword.getText().toString();
-
                 Sync = preferences.getString("Sync",null);
+                 if (Sync== null) {
+                     if(user.equals("MAESTRO") &&  pass.equals("MAESTRO"))
+                         ShowDialogAlert();
+                 }
+
                 if(Sync!=null) {
 
                     boolean res = db.AutenticarUsuario(user, pass);
