@@ -13,20 +13,21 @@
         android:supportsRtl="true"
         android:name="Util.AppContext"
         android:theme="@style/AppTheme">
-        <activity android:name=".Login">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-        <activity android:name=".MenuPrincipal" >
+        <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MenuPrincipal" />
+        <activity android:name=".MenuOpciones" />
+        <activity android:name=".InspeccionMaq" />
+        <activity android:name=".InspeccionMaqListLinea" />
+        <activity android:name=".InspeccionGen" />
+        <activity android:name=".InspeccionGenListLinea" />
+        <activity android:name=".Configuracion"></activity>
     </application>
 
 </manifest>

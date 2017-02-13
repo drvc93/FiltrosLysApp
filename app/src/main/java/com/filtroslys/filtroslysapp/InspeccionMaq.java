@@ -1013,6 +1013,7 @@ public class InspeccionMaq extends AppCompatActivity {
 
         String correlativo = "";
         String resulInsertCab = "";
+        String msjFinal  = "";
 
         // obetener correlativo
         GetCorrelativoTask getCorrelativoTask = new GetCorrelativoTask();
@@ -1079,15 +1080,21 @@ public class InspeccionMaq extends AppCompatActivity {
             asyncTaskTranferirs = transferirInspeccionTask.execute("MAQ", correlativo);
             String trasf = (String) asyncTaskTranferirs.get();
             Log.i("Transferido > ", trasf);
+            msjFinal = trasf;
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        if (cont>0){
+        if (msjFinal.equals("OK")){
             GuardarImagenServer(listdetalles);
             CreateCustomToast("Se envio el reporte de inspección correctamente",Constans.icon_succes,Constans.layout_success );
         }
+        else {
+
+            CreateCustomToast(msjFinal , Constans.icon_error,Constans.layout_error);
+        }
+
 
     }
 

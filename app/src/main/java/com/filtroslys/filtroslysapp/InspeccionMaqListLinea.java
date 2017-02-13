@@ -206,7 +206,7 @@ public class InspeccionMaqListLinea extends AppCompatActivity {
         String fechaFin = txtFechaFin.getText().toString();
 
         if (spMaquina.getSelectedItemPosition() == 0 && spCentroCosto.getSelectedItemPosition() == 0 && txtFechaFin.getText().toString().equals("") && txtFechaIni.getText().toString().equals("")) {
-            CreateCustomToast("Debe seleccinar un filtro primero", Constans.icon_warning, Constans.icon_warning);
+            CreateCustomToast("Debe seleccinar un filtro primero", Constans.icon_warning, Constans.layot_warning);
 
         }
 
@@ -270,7 +270,7 @@ public class InspeccionMaqListLinea extends AppCompatActivity {
         String fechaFin = txtFechaFin.getText().toString();
 
         if (spMaquina.getSelectedItemPosition() == 0 && spCentroCosto.getSelectedItemPosition() == 0 && txtFechaFin.getText().toString().equals("") && txtFechaIni.getText().toString().equals("")) {
-            CreateCustomToast("Debe seleccinar un filtro primero", Constans.icon_warning, Constans.icon_warning);
+            CreateCustomToast("Debe seleccinar un filtro primero", Constans.icon_warning, Constans.layot_warning);
 
         }
         if (spMaquina.getSelectedItemPosition() != 0 && spCentroCosto.getSelectedItemPosition() == 0 && txtFechaFin.getText().toString().equals("") && txtFechaIni.getText().toString().equals("")) {

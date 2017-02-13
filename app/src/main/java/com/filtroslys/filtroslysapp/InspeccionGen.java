@@ -317,6 +317,7 @@ public class InspeccionGen extends AppCompatActivity {
         GetCorrelativoTask getcorrelativoTask = new GetCorrelativoTask();
         AsyncTask<String, String, String> asyncCorrelativo;
         String correlativo = "";
+        String stTransfer= "";
 
 
         try {
@@ -382,6 +383,7 @@ public class InspeccionGen extends AppCompatActivity {
                 try {
                     asynckTrans = trasnferirInspTask.execute("GEN", correlativo);
                     String resTrans = (String) asynckTrans.get();
+                    stTransfer = resTrans;
                     Log.d("Result transf Insp Det => ", resTrans);
                     GuardarImagenServer(detalles);
                 } catch (InterruptedException e) {
@@ -389,8 +391,15 @@ public class InspeccionGen extends AppCompatActivity {
                 } catch (ExecutionException e) {
                     // e.printStackTrace();
                 }
-                CreateCustomToast("Se realizó el envio del reporte correctamente", Constans.icon_succes, Constans.layout_success);
-                super.onBackPressed();
+
+                if (stTransfer.equals("OK")) {
+                    CreateCustomToast("Se realizó el envio del reporte correctamente", Constans.icon_succes, Constans.layout_success);
+                    super.onBackPressed();
+                }
+                else {
+                    CreateCustomToast(stTransfer,Constans.icon_error,Constans.layout_error);
+
+                }
             }
         }
 
