@@ -478,7 +478,7 @@ public class InspeccionGen extends AppCompatActivity {
 
     public void GuardarImagenServer(ArrayList<InspeccionGenDetalle> listDet) {
         Log.i("Metodo Guardar  ", "pass");
-        String fileCarp = "/storage/sdcard0/LysConfig/Fotos/";
+        String fileCarp = Environment.getExternalStorageDirectory() +"/LysConfig/Fotos/";
         for (int i = 0; i < listDet.size(); i++) {
             if (listDet.get(i).getRutaFoto() == null || listDet.get(i).getRutaFoto().equals("")) {
 

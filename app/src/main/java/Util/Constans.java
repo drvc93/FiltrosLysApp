@@ -1,8 +1,10 @@
 package Util;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.filtroslys.filtroslysapp.R;
 
@@ -35,14 +37,15 @@ public class Constans {
     public static  int icon_succes = R.drawable.ic_done_24dp;
     public static  String Carpeta_foto= "LysConfig/Fotos/";
     public static final String NroConpania = "00100000";
-
+    public static  final  String FolderConfig ="appConfig";
+    public static  final  String IPDefault  = "100.100.100.57:8080" ;// "190.187.181.56:80";
     public static void SetConexion(String LocalOExt, String con) {
 
         String filename = "";
         if (LocalOExt.equals("E")) {
-            filename = "ext.txt";
+            filename = FolderConfig+File.separator+ "ext.txt";
         } else if (LocalOExt.equals("L")) {
-            filename = "local.txt";
+             filename = FolderConfig+File.separator+ "local.txt";
         } else if (LocalOExt.equals("P")) {
 
             filename = "con.txt";
@@ -64,7 +67,7 @@ public class Constans {
     public static String ReaderFileExterno() {
         String aBuffer = "";
         try {
-            File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + "ext.txt");
+            File myFile = new File(Environment.getExternalStorageDirectory() +  File.separator + FolderConfig + File.separator + "ext.txt");
             FileInputStream fIn = new FileInputStream(myFile);
             BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
             String aDataRow = "";
@@ -76,6 +79,8 @@ public class Constans {
         } catch (IOException e) {
         }
 
+
+
         return aBuffer.toString().trim();
 
     }
@@ -83,7 +88,7 @@ public class Constans {
     public static String ReaderFileLocal() {
         String aBuffer = "";
         try {
-            File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + "local.txt");
+            File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + FolderConfig+File.separator + "local.txt");
             FileInputStream fIn = new FileInputStream(myFile);
             BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
             String aDataRow = "";
@@ -143,19 +148,22 @@ public class Constans {
 
     }
 
-    public static void ifExistCreateFile() {
+    public static void ifExistCreateFile(String TipoIp , String sIP) {
 
         boolean value;
         try {
 
+            File folder = new  File(Environment.getExternalStorageDirectory() + File.separator + FolderConfig );
+            folder.mkdirs();
+
             String redval = ReaderFileLocal();
-            if (redval.toString() == null || redval == "") {
+            if ( (redval.toString() == null || redval == "")  && TipoIp.equals("LO")) {
                 //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
 
-                String data = "http://100.100.100.57:8080/LysWsRest/SOAPLYS?wsdl/";
+                String data = "http://"+sIP+"/LysWsRest/SOAPLYS?wsdl/";
+                Log.i("Ip local   : " , data );
 
-
-                File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + "local.txt");
+                File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + FolderConfig +File.separator + "local.txt");
                 //    if (!myFile.exists()) {
                 myFile.createNewFile();
                 FileOutputStream fOut = new FileOutputStream(myFile);
@@ -166,13 +174,13 @@ public class Constans {
                 // }
             }
             String redvalext = ReaderFileExterno();
-            if (redvalext.toString() == null || redvalext == "") {
+            if ((redvalext.toString() == null || redvalext == "") && TipoIp.equals("EX") ) {
                 //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
 
-                String data = "http://190.187.181.56:80/LysWsRest/SOAPLYS?wsdl/";
+                String data = "http://"+sIP+"/LysWsRest/SOAPLYS?wsdl/";
+                Log.i("Ip Ext   : " , data );
 
-
-                File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + "ext.txt");
+                File myFile = new File(Environment.getExternalStorageDirectory() +  File.separator + FolderConfig +File.separator + "ext.txt");
                 //    if (!myFile.exists()) {
                 myFile.createNewFile();
                 FileOutputStream fOut = new FileOutputStream(myFile);
@@ -184,11 +192,11 @@ public class Constans {
             }
 
             String con = ReaderFielIpServer();
-            if (con.toString() == null || con == "") {
+            if ((con.toString() == null || con == "") && TipoIp.equals("CON") ) {
                 //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
 
-                String data = "http://100.100.100.57:8080/LysWsRest/SOAPLYS?wsdl/";
-
+                String data = "http://"+IPDefault+"/LysWsRest/SOAPLYS?wsdl/";
+                Log.i("Ip CON   : " , data );
 
                 File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + "con.txt");
                 //    if (!myFile.exists()) {
@@ -209,6 +217,9 @@ public class Constans {
 
 
     }
+
+
+
 
 
 }

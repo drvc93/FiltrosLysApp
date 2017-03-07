@@ -44,6 +44,7 @@ import DataBase.ProdMantDataBase;
 import DataBase.UsuarioDB;
 import Tasks.GetAccesosDataTask;
 import Tasks.GetMenuDataTask;
+import Tasks.GetTipoIpTask;
 import Tasks.GetUsuariosTask;
 import Tasks.SincronizarAccesosTask;
 import Util.Constans;
@@ -51,7 +52,7 @@ import Util.Constans;
 public class Login extends AppCompatActivity {
 
     //VARIABLES
-
+    String GenFile ;
     Button btnIngresar;
     EditText txtUser, txtPassword;
     ActionBar actionBar;
@@ -72,7 +73,17 @@ public class Login extends AppCompatActivity {
         setTitle("Login");
 
          preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
-        Constans.ifExistCreateFile();
+
+        /** /////////  GENERANDO ARCHIVOS  DE CONFIG. IP   ///////// **/
+        GenFile = preferences.getString("GenFile",null);
+
+        if ( GenFile  == null) {
+            CrearndoArchivosConfig();
+
+        }
+
+
+
          currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
             actionBar = getSupportActionBar();
@@ -388,5 +399,47 @@ public class Login extends AppCompatActivity {
 
                 .show();
 
+    }
+
+    public  void  CrearndoArchivosConfig (){
+
+        String  ipLocal = ""  ;
+        String  ipExt   = "";
+
+        Constans.ifExistCreateFile("CON","");
+
+        AsyncTask <String,String,String> asyncTaskLocal   ;
+        AsyncTask <String,String,String> asyncTaskExt ;
+
+        GetTipoIpTask ipTaskLocal  = new GetTipoIpTask();
+        GetTipoIpTask ipTaskExt  =  new GetTipoIpTask();
+
+
+        try {
+            asyncTaskLocal  = ipTaskLocal.execute("LO");
+            ipLocal = (String) asyncTaskLocal.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            asyncTaskExt  = ipTaskExt.execute("EX");
+            ipExt = (String) ipTaskExt.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        Constans.ifExistCreateFile("LO",ipLocal);
+        Constans.ifExistCreateFile("EX",ipExt);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("GenFile","SI");
+        editor.commit();
+        int i = android.os.Process.myPid();
+        android.os.Process.killProcess(i);
     }
 }
