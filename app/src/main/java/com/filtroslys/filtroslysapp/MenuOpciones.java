@@ -245,6 +245,12 @@ public class MenuOpciones extends AppCompatActivity {
             startActivity(intent);
         }
 
+        /*Agregado el 10 de nov 2017 */
+        if (var_concatenado.equals("010301")) {
+            Intent intent = new Intent(MenuOpciones.this, ListaSolServicios.class);
+            startActivity(intent);
+        }
+
         if (var_concatenado.equals("030101")){
 
             AlertSyncro("MAESTROS");

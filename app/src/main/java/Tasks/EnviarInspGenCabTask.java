@@ -38,6 +38,20 @@ public class EnviarInspGenCabTask extends AsyncTask<String, String, String> {
         request.addProperty("usuarioEnv", strings[9]);
         request.addProperty("UltUsuario", strings[10]);
 
+
+        Log.i ("compani", strings[0]);
+        Log.i("correlativo", strings[1]);
+        Log.i("tipoInsp", strings[2]);
+        Log.i("codMaq", strings[3]);
+        Log.i("codCentroC", strings[4]);
+        Log.i("comentario", strings[5]);
+        Log.i("usuarioInsp", strings[6]);
+        Log.i("fechaInsp", strings[7]);
+        Log.i("estado", strings[8]);
+        Log.i("usuarioEnv", strings[9]);
+        Log.i("UltUsuario", strings[10]);
+
+
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
         envelope.dotNet = true;
 

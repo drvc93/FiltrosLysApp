@@ -1,9 +1,13 @@
 package Util;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.filtroslys.filtroslysapp.R;
@@ -38,7 +42,9 @@ public class Constans {
     public static  String Carpeta_foto= "LysConfig/Fotos/";
     public static final String NroConpania = "00100000";
     public static  final  String FolderConfig ="appConfig";
-    public static  final  String IPDefault  = "100.100.100.57:8080" ;// "190.187.181.56:80";
+    public static  final  String IPDefault  =   "100.100.100.57:8080" ;// "190.187.181.56:80";
+    public static  final  String FolderWs = "LysWsRest" ;
+
     public static void SetConexion(String LocalOExt, String con) {
 
         String filename = "";
@@ -160,7 +166,7 @@ public class Constans {
             if ( (redval.toString() == null || redval == "")  && TipoIp.equals("LO")) {
                 //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
 
-                String data = "http://"+sIP+"/LysWsRest/SOAPLYS?wsdl/";
+                String data = "http://"+sIP+"/"+FolderWs+"/SOAPLYS?wsdl/";
                 Log.i("Ip local   : " , data );
 
                 File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + FolderConfig +File.separator + "local.txt");
@@ -177,7 +183,7 @@ public class Constans {
             if ((redvalext.toString() == null || redvalext == "") && TipoIp.equals("EX") ) {
                 //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
 
-                String data = "http://"+sIP+"/LysWsRest/SOAPLYS?wsdl/";
+                String data = "http://"+sIP+"/"+FolderWs+"/SOAPLYS?wsdl/";
                 Log.i("Ip Ext   : " , data );
 
                 File myFile = new File(Environment.getExternalStorageDirectory() +  File.separator + FolderConfig +File.separator + "ext.txt");
@@ -195,7 +201,7 @@ public class Constans {
             if ((con.toString() == null || con == "") && TipoIp.equals("CON") ) {
                 //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
 
-                String data = "http://"+IPDefault+"/LysWsRest/SOAPLYS?wsdl/";
+                String data = "http://"+IPDefault+"/"+FolderWs+"/SOAPLYS?wsdl/";
                 Log.i("Ip CON   : " , data );
 
                 File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + "con.txt");
@@ -217,6 +223,7 @@ public class Constans {
 
 
     }
+
 
 
 

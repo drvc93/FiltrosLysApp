@@ -50,7 +50,7 @@ public class GuardarImgLocalTask extends AsyncTask<byte[], String, String> {
             varb = Base64.decode(varb, Base64.DEFAULT);
             Bitmap btmp = BitmapFactory.decodeByteArray(varb, 0, varb.length);
             ByteArrayOutputStream byteOutPut = new ByteArrayOutputStream();
-            btmp.compress(Bitmap.CompressFormat.PNG, 100, byteOutPut);
+            btmp.compress(Bitmap.CompressFormat.PNG,  100, byteOutPut);
             f.createNewFile();
             FileOutputStream fo = new FileOutputStream(f);
             fo.write(byteOutPut.toByteArray());

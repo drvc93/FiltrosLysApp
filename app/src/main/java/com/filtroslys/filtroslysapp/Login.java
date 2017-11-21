@@ -1,17 +1,21 @@
 package com.filtroslys.filtroslysapp;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.SyncStateContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -66,19 +70,26 @@ public class Login extends AppCompatActivity {
         return true;
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setTitle("Login");
 
+        isStoragePermissionGranted();
+
          preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
 
         /** /////////  GENERANDO ARCHIVOS  DE CONFIG. IP   ///////// **/
         GenFile = preferences.getString("GenFile",null);
 
-        if ( GenFile  == null) {
-            CrearndoArchivosConfig();
+        if ( isStoragePermissionGranted()==true){
+            if ( GenFile  == null) {
+                CrearndoArchivosConfig();
+
+            }
 
         }
 
@@ -441,5 +452,25 @@ public class Login extends AppCompatActivity {
         editor.commit();
         int i = android.os.Process.myPid();
         android.os.Process.killProcess(i);
+    }
+
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                //Log.v(TAG,"Permission is granted");
+
+                return true;
+            } else {
+
+                //Log.v(TAG,"Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            //Log.v(TAG,"Permission is granted");
+
+            return true;
+        }
     }
 }
