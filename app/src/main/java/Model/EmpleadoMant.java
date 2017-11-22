@@ -9,15 +9,26 @@ public class EmpleadoMant {
     private int n_empleado ;
     private  String  c_nombreempleado;
     private String  c_documento ;
+    private String c_numeromovil ;
 
-    public EmpleadoMant(String c_compania, int n_empleado, String c_nombreempleado, String c_documento) {
+    public EmpleadoMant(String c_compania, int n_empleado, String c_nombreempleado, String c_documento,String c_numeromovil) {
         this.c_compania = c_compania;
         this.n_empleado = n_empleado;
         this.c_nombreempleado = c_nombreempleado;
         this.c_documento = c_documento;
+        this.c_numeromovil = c_numeromovil ;
     }
 
     public EmpleadoMant() {
+    }
+
+
+    public String getC_numeromovil() {
+        return c_numeromovil;
+    }
+
+    public void setC_numeromovil(String c_numeromovil) {
+        this.c_numeromovil = c_numeromovil;
     }
 
     public String getC_compania() {

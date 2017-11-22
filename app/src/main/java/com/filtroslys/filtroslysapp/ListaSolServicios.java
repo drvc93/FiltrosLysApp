@@ -1,8 +1,12 @@
 package com.filtroslys.filtroslysapp;
 
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -11,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,17 +36,25 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import DataBase.MaquinaDB;
 import DataBase.ProdMantDataBase;
+import Model.EmpAsigSolicitud;
+import Model.EmpleadoMant;
 import Model.SolicitudServicio;
 import Model.UsuarioCompania;
 import Model.UsuarioSolicitante;
+import Tasks.AprobarSolicitudServTask;
+import Tasks.GetEmpleadosMantTask;
+import Tasks.GetEmpleadosSolicitudTask;
 import Tasks.GetListUsuarioSolicitTask;
 import Tasks.GetListaSolcitudServTask;
+import Tasks.GetNumeroEmpSolicitudTask;
+import Tasks.ValidarEmpleadoMantTask;
 import Tasks.getCompaniasXUsuarioTask;
 import Util.Constans;
 import Util.ExpandibleListMenuAdapater;
@@ -69,6 +82,13 @@ public class ListaSolServicios extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_sol_servicios);
         setTitle("Lista de Solicitudes de Servicio.");
+
+        Calendar c = Calendar.getInstance();
+
+        int month = c.get(Calendar.MONTH)+1;
+        String mes = String.format("%02d", month);
+        int year = c.get(Calendar.YEAR);
+
 
         //btnFiltros = (Button)findViewById(R.id.btnFiltroSolicitudes);
         LVSolcitudesServ = (ListView)findViewById(R.id.lvSoliciudesServ);
@@ -103,7 +123,7 @@ public class ListaSolServicios extends AppCompatActivity {
         LoadMaquinas();
         LoadSpinerUserSolic();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        txtFechaIni.setText( sdf.format(new Date()));
+        txtFechaIni.setText(  "01/"+mes+"/"+String.valueOf(year));
         txtFechaFin.setText( sdf.format(new Date()));
 
         // data list view
@@ -127,6 +147,9 @@ public class ListaSolServicios extends AppCompatActivity {
         LVSolcitudesServ.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+
                 SelectedItem= i ;
               MenuLista();
                 return false;
@@ -154,6 +177,7 @@ public class ListaSolServicios extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spEstado.setAdapter(adapter);
+        spEstado.setSelection(1);
 
     }
 
@@ -420,9 +444,42 @@ public class ListaSolServicios extends AppCompatActivity {
                 }).show();
     }
 
+    public  void  AprobarSolicitud () {
+        SolicitudServicio solicitud = adapter.GetItem(SelectedItem);
+        String resultCantEmp  = "";
+        int cantidadEmp = 0;
+         if (solicitud.getC_estado().equals("Pendiente")) {
+             AsyncTask<String,String,String> asyncTaskCantEmp   ;
+             GetNumeroEmpSolicitudTask getNumeroEmpSolicitudTask = new GetNumeroEmpSolicitudTask();
+
+                 try {
+                     asyncTaskCantEmp = getNumeroEmpSolicitudTask.execute(solicitud.getC_compania(),String.valueOf(solicitud.getN_solicitud()));
+                     resultCantEmp = (String) asyncTaskCantEmp.get();
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 } catch (ExecutionException e) {
+                     e.printStackTrace();
+                 }
+                 cantidadEmp = Integer.valueOf(resultCantEmp);
+
+                 if (cantidadEmp>0){
+                  AvisoAprobarSolcitus( String.valueOf( solicitud.getN_solicitud()), solicitud.getC_compania());
+                 }
+                 else {
+                     CreateCustomToast("No se ha asginado empleados a esta solicitud ("+String.valueOf(solicitud.getN_solicitud())+")",Constans.icon_error,Constans.layout_error);
+                 }
+
+
+         }
+        else {
+            CreateCustomToast("La solicitud no  se encuntra pendiente.",Constans.icon_error,Constans.layout_error);
+        }
+
+    }
+
     public void MenuLista() {
 
-        final CharSequence[] items = { "01.- Asignar Empleado"};
+        final CharSequence[] items = { "01.- Asignar Empleado","02.- Aprobar"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ListaSolServicios.this);
         builder.setTitle("Seleccione una opción");
@@ -430,20 +487,180 @@ public class ListaSolServicios extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int item) {
 
                 if (item == 0){
-                    Intent intent = new Intent(ListaSolServicios.this,AsignarEmpleado.class);
-                    SolicitudServicio s = adapter.GetItem(SelectedItem);
-                    intent.putExtra("NroSolicitud" , String.valueOf(s.getN_solicitud()));
-                    intent.putExtra("FechaReg",s.getC_fechareg());
-                    intent.putExtra("Estado", s.getC_estado());
-                    intent.putExtra("Prioridad",s.getC_prioridad());
-                    intent.putExtra("Compania",s.getC_compania());
-                    startActivity(intent);
+                    String validacion = "" , sItemEstado ="";
+                    AsyncTask<String,String,String> asyncTask;
+                    ValidarEmpleadoMantTask validarEmpleadoMantTask = new ValidarEmpleadoMantTask();
+
+                    try {
+                        asyncTask = validarEmpleadoMantTask.execute(codUser);
+                        validacion = (String)validarEmpleadoMantTask.get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (validacion.equals("S")) {
+                        sItemEstado = adapter.GetItem(SelectedItem).getC_estado();
+                        if (sItemEstado.equals("Pendiente")) {
+
+                            Intent intent = new Intent(ListaSolServicios.this, AsignarEmpleado.class);
+                            SolicitudServicio s = adapter.GetItem(SelectedItem);
+                            intent.putExtra("NroSolicitud", String.valueOf(s.getN_solicitud()));
+                            intent.putExtra("FechaReg", s.getC_fechareg());
+                            intent.putExtra("Estado", s.getC_estado());
+                            intent.putExtra("Prioridad", s.getC_prioridad());
+                            intent.putExtra("Compania", s.getC_compania());
+                            startActivity(intent);
+                        }
+                        else {
+                            CreateCustomToast("Solicitud no se encuntra pendiente.", Constans.icon_warning, Constans.layot_warning);
+                            return;
+                        }
+                    }
+                    else {
+                        CreateCustomToast("Usted no puede Asignar Personal.", Constans.icon_warning, Constans.layot_warning);
+                         return;
+                    }
+                }
+                else if(item==1){
+                    AprobarSolicitud();
                 }
 
                 dialog.dismiss();
 
             }
         }).show();
+    }
+
+    public  void  EjecutarAprobacion (String compania, String nSolicitud  ) {
+        String msj_result = "";
+        AprobarSolicitudServTask aprobarSolicitudServTask = new AprobarSolicitudServTask();
+        AsyncTask<String,String,String> asyncTask  ;
+
+        try {
+            asyncTask = aprobarSolicitudServTask.execute(compania,nSolicitud,codUser);
+            msj_result = (String) asyncTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if (msj_result.equals("OK")){
+            EnviandoNotificacionSMS(compania,nSolicitud);
+            CreateCustomToast("Se aprobó la solicitud de servicio Nº " + nSolicitud + ".",Constans.icon_succes,Constans.layout_success);
+
+        }
+        else {
+            CreateCustomToast(msj_result,Constans.icon_error,Constans.layout_error);
+        }
+
+    }
+
+    public void  EnviandoNotificacionSMS (String sCompaniaSolicitud, String nNroSolicitud) {
+        ArrayList<EmpleadoMant> listEmpleadosGeneral = new ArrayList<EmpleadoMant>();
+        ArrayList<EmpAsigSolicitud> listEmpleadosAsignados = new ArrayList<EmpAsigSolicitud>();
+        AsyncTask <String,String, ArrayList<EmpleadoMant>> asyncTaskGeneral  ;
+        AsyncTask<String,String, ArrayList<EmpAsigSolicitud>>asyncTaskAsignados ;
+        GetEmpleadosSolicitudTask  getEmpleadosSolicitudTask = new GetEmpleadosSolicitudTask();
+        GetEmpleadosMantTask getEmpleadosMantTask = new GetEmpleadosMantTask();
+
+
+        try {
+            Log.i("Compania/nro Solcitud Envio Sms" , sCompaniaSolicitud + "/" + nNroSolicitud);
+            asyncTaskAsignados = getEmpleadosSolicitudTask.execute(sCompaniaSolicitud,nNroSolicitud);
+            listEmpleadosAsignados =  (ArrayList<EmpAsigSolicitud>) asyncTaskAsignados.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if (listEmpleadosAsignados != null && listEmpleadosAsignados.size()>0){
+
+            try {
+                asyncTaskGeneral = getEmpleadosMantTask.execute(sCompaniaSolicitud);
+                listEmpleadosGeneral = (ArrayList<EmpleadoMant>)asyncTaskGeneral.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            for (int i = 0 ; i < listEmpleadosAsignados.size();i++){
+                String movil  = BuscarNumeroEmp(listEmpleadosAsignados.get(i).getN_empleado(),listEmpleadosGeneral);
+                String sProblema = adapter.GetItem(SelectedItem).getC_descriproblema();
+                String sSolcitud = String.valueOf(adapter.GetItem(SelectedItem).getN_solicitud());
+                String mensaje = "Estimado, se le ha asignado la solicitud Nro "+sSolcitud+ ", hacer la revision correspondiente del caso;"+ "\n"+ " Descripcion del problema : " +sProblema;
+                sendSMS(movil,mensaje);
+            }
+        }
+
+    }
+
+    public String BuscarNumeroEmp (int nEmpleado,  ArrayList<EmpleadoMant> listaGeneralEmp){
+        String numeromovil = "";
+        for (int i = 0 ; i <listaGeneralEmp.size() ; i++){
+            if (listaGeneralEmp.get(i).getN_empleado()==nEmpleado){
+                numeromovil = listaGeneralEmp.get(i).getC_numeromovil();
+                break;
+            }
+        }
+        return numeromovil ;
+    }
+
+    public void AvisoAprobarSolcitus(final String nSolcitud, final String sCompania) {
+        new AlertDialog.Builder(ListaSolServicios.this)
+                .setTitle("Advertencia")
+                .setMessage("¿Esta seguro que desea aprobar la solicitud Nº "+nSolcitud+" ?")
+                .setIcon(R.drawable.icn_alert)
+                .setPositiveButton("SI",
+                        new DialogInterface.OnClickListener() {
+                            //   @TargetApi(11)
+                            public void onClick(DialogInterface dialog, int id) {
+                                EjecutarAprobacion(sCompania,nSolcitud);
+                                dialog.cancel();
+                            }
+                        })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    //@TargetApi(11)
+                    public void onClick(DialogInterface dialog, int id) {
+                        //   showToast("Mike is not awesome for you. :(");
+                        CreateCustomToast("Se cancelo la operación." , Constans.icon_warning,Constans.layot_warning);
+                        dialog.cancel();
+                    }
+                }).show();
+    }
+
+
+
+    private void sendSMS(String phoneNumber, String message) {
+         message = message.replace('.',';');
+
+        if (phoneNumber.equals("-")){
+        }
+        else {
+
+            SmsManager sms = SmsManager.getDefault();
+            if (message.length()>140){
+                //Toast.makeText(ListaSolServicios.this , phoneNumber+" | " + message +" | "+String.valueOf(message.length() + "-Multipart"),Toast.LENGTH_LONG).show();
+                ArrayList<String>  parts = sms.divideMessage(message);
+                sms.sendMultipartTextMessage(phoneNumber,null,parts,null,null);
+
+
+            }
+            else {
+
+
+                SmsManager sms_2 = SmsManager.getDefault();
+
+                sms_2.sendTextMessage(phoneNumber, null, message, null, null);
+
+                //Toast.makeText(this, "Sent.", Toast.LENGTH_SHORT).show();
+
+            }
+        }
     }
 
 }

@@ -10,26 +10,27 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import java.util.ArrayList;
 
-import Model.EmpleadoMant;
-import Model.UsuarioCompania;
+import Model.EmpAsigSolicitud;
 import Util.Constans;
 
 /**
- * Created by dvillanueva on 20/11/2017.
+ * Created by dvillanueva on 21/11/2017.
  */
 
-public class GetEmpleadosMantTask extends AsyncTask<String,String,ArrayList<EmpleadoMant>> {
-    ArrayList<EmpleadoMant> result;
+public class GetEmpleadosSolicitudTask extends AsyncTask<String,String,ArrayList<EmpAsigSolicitud>> {
+
+    ArrayList<EmpAsigSolicitud> result;
     @Override
-    protected ArrayList<EmpleadoMant> doInBackground(String... strings) {
-        ArrayList<EmpleadoMant> listaEmpleados = new ArrayList<EmpleadoMant>();
+    protected ArrayList<EmpAsigSolicitud> doInBackground(String... strings) {
+        ArrayList<EmpAsigSolicitud> listaEmpleados = new ArrayList<EmpAsigSolicitud>();
         final String NAMESPACE = Constans.NameSpaceWS;
         final String URL = Constans.UrlServer;
         //final String URL="http://10.0.2.2:8084/SOAPLYS?wsdl";
-        final String METHOD_NAME = "GetEmpleadosMant";
+        final String METHOD_NAME = "GetEmpleadosAsig";
         final String SOAP_ACTION = NAMESPACE + METHOD_NAME;
         SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
         request.addProperty("compania", strings[0]);
+        request.addProperty("nrosolicitud", strings[1]);
 
 
 
@@ -53,13 +54,15 @@ public class GetEmpleadosMantTask extends AsyncTask<String,String,ArrayList<Empl
             for (int i = 0; i < num_projects; i++) {
                 SoapObject ic = (SoapObject) resSoap.getProperty(i);
 
-                EmpleadoMant e = new EmpleadoMant();
+                EmpAsigSolicitud e = new EmpAsigSolicitud();
 
-                e.setC_compania(ic.getProperty(0).toString());
-                e.setC_documento(ic.getProperty(1).toString());
-                e.setC_nombreempleado(ic.getProperty(2).toString());
-                e.setC_numeromovil(ic.getProperty(3).toString());
+                e.setC__nombreempleado(ic.getProperty(0).toString());
+                e.setC_compEmpleado(ic.getProperty(1).toString());
+                e.setC_compania(ic.getProperty(2).toString());
+                e.setC_ultimousuario(ic.getProperty(3).toString());
                 e.setN_empleado( Integer.valueOf( ic.getProperty(4).toString()));
+                e.setN_secuencia( Integer.valueOf( ic.getProperty(5).toString()));
+                e.setN_secuencia( Integer.valueOf( ic.getProperty(6).toString()));
                 listaEmpleados.add(e);
 
             }
@@ -69,7 +72,7 @@ public class GetEmpleadosMantTask extends AsyncTask<String,String,ArrayList<Empl
             }
 
         } catch (Exception e) {
-            Log.i("AsynckTask listaEmpleados  Error > ", e.getMessage());
+            Log.i("AsynckTask Empleados Asig.  Error > ", e.getMessage());
             // result = null;
         }
 

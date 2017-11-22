@@ -17,148 +17,158 @@
             android:orientation="vertical">
 
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textView61"
+
+                <GridLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:text="Compania:    " />
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp">
 
-                <Spinner
-                    android:id="@+id/spCompSS"
+                    <TextView
+                        android:id="@+id/textView61"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="Compania:    " />
+
+                    <Spinner
+                        android:id="@+id/spCompSS"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/spiner_style"
+                        android:spinnerMode="dialog" />
+                </GridLayout>
+
+
+                <GridLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/spiner_style"
-                    android:spinnerMode="dialog" />
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="2dp">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/textView66"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Prioridad" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:orientation="horizontal">
+                    <Spinner
+                        android:id="@+id/spPrioridadSS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/spiner_style"
+                        android:dropDownWidth="match_parent"
+                        android:spinnerMode="dialog" />
 
-                <TextView
-                    android:id="@+id/textView63"
+                    <TextView
+                        android:id="@+id/textView67"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Maquina" />
+
+                    <Spinner
+                        android:id="@+id/spMaquinaSS"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/spiner_style"
+                        android:spinnerMode="dialog" />
+
+                </GridLayout>
+
+                <GridLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:text="F.Ini.: " />
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="2dp">
 
-                <EditText
-                    android:id="@+id/txtFechaIniSS"
+                    <TextView
+                        android:id="@+id/textView70"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Estado" />
+
+                    <Spinner
+                        android:id="@+id/spEstadoSS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/spiner_style"
+                        android:spinnerMode="dialog" />
+
+                    <TextView
+                        android:id="@+id/textView71"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Solicitante" />
+
+                    <Spinner
+                        android:id="@+id/spUsuarioSolicitanteSS"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/spiner_style"
+                        android:spinnerMode="dialog" />
+                </GridLayout>
+
+                <GridLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_round_border"
-                    android:ems="10"
-                    android:focusableInTouchMode="true"
-                    android:clickable="true"
-                    android:inputType="textPersonName" />
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="2dp">
 
-                <TextView
-                    android:id="@+id/textView62"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:text="F.Fin: " />
+                    <TextView
+                        android:id="@+id/textView63"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="F.Ini" />
 
-                <EditText
-                    android:id="@+id/txtFechaFinSS"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/edittext_round_border"
-                    android:ems="10"
-                    android:focusableInTouchMode="true"
-                    android:clickable="true"
-                    android:inputType="textPersonName" />
-            </LinearLayout>
+                    <EditText
+                        android:id="@+id/txtFechaIniSS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_round_border"
+                        android:clickable="true"
+                        android:ems="10"
+                        android:focusableInTouchMode="true"
+                        android:inputType="textPersonName" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/textView62"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="F.Fin: " />
 
-                <TextView
-                    android:id="@+id/textView67"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Maquina" />
+                    <EditText
+                        android:id="@+id/txtFechaFinSS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_round_border"
+                        android:clickable="true"
+                        android:ems="10"
+                        android:focusableInTouchMode="true"
+                        android:inputType="textPersonName" />
 
-                <Spinner
-                    android:id="@+id/spMaquinaSS"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/spiner_style"
-                    android:spinnerMode="dialog" />
+                </GridLayout>
 
-                <TextView
-                    android:id="@+id/textView66"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Prioridad" />
-
-                <Spinner
-                    android:id="@+id/spPrioridadSS"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/spiner_style"
-                    android:dropDownWidth="match_parent"
-                    android:spinnerMode="dialog" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView70"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Estado" />
-
-                <Spinner
-                    android:id="@+id/spEstadoSS"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/spiner_style"
-                    android:spinnerMode="dialog" />
-
-                <TextView
-                    android:id="@+id/textView71"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Solicitante" />
-
-                <Spinner
-                    android:id="@+id/spUsuarioSolicitanteSS"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/spiner_style"
-                    android:spinnerMode="dialog" />
 
             </LinearLayout>
 
@@ -173,7 +183,6 @@
                     android:id="@+id/btnBuscarSS"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
                     android:layout_weight="1"
                     android:background="@drawable/boton_rojo"
                     android:text="Buscar"

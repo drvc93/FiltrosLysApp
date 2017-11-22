@@ -50,7 +50,7 @@ public class getCompaniasXUsuarioTask extends AsyncTask<String,String,ArrayList<
 
             //lstProjects = new ArrayList<Parametros>();
             int num_projects = resSoap.getPropertyCount();
-          //  Log.i("result  get  historial gen ", resSoap.toString());
+            Log.i("result  compania x usuario ", resSoap.toString());
             for (int i = 0; i < num_projects; i++) {
                 SoapObject ic = (SoapObject) resSoap.getProperty(i);
 
@@ -68,6 +68,7 @@ public class getCompaniasXUsuarioTask extends AsyncTask<String,String,ArrayList<
 
         } catch (Exception e) {
             Log.i("AsynckTask CompaniaXUsuario  Error > ", e.getMessage());
+
             // result = null;
         }
 
