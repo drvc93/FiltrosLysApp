@@ -429,14 +429,7 @@ public class ListaSolServicios extends AppCompatActivity {
 
                         String dia = String.format("%02d", day);
                         txtFecha.setText(dia + "/" + mes + "/" + String.valueOf(year));
-                      /*  if (etiqueta.equals("Inicio")) {
-                            //FinicioGlobal = String.valueOf(year) + "-" + mes + "-" + dia;
-                            //Log.i("Fecha global inicio => ", FinicioGlobal);
-                        } else {
 
-                           // FFinGlobal = String.valueOf(year) + "-" + mes + "-" + dia;
-                            //Log.i("Fecha global FIN => ", FFinGlobal);
-                        }*/
                         dialog.cancel();
 
                     }

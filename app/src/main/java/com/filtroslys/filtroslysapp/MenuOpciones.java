@@ -250,6 +250,10 @@ public class MenuOpciones extends AppCompatActivity {
             Intent intent = new Intent(MenuOpciones.this, ListaSolServicios.class);
             startActivity(intent);
         }
+        if (var_concatenado.equals("010401")) {
+            Intent intent = new Intent(MenuOpciones.this, ListaReqLog.class);
+            startActivity(intent);
+        }
 
         if (var_concatenado.equals("030101")){
 

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#7dd4ff">
+
+            <TextView
+                android:id="@+id/textView782"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nro Req."
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblNroReqLog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="000008784"
+                android:textColor="@color/colorBlue" />
+
+            <TextView
+                android:id="@+id/textView722"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  C.Costo "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblCCostoRL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MAESTRANZA"
+                android:textColor="@color/colorBlue" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="F.Creacion "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblFechaCRL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20/01/2017"
+                android:textColor="@color/colorBlue" />
+
+            <TextView
+                android:id="@+id/textView78"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Us.Creac. "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblUsuarioCreaRL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DVILLANUEV"
+                android:textColor="@color/colorBlue" />
+
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView72"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Proir. "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblPrioridadRL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="URGENTE"
+                android:textColor="@color/colorBlue" />
+
+            <TextView
+                android:id="@+id/textView83"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Estado  "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblEstadoRL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CERRADO"
+                android:textColor="@color/colorBlue" />
+
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView85"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Coment."
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblCometarioRL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="COMENTARIO"
+                android:textColor="@color/colorBlue" />
+        </GridLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

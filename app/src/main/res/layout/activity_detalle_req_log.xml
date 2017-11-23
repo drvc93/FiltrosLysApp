@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_silver_2"
+    tools:context="com.filtroslys.filtroslysapp.DetalleReqLog">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView77"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nº. Req. "
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/lblNroReqDet"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0000568974"
+                android:textAllCaps="false"
+
+                android:textColor="#1b2165"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView752"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Est."
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/lblEstadoReqDet"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="COMPLETADO"
+                android:textAllCaps="false"
+
+                android:textColor="#1b2165"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView75"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="C.Costo "
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/lblCCostoDet"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SISTEMAS"
+                android:textAllCaps="false"
+
+                android:textColor="#1b2165"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView86"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="F.Creac."
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/lblFechaCDet"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="01/01/2017"
+                android:textAllCaps="false"
+
+                android:textColor="#1b2165"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView82"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  U.Creac."
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/lblUsuarioCDet"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DVILLANUEVA"
+                android:textAllCaps="false"
+
+                android:textColor="#1b2165"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FAAC58">
+
+            <TextView
+                android:id="@+id/lblCantidadRegDet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="DETALLE"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/LVdetalleReqLog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </GridLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

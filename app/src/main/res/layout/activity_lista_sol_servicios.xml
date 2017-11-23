@@ -144,7 +144,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/edittext_round_border"
                         android:clickable="true"
-                        android:ems="10"
+                        android:ems="6"
                         android:focusableInTouchMode="true"
                         android:inputType="textPersonName" />
 
