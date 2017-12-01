@@ -91,19 +91,28 @@
                     android:layout_gravity="center_vertical">
 
                     <Button
+                        android:id="@+id/btnIngresarLogin"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:text="Ingresar"
-                        android:id="@+id/btnIngresarLogin"
-                        android:background="@drawable/boton_rojo"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"
-                        android:textColor="@android:color/background_light"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:textStyle="bold"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/boton_rojo"
                         android:padding="7dp"
-                        android:textSize="18dp" />
+                        android:text="Ingresar"
+                        android:textColor="@android:color/background_light"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtModoConexion"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom|center"
+                        android:text="Esta trabjando en modo Local"
+                        android:textColor="@android:color/black" />
+
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

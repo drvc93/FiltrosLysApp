@@ -21,7 +21,7 @@ public class DetalleReqLog extends AppCompatActivity {
 
     TextView  lblNroReq  , lblEstado , lblFechaCreacion , lblUusuarioCreacion , lblCentroCosto , lblCantidadReg;
     ListView LVDetalle  ;
-    String  sNroReq  , sEstado  , sFechaC , sUsuariC, sCCosto ,sCompania ;
+    String  sNroReq  , sEstado  , sFechaC , sUsuariC, sCCosto ,sCompania ,sClasficiacion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,13 @@ public class DetalleReqLog extends AppCompatActivity {
         sCompania = getIntent().getExtras().getString("Compania");
         sFechaC = getIntent().getExtras().getString("FCreacion");
         sUsuariC = getIntent().getExtras().getString("UCreacion");
+        sClasficiacion =  getIntent().getExtras().getString("Clasificacion");
+        if (sClasficiacion.equals("Item")) {
+            sClasficiacion = "ITEM";
+        }
+        else {
+            sClasficiacion = "MISCELANEO" ;
+        }
 
         lblNroReq.setText(sNroReq);
         lblEstado.setText(sEstado);
@@ -75,7 +82,15 @@ public class DetalleReqLog extends AppCompatActivity {
                 RequisicionLogDet det = listareq.get(i);
                 Double a = Double.valueOf(det.getC_cantidadpedida());
                 String cantpedidaformat = String.format("%.2f", a) ;
-                String item = "ITEM : "+det.getC_item() +"  |  " + det.getC_descripcion() + "\n"  + "CANTIDAD: " + cantpedidaformat;
+                String codigoItem = "" ;
+                if (sClasficiacion.equals("ITEM")){
+                    codigoItem = det.getC_item();
+                }
+                else {
+                    codigoItem = det.getC_comoditycodigo();
+                }
+                String item = sClasficiacion +": "+codigoItem +"  |  " + det.getC_descripcion() + "\n"  + "CANTIDAD: " + cantpedidaformat+
+                              " | C.COSTO: " + det.getC_centrocosto();
                 data.add(item);
             }
             adapterLV=new ArrayAdapter<String>(DetalleReqLog.this, android.R.layout.simple_list_item_1,data);

@@ -23,14 +23,15 @@
                 android:orientation="vertical">
 
 
-                <GridLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="5dp">
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="2dp">
 
                     <TextView
-                        android:id="@+id/textView61"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/textView79"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
@@ -44,7 +45,23 @@
                         android:layout_weight="1"
                         android:background="@drawable/spiner_style"
                         android:spinnerMode="dialog" />
-                </GridLayout>
+
+                    <TextView
+                        android:id="@+id/textView61"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="Nro." />
+
+                    <EditText
+                        android:id="@+id/txtNroSolicit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+                        android:ems="6"
+                        android:inputType="number" />
+                </LinearLayout>
 
 
                 <GridLayout
@@ -144,8 +161,8 @@
                         android:layout_weight="1"
                         android:background="@drawable/edittext_round_border"
                         android:clickable="true"
-                        android:ems="6"
-                        android:focusableInTouchMode="true"
+                        android:ems="7"
+                        android:focusableInTouchMode="false"
                         android:inputType="textPersonName" />
 
                     <TextView
@@ -163,8 +180,8 @@
                         android:layout_weight="1"
                         android:background="@drawable/edittext_round_border"
                         android:clickable="true"
-                        android:ems="10"
-                        android:focusableInTouchMode="true"
+                        android:ems="6"
+                        android:focusableInTouchMode="false"
                         android:inputType="textPersonName" />
 
                 </GridLayout>
@@ -202,7 +219,9 @@
             <ListView
                 android:id="@+id/lvSoliciudesServ"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent" >
+
+            </ListView>
         </LinearLayout>
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

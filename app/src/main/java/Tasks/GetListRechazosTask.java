@@ -10,30 +10,26 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import java.util.ArrayList;
 
-import Model.RequisicionLogDet;
+import Model.Rechazos;
 import Util.Constans;
 
 /**
- * Created by dvillanueva on 23/11/2017.
+ * Created by dvillanueva on 24/11/2017.
  */
 
-public class GetReqLogDetalleTask extends AsyncTask<String,String,ArrayList<RequisicionLogDet>> {
-    ArrayList<RequisicionLogDet> result;
+public class GetListRechazosTask extends AsyncTask<String,String,ArrayList<Rechazos>> {
+
+    ArrayList<Rechazos> result ;
     @Override
-    protected ArrayList<RequisicionLogDet> doInBackground(String... strings) {
-        ArrayList<RequisicionLogDet> listaDet = new ArrayList<RequisicionLogDet>();
+    protected ArrayList<Rechazos> doInBackground(String... strings) {
+        ArrayList<Rechazos> listRechazos  = new ArrayList<Rechazos>();
         final String NAMESPACE = Constans.NameSpaceWS;
         final String URL = Constans.UrlServer;
         //final String URL="http://10.0.2.2:8084/SOAPLYS?wsdl";
-        final String METHOD_NAME = "GetDetalleReqLog";
+        final String METHOD_NAME = "ListaRechazos";
         final String SOAP_ACTION = NAMESPACE + METHOD_NAME;
         SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
-        request.addProperty("compania", strings[0]);
-        request.addProperty("numeroreq", strings[1]);
-
-
-
-
+        //request.addProperty("CodUsuario", strings[0]);
 
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
         envelope.dotNet = true;
@@ -48,32 +44,27 @@ public class GetReqLogDetalleTask extends AsyncTask<String,String,ArrayList<Requ
             SoapObject resSoap = (SoapObject) envelope.bodyIn;
 
 
+
             //lstProjects = new ArrayList<Parametros>();
             int num_projects = resSoap.getPropertyCount();
-            Log.i("result  get  lista req log  detalle ", resSoap.toString());
+            Log.i("result  get maquinas ",resSoap.toString());
             for (int i = 0; i < num_projects; i++) {
                 SoapObject ic = (SoapObject) resSoap.getProperty(i);
 
-                RequisicionLogDet det = new RequisicionLogDet();
+                Rechazos re = new Rechazos();
 
-                det.setC_cantidadpedida(ic.getProperty(0).toString());
-                det.setC_centrocosto(ic.getProperty(1).toString());
-                det.setC_comoditycodigo(ic.getProperty(2).toString());
-                det.setC_compania(ic.getProperty(3).toString());
-                det.setC_descripcion(ic.getProperty(4).toString());
-                det.setC_item(ic.getProperty(5).toString());
-                det.setC_stockdisponible(ic.getProperty(6).toString());
-                det.setC_stockminimo(ic.getProperty(7).toString());
-                listaDet.add(det);
+                re.setC_descripcion(ic.getProperty(0).toString());
+                re.setC_razonrechazo(ic.getProperty(1).toString());
+                listRechazos.add(re);
                 //  Log.i("Usuario Nro > ", String.valueOf(i));
             }
             if (resSoap.getPropertyCount() > 0) {
-                result = listaDet;
+                result = listRechazos;
 
             }
 
         } catch (Exception e) {
-            Log.i("AsynckTask  Req Logistica Detalle error---", e.getMessage());
+            Log.i("AsynckTask lista rechazos error---", e.getMessage());
             // result = null;
         }
 

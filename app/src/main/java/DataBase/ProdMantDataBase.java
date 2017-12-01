@@ -336,14 +336,17 @@ public class ProdMantDataBase {
     }
 
     public  boolean AutenticarUsuario (String user , String clave ){
+        Log.i("Clave y usuario " , user  + " | "+ clave);
          boolean result  = false;
          String query  = "SELECT * FROM  MTP_USUARIO where c_codigousuario = '"+user+"' and c_clave ='"+clave+"'";
           this.OpenWritableDB();
         Cursor cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()){
             result = true;
-
+            Log.i("Paso cursosr " , "") ;
         }
+
+        Log.i("Autenticar Us."+String.valueOf(result),"");
 
         return  result;
     }

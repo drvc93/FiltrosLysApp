@@ -84,8 +84,8 @@ public class SolicitudServAdapter extends ArrayAdapter<SolicitudServicio> {
         viewHolder.lblTipoSolc.setText(s.getC_tiposolcitud());
         viewHolder.lblEstado.setText(s.getC_estado());
         viewHolder.lblFechaReg.setText(s.getC_fechareg());
-        viewHolder.lblDescrProblema.setText( "Descrip.Problema: " + s.getC_descriproblema());
-        viewHolder.lblDescripFalla.setText("Descrip.Falla: " + s.getC_descfalla());
+        viewHolder.lblDescrProblema.setText(   "Desc.Gral.Prob: " + s.getC_descriproblema());
+        viewHolder.lblDescripFalla.setText( "Empleados Asig.: "+ s.getC_empleadoAsignados()+ "\n" +"Diagnostico Prel. y Sug.: " + s.getC_descfalla());
 
         return  convertView;
 

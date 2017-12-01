@@ -1,5 +1,6 @@
 package com.filtroslys.filtroslysapp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -8,14 +9,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +58,7 @@ import Tasks.GetEmpleadosMantTask;
 import Tasks.GetEmpleadosSolicitudTask;
 import Tasks.GetListUsuarioSolicitTask;
 import Tasks.GetListaSolcitudServTask;
+import Tasks.GetMaquinaXCompaniaTask;
 import Tasks.GetNumeroEmpSolicitudTask;
 import Tasks.ValidarEmpleadoMantTask;
 import Tasks.getCompaniasXUsuarioTask;
@@ -66,7 +72,7 @@ public class ListaSolServicios extends AppCompatActivity {
    SharedPreferences preferences;
    String sFechaIni= "" , sFechaFin ="" , sFlagFecha ="" , sPersonaSolcitante ="" , sMaquina ="", sPrioridad = "" ,sEstado ="",sCompania ="";
     ListView LVSolcitudesServ;
-    EditText txtFechaIni , txtFechaFin ;
+    EditText txtFechaIni , txtFechaFin ,txtNroSolicitud ;
     SolicitudServAdapter adapter ;
     Spinner spPrioridad , spEstado , spMaquina , spUsuarioSolict,spCompania;
     int nPersonaSolict ;
@@ -101,6 +107,7 @@ public class ListaSolServicios extends AppCompatActivity {
         txtFechaFin = (EditText)findViewById(R.id.txtFechaFinSS);
         btnBuscar = (Button)findViewById(R.id.btnBuscarSS);
         lblCantReg = (TextView)findViewById(R.id.lblCantRegistrosSS);
+        txtNroSolicitud = (EditText)findViewById(R.id.txtNroSolicit);
         preferences = PreferenceManager.getDefaultSharedPreferences(ListaSolServicios.this);
         codUser = preferences.getString("UserCod", null);
 
@@ -128,6 +135,7 @@ public class ListaSolServicios extends AppCompatActivity {
 
         // data list view
         LoadDataLista();
+        requestSmsPermission();
 
         txtFechaIni.setOnClickListener(new View.OnClickListener() {
 
@@ -161,6 +169,45 @@ public class ListaSolServicios extends AppCompatActivity {
                 LoadDataLista();
             }
         });
+
+        spCompania.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                LoadMaquinas();
+                LoadSpinerUserSolic();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+    private void requestSmsPermission() {
+        String permission = Manifest.permission.SEND_SMS;
+        int grant = ContextCompat.checkSelfPermission(this, permission);
+        if (grant != PackageManager.PERMISSION_GRANTED) {
+            String[] permission_list = new String[1];
+            permission_list[0] = permission;
+            ActivityCompat.requestPermissions(this, permission_list, 1);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,  String[] permissions,
+                                            int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(ListaSolServicios.this,"Permiso otorgado", Toast.LENGTH_SHORT).show();
+
+
+            } else {
+                Toast.makeText(ListaSolServicios.this,"permiso deneado", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 
     public  void LoadSpinnerEstado () {
@@ -199,22 +246,40 @@ public class ListaSolServicios extends AppCompatActivity {
     }
 
     public  void  LoadMaquinas () {
-        ProdMantDataBase db = new ProdMantDataBase(ListaSolServicios.this);
-        ArrayList<MaquinaDB> listMaq = db.GetMaquinasALL();
+        AsyncTask<String,String,ArrayList<MaquinaDB>>  asyncTask ;
+        GetMaquinaXCompaniaTask  getMaquinaXCompaniaTask = new GetMaquinaXCompaniaTask();
+        ArrayList<MaquinaDB> listMaq = null;
         ArrayList<String> dataMaq = new ArrayList<String>();
         dataMaq.add("TODOS");
-        for (int i = 0; i <listMaq.size() ; i++) {
 
-            dataMaq.add(listMaq.get(i).getC_maquina() + "   -    " + listMaq.get(i).getC_descripcion());
+        if (spCompania.getAdapter() != null && spCompania.getCount() > 0) {
+            String sTempComp = spCompania.getSelectedItem().toString();
+            sTempComp = sTempComp.substring(sTempComp.indexOf("|")+1 , sTempComp.length());
+            sTempComp = sTempComp.trim();
+            try {
+                asyncTask = getMaquinaXCompaniaTask.execute(sTempComp);
+                listMaq = (ArrayList<MaquinaDB>) asyncTask.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            if (listMaq!= null && listMaq.size()>0) {
+
+                for (int i = 0; i < listMaq.size(); i++) {
+
+                    dataMaq.add(listMaq.get(i).getC_maquina() + "   -    " + listMaq.get(i).getC_descripcion());
+
+                }
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                    this, android.R.layout.simple_spinner_item, dataMaq);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            spMaquina.setAdapter(adapter);
 
         }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, dataMaq);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spMaquina.setAdapter(adapter);
-
     }
 
     public  void  LoadSpinerUserSolic () {
@@ -293,7 +358,7 @@ public class ListaSolServicios extends AppCompatActivity {
 
 
     public  void  LoadDataLista () {
-
+          String nSolicitud;
          if (spCompania == null  && spCompania.getCount()<=0) {
           return;
          }
@@ -304,6 +369,12 @@ public class ListaSolServicios extends AppCompatActivity {
         sFlagFecha = "S";
         sFechaIni =  txtFechaIni.getText().toString();
         sFechaFin =  txtFechaFin.getText().toString() ;
+        if (TextUtils.isEmpty(txtNroSolicitud.getText().toString().trim())){
+            nSolicitud = "0" ;
+        }
+        else {
+            nSolicitud = txtNroSolicitud.getText().toString().trim();
+        }
 
         /* maquina */
         sMaquina = spMaquina.getSelectedItem().toString() ;
@@ -367,7 +438,7 @@ public class ListaSolServicios extends AppCompatActivity {
         Log.i("SS estado" , sEstado);
 
         try {
-            asyncTaskSolcit = getListaSolcitudServTask.execute(sCompania,sFlagFecha,sFechaIni,sFechaFin,sMaquina,sPrioridad,sEstado,String.valueOf(nPersonaSolict));
+            asyncTaskSolcit = getListaSolcitudServTask.execute(sCompania,sFlagFecha,sFechaIni,sFechaFin,sMaquina,sPrioridad,sEstado,String.valueOf(nPersonaSolict),nSolicitud);
             lisdata = (ArrayList<SolicitudServicio>)asyncTaskSolcit.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -381,6 +452,8 @@ public class ListaSolServicios extends AppCompatActivity {
             lblCantReg.setText("LISTA DE SOLCITIUDES      |    " + String.valueOf(LVSolcitudesServ.getCount())+ " REGISTROS.");
         } else {
             CreateCustomToast("No se encontro resultados ", Constans.icon_warning, Constans.layot_warning);
+            LVSolcitudesServ.setAdapter(null);
+            lblCantReg.setText("LISTA DE SOLCITIUDES      |   0 REGISTROS.");
 
         }
 
@@ -584,8 +657,16 @@ public class ListaSolServicios extends AppCompatActivity {
             for (int i = 0 ; i < listEmpleadosAsignados.size();i++){
                 String movil  = BuscarNumeroEmp(listEmpleadosAsignados.get(i).getN_empleado(),listEmpleadosGeneral);
                 String sProblema = adapter.GetItem(SelectedItem).getC_descriproblema();
+                String ccsto   = adapter.GetItem(SelectedItem).getC_ccostonomb();
+                String sTipo = adapter.GetItem(SelectedItem).getC_tiposolcitud();
+                String sMq = adapter.GetItem(SelectedItem).getC_maquinanomb();
                 String sSolcitud = String.valueOf(adapter.GetItem(SelectedItem).getN_solicitud());
-                String mensaje = "Estimado, se le ha asignado la solicitud Nro "+sSolcitud+ ", hacer la revision correspondiente del caso;"+ "\n"+ " Descripcion del problema : " +sProblema;
+                String mensaje = "Estimado, se le ha asignado la solicitud de mantenimiento Nro "+sSolcitud+ ", hacer la revision correspondiente del caso;"+ "\n"+
+                                "Centro Costo : " + ccsto +  "\n"+
+                                "Tipo :" + sTipo+  "\n"+
+                                "Maquina:" + sMq +  "\n"+
+                                "Descripcion gral. del problema : " +sProblema;
+                Log.i("Sms soliicitud " , mensaje);
                 sendSMS(movil,mensaje);
             }
         }

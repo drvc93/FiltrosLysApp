@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,9 @@ public class ReqLogisticaAdapter extends ArrayAdapter<RequisicionLogCab> {
         TextView lblPrioridad ;
         TextView lblEstado ;
         TextView lblCometario ;
+        TextView lblClasificacion ;
+        TextView lblRepStock ;
+        TextView lblAlmacen ;
 
     }
 
@@ -61,6 +65,9 @@ public class ReqLogisticaAdapter extends ArrayAdapter<RequisicionLogCab> {
             viewHolder.lblPrioridad = (TextView)convertView.findViewById(R.id.lblPrioridadRL);
             viewHolder.lblEstado = (TextView)convertView.findViewById(R.id.lblEstadoRL);
             viewHolder.lblCometario = (TextView)convertView.findViewById(R.id.lblCometarioRL);
+            viewHolder.lblAlmacen = (TextView)convertView.findViewById(R.id.lblAlmacen);
+            viewHolder.lblClasificacion = (TextView)convertView.findViewById(R.id.lblClasificacion);
+            viewHolder.lblRepStock = (TextView)convertView.findViewById(R.id.lblReposicionRL);
             convertView.setTag(viewHolder);
 
         }
@@ -75,6 +82,9 @@ public class ReqLogisticaAdapter extends ArrayAdapter<RequisicionLogCab> {
         viewHolder.lblPrioridad.setText(r.getC_prioridadnomb());
         viewHolder.lblEstado.setText(r.getC_estadonomb());
         viewHolder.lblCometario.setText(r.getC_cometario());
+        viewHolder.lblRepStock.setText(r.getC_reposicionstock());
+        viewHolder.lblClasificacion.setText(r.getC_clasificacion());
+        viewHolder.lblAlmacen.setText(r.getC_almacennomb());
         return convertView;
 
     }

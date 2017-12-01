@@ -12,17 +12,37 @@ public class RequisicionLogDet {
     private String c_cantidadpedida;
     private String c_stockdisponible ;
     private String c_stockminimo ;
+    private String c_comoditycodigo ;
+    private String c_centrocosto ;
 
-    public RequisicionLogDet(String c_compania, String c_item, String c_descripcion, String c_cantidadpedida, String c_stockdisponible, String c_stockminimo) {
+    public RequisicionLogDet(String c_compania, String c_item, String c_descripcion, String c_cantidadpedida, String c_stockdisponible, String c_stockminimo, String c_comoditycodigo, String c_centrocosto) {
         this.c_compania = c_compania;
         this.c_item = c_item;
         this.c_descripcion = c_descripcion;
         this.c_cantidadpedida = c_cantidadpedida;
         this.c_stockdisponible = c_stockdisponible;
         this.c_stockminimo = c_stockminimo;
+        this.c_comoditycodigo = c_comoditycodigo;
+        this.c_centrocosto = c_centrocosto;
     }
 
     public RequisicionLogDet() {
+    }
+
+    public String getC_comoditycodigo() {
+        return c_comoditycodigo;
+    }
+
+    public void setC_comoditycodigo(String c_comoditycodigo) {
+        this.c_comoditycodigo = c_comoditycodigo;
+    }
+
+    public String getC_centrocosto() {
+        return c_centrocosto;
+    }
+
+    public void setC_centrocosto(String c_centrocosto) {
+        this.c_centrocosto = c_centrocosto;
     }
 
     public String getC_compania() {

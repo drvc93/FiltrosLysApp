@@ -20,6 +20,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,9 +36,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.StringReader;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -47,21 +51,25 @@ import DataBase.MenuDB;
 import DataBase.ProdMantDataBase;
 import DataBase.UsuarioDB;
 import Tasks.GetAccesosDataTask;
+import Tasks.GetDefaultCompaniaTask;
 import Tasks.GetMenuDataTask;
 import Tasks.GetTipoIpTask;
 import Tasks.GetUsuariosTask;
+import Tasks.RefrescarBaseDeDatosTask;
 import Tasks.SincronizarAccesosTask;
 import Util.Constans;
 
 public class Login extends AppCompatActivity {
 
     //VARIABLES
-    String GenFile ;
+    TextView lblModoConexion ;
+    String GenFile,CompDefault  ;
     Button btnIngresar;
     EditText txtUser, txtPassword;
     ActionBar actionBar;
     int currentapiVersion;
     SharedPreferences preferences;
+    String sModoTrabajo ;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -78,21 +86,25 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setTitle("Login");
 
-        isStoragePermissionGranted();
+       /// isStoragePermissionGranted();
 
          preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
 
         /** /////////  GENERANDO ARCHIVOS  DE CONFIG. IP   ///////// **/
         GenFile = preferences.getString("GenFile",null);
+        CompDefault = preferences.getString("CompDefault" , null) ;
 
-        if ( isStoragePermissionGranted()==true){
             if ( GenFile  == null) {
-                CrearndoArchivosConfig();
+                ActivityCompat.requestPermissions(Login.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        1);
 
             }
 
-        }
+        if ( CompDefault  == null) {
+            GetDefaultCompania();
 
+        }
 
 
          currentapiVersion = android.os.Build.VERSION.SDK_INT;
@@ -112,9 +124,18 @@ public class Login extends AppCompatActivity {
         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtUser = (EditText) findViewById(R.id.txtUser);
+        lblModoConexion  = (TextView)  findViewById(R.id.txtModoConexion);
         txtUser.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         //***********************
 
+         sModoTrabajo =  preferences.getString("TipoConexion",null);
+         if (sModoTrabajo == null ){
+             lblModoConexion.setText("Se esta trabajando en modo Local.");
+
+         }
+         else if (sModoTrabajo.equals("E")){
+             lblModoConexion.setText("Se esta trabajando en modo Externo.");
+         }
 
 
         txtUser.addTextChangedListener(new TextWatcher() {
@@ -150,14 +171,16 @@ public class Login extends AppCompatActivity {
                 String user  = txtUser.getText().toString();
                 String pass = txtPassword.getText().toString();
                 Sync = preferences.getString("Sync",null);
-                 if (Sync== null) {
-                     if(user.equals("MAESTRO") &&  pass.equals("MAESTRO"))
+
+                     if(user.equals("MAESTRO") &&  pass.equals("maestro")) {
                          ShowDialogAlert();
-                 }
+                         return;
+                     }
+
 
                 if(Sync!=null) {
 
-                    boolean res = db.AutenticarUsuario(user, pass);
+                    boolean res = db.AutenticarUsuario(user, pass.toUpperCase());
                     if (res == true) {
 
                         SharedPreferences.Editor editor = preferences.edit();
@@ -185,6 +208,58 @@ public class Login extends AppCompatActivity {
             }
         });
 
+    }
+
+    public  void  GetDefaultCompania (){
+    String sComp =  "";
+    AsyncTask <String,String,String>  asyncTask ;
+        GetDefaultCompaniaTask getDefaultCompaniaTask =  new GetDefaultCompaniaTask();
+
+        try {
+            asyncTask  = getDefaultCompaniaTask.execute();
+            sComp = asyncTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        if (TextUtils.isEmpty(sComp)){
+            CreateCustomToast("Falta configurar la compania por default",Constans.icon_warning,Constans.layot_warning);
+            return;
+        }
+        else  {
+            Log.i("CompDefault  > " , sComp);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("CompDefault",sComp);
+            editor.commit();
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    CrearndoArchivosConfig();
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(Login.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     @Override
@@ -233,6 +308,7 @@ public class Login extends AppCompatActivity {
         progress.setIndeterminate(true);
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIcon(icon);
+
         return  progress;
 
     }
@@ -241,6 +317,23 @@ public class Login extends AppCompatActivity {
 
         ProgressDialog progressDialog;
         int icn = (R.drawable.icn_sync_48);
+        String resultRefresh = "";
+        RefrescarBaseDeDatosTask refrescarBaseDeDatosTask = new RefrescarBaseDeDatosTask() ;
+        AsyncTask<String,String,String >asyncTaskRefresh ;
+        try {
+            asyncTaskRefresh = refrescarBaseDeDatosTask.execute();
+            resultRefresh = (String)asyncTaskRefresh.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if (resultRefresh.equals("OK")){
+
+        }else {
+           return;
+        }
 
 
         // INSERT MENUS IN SQLITE
@@ -383,14 +476,20 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         String Ipserver = "";
+                        String tipoconexion = "";
                         int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                         if (selectedPosition == 0) {
                             Ipserver = Constans.ReaderFileLocal();
+                            tipoconexion = "L";
+
                         } else {
 
                             Ipserver = Constans.ReaderFileExterno();
-
+                            tipoconexion = "E";
                         }
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("TipoConexion",tipoconexion);
+                        editor.commit();
 
                         Constans.SetConexion("P", Ipserver);
                         int i = android.os.Process.myPid();

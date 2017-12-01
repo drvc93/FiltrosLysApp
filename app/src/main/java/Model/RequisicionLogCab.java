@@ -18,8 +18,15 @@ public class RequisicionLogCab {
     private String c_cometario ;
     private String c_estado ;
     private String c_estadonomb ;
+    private String c_clasificacion;
+    private String c_reposicionstock ;
+    private String c_almacennomb ;
 
-    public RequisicionLogCab(String c_compania, String c_numeroreq, String c_fechacreacion, String c_usuariocreacion, String c_prioridad, String c_prioridadnomb, String c_usuarioaprobacion, String c_fechaaprobacion, String c_ccosto, String c_ccostonomb, String c_cometario, String c_estado, String c_estadonomb) {
+
+    public RequisicionLogCab() {
+    }
+
+    public RequisicionLogCab(String c_compania, String c_numeroreq, String c_fechacreacion, String c_usuariocreacion, String c_prioridad, String c_prioridadnomb, String c_usuarioaprobacion, String c_fechaaprobacion, String c_ccosto, String c_ccostonomb, String c_cometario, String c_estado, String c_estadonomb, String c_clasificacion, String c_reposicionstock, String c_almacennomb) {
         this.c_compania = c_compania;
         this.c_numeroreq = c_numeroreq;
         this.c_fechacreacion = c_fechacreacion;
@@ -33,9 +40,33 @@ public class RequisicionLogCab {
         this.c_cometario = c_cometario;
         this.c_estado = c_estado;
         this.c_estadonomb = c_estadonomb;
+        this.c_clasificacion = c_clasificacion;
+        this.c_reposicionstock = c_reposicionstock;
+        this.c_almacennomb = c_almacennomb;
     }
 
-    public RequisicionLogCab() {
+    public String getC_clasificacion() {
+        return c_clasificacion;
+    }
+
+    public void setC_clasificacion(String c_clasificacion) {
+        this.c_clasificacion = c_clasificacion;
+    }
+
+    public String getC_reposicionstock() {
+        return c_reposicionstock;
+    }
+
+    public void setC_reposicionstock(String c_reposicionstock) {
+        this.c_reposicionstock = c_reposicionstock;
+    }
+
+    public String getC_almacennomb() {
+        return c_almacennomb;
+    }
+
+    public void setC_almacennomb(String c_almacennomb) {
+        this.c_almacennomb = c_almacennomb;
     }
 
     public String getC_compania() {

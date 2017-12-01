@@ -34,6 +34,7 @@ public class GetListaSolcitudServTask extends AsyncTask <String,String, ArrayLis
         request.addProperty("prioridad", strings[5]);
         request.addProperty("estado", strings[6]);
         request.addProperty("personasolicit", strings[7]);
+        request.addProperty("nsolicitud", strings[8]);
 
 
 
@@ -63,15 +64,16 @@ public class GetListaSolcitudServTask extends AsyncTask <String,String, ArrayLis
                 s.setC_compania(ic.getProperty(2).toString());
                 s.setC_descfalla(ic.getProperty(3).toString());
                 s.setC_descriproblema(ic.getProperty(4).toString());
-                s.setC_estado(ic.getProperty(5).toString());
-                s.setC_fechareg(ic.getProperty(6).toString());
-                s.setC_maquina(ic.getProperty(7).toString());
-                s.setC_maquinanomb(ic.getProperty(8).toString());
-                s.setC_personasolicitud(ic.getProperty(9).toString());
-                s.setC_prioridad(ic.getProperty(10).toString());
-                s.setC_tiposolcitud(ic.getProperty(11).toString());
-                s.setC_usuariosolicit(ic.getProperty(12).toString());
-                s.setN_solicitud(Integer.valueOf(ic.getProperty(13).toString()));
+                s.setC_empleadoAsignados(ic.getProperty(5).toString());
+                s.setC_estado(ic.getProperty(6).toString());
+                s.setC_fechareg(ic.getProperty(7).toString());
+                s.setC_maquina(ic.getProperty(8).toString());
+                s.setC_maquinanomb(ic.getProperty(9).toString());
+                s.setC_personasolicitud(ic.getProperty(10).toString());
+                s.setC_prioridad(ic.getProperty(11).toString());
+                s.setC_tiposolcitud(ic.getProperty(12).toString());
+                s.setC_usuariosolicit(ic.getProperty(13).toString());
+                s.setN_solicitud(Integer.valueOf(ic.getProperty(14).toString()));
 
                 listSolicitudes.add(s);
 

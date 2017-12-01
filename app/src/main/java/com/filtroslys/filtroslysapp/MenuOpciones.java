@@ -47,6 +47,7 @@ import Tasks.GetMenuDataTask;
 import Tasks.GetPeriodosInspTask;
 import Tasks.GetTipoRevisionGTask;
 import Tasks.GetUsuariosTask;
+import Tasks.RefrescarBaseDeDatosTask;
 import Tasks.SincronizarAccesosTask;
 import Tasks.SincronizarMaestrosTask;
 import Util.Constans;
@@ -250,7 +251,7 @@ public class MenuOpciones extends AppCompatActivity {
             Intent intent = new Intent(MenuOpciones.this, ListaSolServicios.class);
             startActivity(intent);
         }
-        if (var_concatenado.equals("010401")) {
+        if (var_concatenado.equals("020101")) {
             Intent intent = new Intent(MenuOpciones.this, ListaReqLog.class);
             startActivity(intent);
         }
@@ -392,6 +393,24 @@ public class MenuOpciones extends AppCompatActivity {
 
 
     public  void  SincronizacionMaestros (){
+
+        String resultRefresh = "";
+        RefrescarBaseDeDatosTask refrescarBaseDeDatosTask = new RefrescarBaseDeDatosTask() ;
+        AsyncTask<String,String,String >asyncTaskRefresh ;
+        try {
+            asyncTaskRefresh = refrescarBaseDeDatosTask.execute();
+            resultRefresh = (String)asyncTaskRefresh.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if (resultRefresh.equals("OK")){
+
+        }else {
+            return;
+        }
 
         ProgressDialog progressDialogo = new ProgressDialog(MenuOpciones.this);
         progressDialogo.setMessage("Estamos sincronizando espere por favor...");

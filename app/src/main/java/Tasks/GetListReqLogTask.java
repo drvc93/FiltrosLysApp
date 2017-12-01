@@ -33,6 +33,7 @@ public class GetListReqLogTask extends AsyncTask<String,String,ArrayList<Requisi
         request.addProperty("estado", strings[2]);
         request.addProperty("fechainicio", strings[3]);
         request.addProperty("fechafin", strings[4]);
+        request.addProperty("nroreq", strings[5]);
 
 
 
@@ -58,19 +59,22 @@ public class GetListReqLogTask extends AsyncTask<String,String,ArrayList<Requisi
 
                 RequisicionLogCab r = new RequisicionLogCab();
 
-                r.setC_ccosto(ic.getProperty(0).toString());
-                r.setC_ccostonomb(ic.getProperty(1).toString());
-                r.setC_cometario(ic.getProperty(2).toString());
-                r.setC_compania(ic.getProperty(3).toString());
-                r.setC_estado(ic.getProperty(4).toString());
-                r.setC_estadonomb(ic.getProperty(5).toString());
-                r.setC_fechaaprobacion(ic.getProperty(6).toString());
-                r.setC_fechacreacion(ic.getProperty(7).toString());
-                r.setC_numeroreq(ic.getProperty(8).toString());
-                r.setC_prioridad(ic.getProperty(9).toString());
-                r.setC_prioridadnomb(ic.getProperty(10).toString());
-                r.setC_usuarioaprobacion(ic.getProperty(11).toString());
-                r.setC_usuariocreacion(ic.getProperty(12).toString());
+                r.setC_almacennomb(ic.getProperty(0).toString());
+                r.setC_ccosto(ic.getProperty(1).toString());
+                r.setC_ccostonomb(ic.getProperty(2).toString());
+                r.setC_clasificacion(ic.getProperty(3).toString());
+                r.setC_cometario(ic.getProperty(4).toString());
+                r.setC_compania(ic.getProperty(5).toString());
+                r.setC_estado(ic.getProperty(6).toString());
+                r.setC_estadonomb(ic.getProperty(7).toString());
+                r.setC_fechaaprobacion(ic.getProperty(8).toString());
+                r.setC_fechacreacion(ic.getProperty(9).toString());
+                r.setC_numeroreq(ic.getProperty(10).toString());
+                r.setC_prioridad(ic.getProperty(11).toString());
+                r.setC_prioridadnomb(ic.getProperty(12).toString());
+                r.setC_reposicionstock(ic.getProperty(13).toString());
+                r.setC_usuarioaprobacion(ic.getProperty(14).toString());
+                r.setC_usuariocreacion(ic.getProperty(15).toString());
                 listaReq.add(r);
 
 

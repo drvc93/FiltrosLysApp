@@ -19,8 +19,9 @@ public class SolicitudServicio {
     private String c_estado ;
     private String c_fechareg ;
     private String c_tiposolcitud;
+    private String c_empleadoAsignados ;
 
-    public SolicitudServicio(String c_compania, int n_solicitud, String c_maquina, String c_maquinanomb, String c_ccosto, String c_ccostonomb, String c_personasolicitud, String c_usuariosolicit, String c_prioridad, String c_descriproblema, String c_descfalla, String c_estado, String c_fechareg, String c_tiposolcitud) {
+    public SolicitudServicio(String c_compania, int n_solicitud, String c_maquina, String c_maquinanomb, String c_ccosto, String c_ccostonomb, String c_personasolicitud, String c_usuariosolicit, String c_prioridad, String c_descriproblema, String c_descfalla, String c_estado, String c_fechareg, String c_tiposolcitud, String c_empleadoAsignados) {
         this.c_compania = c_compania;
         this.n_solicitud = n_solicitud;
         this.c_maquina = c_maquina;
@@ -35,9 +36,18 @@ public class SolicitudServicio {
         this.c_estado = c_estado;
         this.c_fechareg = c_fechareg;
         this.c_tiposolcitud = c_tiposolcitud;
+        this.c_empleadoAsignados = c_empleadoAsignados;
     }
 
     public  SolicitudServicio () {}
+
+    public String getC_empleadoAsignados() {
+        return c_empleadoAsignados;
+    }
+
+    public void setC_empleadoAsignados(String c_empleadoAsignados) {
+        this.c_empleadoAsignados = c_empleadoAsignados;
+    }
 
     public String getC_compania() {
         return c_compania;

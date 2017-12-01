@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -54,7 +55,10 @@ public class SincronizarAccesosTask  extends AsyncTask<Void,Void,Void>{
 
             for (int i = 0 ; i <listUsuario.size(); i++){
 
+                listUsuario.get(i).setCodigoUsuario(listUsuario.get(i).getCodigoUsuario().trim());
                 prodMantDataBase.InsertUsuatios(listUsuario.get(i));
+
+                Log.i( "usuarios"  +String.valueOf(i),listUsuario.get(i).getCodigoUsuario() + " | " + listUsuario.get(i).getClave());
                // publishProgress(String.valueOf(i));
             }
         }
