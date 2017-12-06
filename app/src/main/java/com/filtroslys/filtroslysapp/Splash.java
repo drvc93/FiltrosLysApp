@@ -2,6 +2,7 @@ package com.filtroslys.filtroslysapp;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,10 +26,10 @@ public class Splash extends AppCompatActivity {
             actionBar = getSupportActionBar();
             actionBar.hide();
         }
-
-
-        // Hide title bar
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if (currentapiVersion>=20){
+            actionBar.hide();
+            getWindow().setStatusBarColor(Color.parseColor("#fc0101"));
+        }
 
 
 
@@ -36,18 +37,15 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
 
-                // Start the next activity
+
                 Intent mainIntent = new Intent().setClass(
                         Splash.this, Login.class);
                 startActivity(mainIntent);
 
-                // Close the activity so the user won't able to go back this
-                // activity pressing Back button
                 finish();
             }
         };
 
-        // Simulate a long loading process on application startup.
         Timer timer = new Timer();
         timer.schedule(task, SPLASH_SCREEN_DELAY);
     }

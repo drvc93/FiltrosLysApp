@@ -19,6 +19,7 @@ import Util.Constans;
 
 public class GetCompaniaXUsuarioLogiTask extends AsyncTask<String,String,ArrayList<UsuarioCompania>> {
     ArrayList<UsuarioCompania> result;
+    public  String msj  = "OK";
     @Override
     protected ArrayList<UsuarioCompania> doInBackground(String... strings) {
         ArrayList<UsuarioCompania> listaCompanias = new ArrayList<UsuarioCompania>();
@@ -66,7 +67,9 @@ public class GetCompaniaXUsuarioLogiTask extends AsyncTask<String,String,ArrayLi
 
         } catch (Exception e) {
             Log.i("AsynckTask CompaniaXUsuario Logistica  Error > ", e.getMessage());
-
+            if (e.getMessage().indexOf("to connect")>0){
+                msj = "Error de conexion al servidor, revise la configuración de conexión.";
+            }
             // result = null;
         }
 

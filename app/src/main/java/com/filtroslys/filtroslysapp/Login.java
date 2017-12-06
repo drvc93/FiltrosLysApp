@@ -130,11 +130,14 @@ public class Login extends AppCompatActivity {
 
          sModoTrabajo =  preferences.getString("TipoConexion",null);
          if (sModoTrabajo == null ){
-             lblModoConexion.setText("Se esta trabajando en modo Local.");
+             lblModoConexion.setText("Se esta trabajando en modo Externo.");
 
          }
          else if (sModoTrabajo.equals("E")){
              lblModoConexion.setText("Se esta trabajando en modo Externo.");
+         }
+         else if (sModoTrabajo.equals("L")){
+             lblModoConexion.setText("Se esta trabajando en modo Local.");
          }
 
 
@@ -332,6 +335,7 @@ public class Login extends AppCompatActivity {
         if (resultRefresh.equals("OK")){
 
         }else {
+            CreateCustomToast("Error al actualizar información: "+ resultRefresh,Constans.icon_error,Constans.layout_error);
            return;
         }
 

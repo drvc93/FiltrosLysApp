@@ -42,7 +42,7 @@ public class Constans {
     public static  String Carpeta_foto= "LysConfig/Fotos/";
     public static final String NroConpania = "00100000";
     public static  final  String FolderConfig ="appConfig";
-    public static  final  String IPDefault  =   "100.100.100.57:8080" ;// "190.187.181.56:80";
+    public static  final  String IPDefault  = "190.187.181.56:80" ;  //"100.100.100.57:8080" ;// "190.187.181.56:80";
     public static  final  String FolderWs = "LysWsRest" ;
 
     public static void SetConexion(String LocalOExt, String con) {
@@ -66,7 +66,6 @@ public class Constans {
             writer.close();
         } catch (IOException e) {
         }
-
     }
 
 
@@ -97,7 +96,7 @@ public class Constans {
             File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + FolderConfig+File.separator + "local.txt");
             FileInputStream fIn = new FileInputStream(myFile);
             BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
-            String aDataRow = "";
+            String aDataRow ;
             //    String aBuffer = "";
             while ((aDataRow = myReader.readLine()) != null) {
                 aBuffer += aDataRow + "\n";
@@ -153,10 +152,7 @@ public class Constans {
 
 
     }
-
     public static void ifExistCreateFile(String TipoIp , String sIP) {
-
-        boolean value;
         try {
 
             File folder = new  File(Environment.getExternalStorageDirectory() + File.separator + FolderConfig );

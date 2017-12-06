@@ -18,5 +18,6 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/bg_splash_220" />
+
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

@@ -321,6 +321,24 @@ public class MenuOpciones extends AppCompatActivity {
         ProgressDialog progressDialog;
         int icn = (R.drawable.icn_sync_48);
 
+        String resultRefresh = "";
+        RefrescarBaseDeDatosTask refrescarBaseDeDatosTask = new RefrescarBaseDeDatosTask() ;
+        AsyncTask<String,String,String >asyncTaskRefresh ;
+        try {
+            asyncTaskRefresh = refrescarBaseDeDatosTask.execute();
+            resultRefresh = (String)asyncTaskRefresh.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if (resultRefresh.equals("OK")){
+
+        }else {
+            CreateCustomToast("Error al actualizar información: "+ resultRefresh,Constans.icon_error,Constans.layout_error);
+            return;
+        }
 
         // INSERT MENUS IN SQLITE
 
@@ -409,6 +427,7 @@ public class MenuOpciones extends AppCompatActivity {
         if (resultRefresh.equals("OK")){
 
         }else {
+            CreateCustomToast("Error al actualizar información: "+ resultRefresh,Constans.icon_error,Constans.layout_error);
             return;
         }
 
@@ -426,6 +445,7 @@ public class MenuOpciones extends AppCompatActivity {
         // get list maquinas
       listMaquinas = new ArrayList<MaquinaDB>();
         GetMaquinasTask getmaquinasTask = new GetMaquinasTask();
+        getmaquinasTask.context = MenuOpciones.this;
         AsyncTask asyncTaskMaquina ;
 
         try {
@@ -496,6 +516,11 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+       /* if (listCentroCosto.size()<= 0 && listMaquinas.size()<= 0){
+            CreateCustomToast("No se pudo sincrnizar la informacion " , Constans.icon_warning,Constans.layot_warning);
+            return;
+        }*/
 
         Log.i("Pre ejecuion de maestroTask",".");
         // progress dialog with asynctask

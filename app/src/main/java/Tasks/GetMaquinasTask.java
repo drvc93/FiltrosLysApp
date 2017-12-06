@@ -1,7 +1,10 @@
 package Tasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.widget.Toast;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -19,6 +22,7 @@ import Util.Constans;
  */
 public class GetMaquinasTask extends AsyncTask<String,String,ArrayList<MaquinaDB>> {
     ArrayList<MaquinaDB> result ;
+    public Context context ;
 
 
     @Override
@@ -76,6 +80,7 @@ public class GetMaquinasTask extends AsyncTask<String,String,ArrayList<MaquinaDB
 
         } catch (Exception e) {
             Log.i("AsynckTask maquinas error---", e.getMessage());
+
            // result = null;
         }
 

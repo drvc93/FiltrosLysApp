@@ -202,7 +202,7 @@ public class ListaReqLog extends AppCompatActivity {
             sCompaniaSel = sCompaniaSel.substring(sCompaniaSel.indexOf("|")+1).trim();
         }
         else {
-            CreateCustomToast("Su usuario no tiene asignado ninguna compania.",Constans.icon_error,Constans.layout_error);
+          ///  CreateCustomToast("Su usuario no tiene asignado ninguna compania.",Constans.icon_error,Constans.layout_error);
             return;
         }
         /**  CENTRO  DE COSTO **/
@@ -348,7 +348,13 @@ public class ListaReqLog extends AppCompatActivity {
 
         }
         else {
-            CreateCustomToast("El usuario : "+codUser+" no tiene compania asignada. ", Constans.icon_warning, Constans.layot_warning);
+            if (getCompaniasXUsuarioTask.msj.equals("OK")){
+                CreateCustomToast("El usuario : "+codUser+" no tiene compania asignada. ", Constans.icon_warning, Constans.layot_warning);
+            }
+            else {
+                CreateCustomToast(getCompaniasXUsuarioTask.msj, Constans.icon_warning, Constans.layot_warning);
+            }
+
         }
 
     }
@@ -404,7 +410,7 @@ public class ListaReqLog extends AppCompatActivity {
     public void MenuLista(final int Opcicion) {
 
         final int SelectedItem = Opcicion;
-        final CharSequence[] items = { "01.- Aprobar Requisicion","02.- Rechazar Requsicion" , "03.- Ver Detalle"};
+        final CharSequence[] items = { "01.- Aprobar Requisicion","02.- Rechazar Requisición" , "03.- Ver Detalle"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ListaReqLog.this);
         builder.setTitle("Seleccione una opción  | NºReq.: "+adapter.GetItem(SelectedItem).getC_numeroreq());

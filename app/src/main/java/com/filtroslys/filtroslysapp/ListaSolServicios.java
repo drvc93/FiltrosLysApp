@@ -324,6 +324,7 @@ public class ListaSolServicios extends AppCompatActivity {
     public  void LoadSpinerCompania () {
 
         getCompaniasXUsuarioTask getCompaniasXUsuarioTask = new getCompaniasXUsuarioTask();
+
         AsyncTask<String,String,ArrayList<UsuarioCompania>> asyncTask;
         ArrayList<UsuarioCompania> listaCompanias = null ;
         ArrayList<String> dataSpinerComp = new ArrayList<String>() ;
@@ -351,6 +352,14 @@ public class ListaSolServicios extends AppCompatActivity {
 
         }
         else {
+            if (getCompaniasXUsuarioTask.msj.equals("OK")){
+
+            }
+            else {
+                CreateCustomToast( getCompaniasXUsuarioTask.msj, Constans.icon_warning, Constans.layot_warning);
+                return;
+            }
+
             CreateCustomToast("El usuario : "+codUser+" no tiene compania asignada. ", Constans.icon_warning, Constans.layot_warning);
         }
 
@@ -359,16 +368,21 @@ public class ListaSolServicios extends AppCompatActivity {
 
     public  void  LoadDataLista () {
           String nSolicitud;
-         if (spCompania == null  && spCompania.getCount()<=0) {
-          return;
-         }
 
 
-        sCompania= spCompania.getSelectedItem().toString();
-        sCompania = sCompania.substring(sCompania.indexOf("|")+1).trim();
-        sFlagFecha = "S";
-        sFechaIni =  txtFechaIni.getText().toString();
-        sFechaFin =  txtFechaFin.getText().toString() ;
+        if (spCompania.getAdapter()!=null && spCompania.getCount()>0) {
+            sCompania = spCompania.getSelectedItem().toString();
+            sCompania = sCompania.substring(sCompania.indexOf("|") + 1).trim();
+            sFlagFecha = "S";
+            sFechaIni = txtFechaIni.getText().toString();
+            sFechaFin = txtFechaFin.getText().toString();
+        }
+        else
+        {
+            return;
+        }
+
+
         if (TextUtils.isEmpty(txtNroSolicitud.getText().toString().trim())){
             nSolicitud = "0" ;
         }

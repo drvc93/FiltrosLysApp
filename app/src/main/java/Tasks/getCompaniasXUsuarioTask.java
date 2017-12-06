@@ -1,7 +1,9 @@
 package Tasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -21,6 +23,7 @@ import Util.Constans;
 public class getCompaniasXUsuarioTask extends AsyncTask<String,String,ArrayList<UsuarioCompania>> {
 
     ArrayList<UsuarioCompania> result;
+    public String msj  = "OK";
     @Override
     protected ArrayList<UsuarioCompania> doInBackground(String... strings) {
         ArrayList<UsuarioCompania> listaCompanias = new ArrayList<UsuarioCompania>();
@@ -68,7 +71,11 @@ public class getCompaniasXUsuarioTask extends AsyncTask<String,String,ArrayList<
 
         } catch (Exception e) {
             Log.i("AsynckTask CompaniaXUsuario  Error > ", e.getMessage());
+            if (e.getMessage().indexOf("to connect")>0){
+                msj = "Error de conexion al servidor, revise la configuración de conexión.";
+            }
 
+            msj = e.getMessage();
             // result = null;
         }
 

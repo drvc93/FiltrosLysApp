@@ -50,6 +50,10 @@ public class RefrescarBaseDeDatosTask extends AsyncTask<String,String,String> {
         } catch (Exception e) {
             result = e.getMessage();
             Log.i("RefreshDatabase error> ", e.getMessage());
+
+            if (e.getMessage().indexOf("to connect")>0){
+                result = "Error de conexion al servidor, revise la configuración de conexión.";
+            }
         }
 
         return result;
