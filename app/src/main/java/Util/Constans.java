@@ -43,7 +43,7 @@ public class Constans {
     public static final String NroConpania = "00100000";
     public static  final  String FolderConfig ="appConfig";
     public static  final  String IPDefault  = "190.187.181.56:80" ;  //"100.100.100.57:8080" ;// "190.187.181.56:80";
-    public static  final  String FolderWs = "LysWsRest" ;
+    public static  final  String FolderWs = "WSLYS" ;// "LysWsRest" ;
 
     public static void SetConexion(String LocalOExt, String con) {
 

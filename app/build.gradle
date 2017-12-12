@@ -39,4 +39,5 @@ dependencies {
     compile 'com.android.support:design:24.0.0'
     compile files('libs/ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar')
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

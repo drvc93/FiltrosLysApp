@@ -30,12 +30,12 @@
             android:layout_height="match_parent">
 
             <EditText
+                android:id="@+id/txtInspGComent"
                 android:layout_width="470dp"
                 android:layout_height="fill_parent"
-                android:id="@+id/txtInspGComent"
-                android:focusableInTouchMode="false"
-                android:clickable="true"
                 android:background="@drawable/edittext_round_border"
+                android:clickable="true"
+                android:focusableInTouchMode="false"
                 android:hint="Comentario" />
 
             <ImageView

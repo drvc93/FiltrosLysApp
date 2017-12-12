@@ -236,13 +236,13 @@ public class MenuOpciones extends AppCompatActivity {
         if (var_concatenado.equals("010202")) {
             Intent intent = new Intent(MenuOpciones.this, InspeccionGenListLinea.class);
             intent.putExtra("tipoSincro", "Online");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+           // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
         if (var_concatenado.equals("010203")) {
             Intent intent = new Intent(MenuOpciones.this, InspeccionGenListLinea.class);
             intent.putExtra("tipoSincro", "Offline");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+           // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
 
@@ -433,7 +433,7 @@ public class MenuOpciones extends AppCompatActivity {
 
         ProgressDialog progressDialogo = new ProgressDialog(MenuOpciones.this);
         progressDialogo.setMessage("Estamos sincronizando espere por favor...");
-        progressDialogo.setTitle("Sinconización");
+        progressDialogo.setTitle("Sincronización");
         progressDialogo.setIcon(R.drawable.icn_sync_48);
 
         // Arrays variables

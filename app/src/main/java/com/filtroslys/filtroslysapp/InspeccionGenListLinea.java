@@ -47,13 +47,13 @@ public class InspeccionGenListLinea extends AppCompatActivity {
     EditText txtFInicio, txtFFin;
     ListView LVHinspeGen;
     HistorialInspGenAdapater adapater;
-    CoordinatorLayout coord;
+    LinearLayout coord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspeccion_gen_list_linea);
-        coord = (CoordinatorLayout) findViewById(R.id.coordLayoutGen);
+        coord = (LinearLayout) findViewById(R.id.coordLayoutGen);
         spTipoInsp = (Spinner) findViewById(R.id.spHGTipoInsp);
         txtFInicio = (EditText) findViewById(R.id.txtHGFInici);
         txtFFin = (EditText) findViewById(R.id.txtHGFFin);
@@ -77,7 +77,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
             actionBar.hide();
         }
 
-        if (GetDisplaySize() < 6) {
+        if (GetDisplaySize() < 4.5) {
 
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
@@ -103,12 +103,13 @@ public class InspeccionGenListLinea extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 HistorialInspGenDB h = adapater.GetItem(i);
-                if (h.getEstado().equals("E") || h.getEstado().equals("PE")) {
+                Log.i("Estado Insp", h.getEstado());
+                if (h.getEstado().equals("E") || h.getEstado().equals("PENDIENTE")) {
                     Intent intent = new Intent(InspeccionGenListLinea.this, InspeccionGen.class);
                     intent.putExtra("tipoMant", "Visor");
                     intent.putExtra("tipoSincro", tipoSincro);
                     intent.putExtra("xcorrelativo", h.getNumero());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                   // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
 
                 } else if (h.getEstado().equals("I")) {
@@ -116,7 +117,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
                     intent.putExtra("tipoMant", "Editar");
                     intent.putExtra("tipoSincro", tipoSincro);
                     intent.putExtra("xcorrelativo", h.getNumero());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                   // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
 
                 }
@@ -132,8 +133,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int X = (int) event.getX();
-        int Y = (int) event.getY();
+
         int eventaction = event.getAction();
 
         switch (eventaction) {
@@ -217,6 +217,13 @@ public class InspeccionGenListLinea extends AppCompatActivity {
 
         lisdata = db.GetHistorialInsGenpList(accion, GetValueSpiner(), fechaInicio, fechaFin);
         if (lisdata != null && lisdata.size() > 0) {
+
+            for (int i = 0  ; i <  lisdata.size();i++){
+                HistorialInspGenDB  h   = lisdata.get(i);
+                String sfecha =  h.getFecha();
+                sfecha = sfecha.substring(3,5)+ "/" + sfecha.substring(0,2) + "/" + sfecha.substring(6,10);
+                lisdata.get(i).setFecha(sfecha);
+            }
 
             adapater = new HistorialInspGenAdapater(InspeccionGenListLinea.this, R.layout.item_list_busq_insp_gen, lisdata);
             LVHinspeGen.setAdapter(adapater);
@@ -318,7 +325,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
                         String mes = String.format("%02d", month);
 
                         String dia = String.format("%02d", day);
-                        txtFecha.setText(mes + "/" + dia + "/" + String.valueOf(year));
+                        txtFecha.setText(dia + "/" + mes + "/" + String.valueOf(year));
                         if (etiqueta.equals("Inicio")) {
                             FinicioGlobal = String.valueOf(year) + "-" + mes + "-" + dia;
                             Log.i("Fecha global inicio => ", FinicioGlobal);

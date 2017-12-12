@@ -96,7 +96,7 @@ public class Login extends AppCompatActivity {
 
             if ( GenFile  == null) {
                 ActivityCompat.requestPermissions(Login.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE ,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE},
                         1);
 
             }
