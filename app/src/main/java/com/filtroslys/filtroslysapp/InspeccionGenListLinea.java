@@ -30,11 +30,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import DataBase.HistorialInspGenDB;
 import DataBase.ProdMantDataBase;
+import Model.InspeccionGenCabecera;
 import Tasks.GetHistorialInspGenTask;
 import Util.Constans;
 import Util.HistorialInspGenAdapater;
@@ -42,12 +46,13 @@ import Util.HistorialInspGenAdapater;
 public class InspeccionGenListLinea extends AppCompatActivity {
 
     String tipoSincro = "";
-    Spinner spTipoInsp;
+    Spinner spTipoInsp,spEstado;
     String FinicioGlobal = "", FFinGlobal = "";
     EditText txtFInicio, txtFFin;
     ListView LVHinspeGen;
     HistorialInspGenAdapater adapater;
     LinearLayout coord;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,15 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         txtFFin = (EditText) findViewById(R.id.txtHGFFin);
         LVHinspeGen = (ListView) findViewById(R.id.LVHInspGen);
         tipoSincro = getIntent().getExtras().getString("tipoSincro");
+        spEstado  = (Spinner) findViewById(R.id.spEstadoINSPGen);
+
+        Calendar c = Calendar.getInstance();
+        int month = c.get(Calendar.MONTH)+1;
+        String mes = String.format("%02d", month);
+        int year = c.get(Calendar.YEAR);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        txtFInicio.setText(  "01/01/"+String.valueOf(year));
+        txtFFin.setText( sdf.format(new Date()));
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -68,6 +82,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
             setTitle("Busqueda inspección general ");
         }
 
+        LoadSpinerEstado();
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.RED);
@@ -104,7 +119,16 @@ public class InspeccionGenListLinea extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 HistorialInspGenDB h = adapater.GetItem(i);
                 Log.i("Estado Insp", h.getEstado());
-                if (h.getEstado().equals("E") || h.getEstado().equals("PENDIENTE")) {
+
+                ProdMantDataBase db = new ProdMantDataBase(InspeccionGenListLinea.this);
+                InspeccionGenCabecera cab = new InspeccionGenCabecera();
+                if (tipoSincro.equals("Offline")) {
+                    cab = db.GetInspGenCabeceraPorCorrelativo(h.getNumero());
+                    Log.i("Estado Insp desde bd", cab.getEstado());
+                }
+
+
+                if (h.getEstado().equals("Enviado") || h.getEstado().equals("PENDIENTE")) {
                     Intent intent = new Intent(InspeccionGenListLinea.this, InspeccionGen.class);
                     intent.putExtra("tipoMant", "Visor");
                     intent.putExtra("tipoSincro", tipoSincro);
@@ -112,9 +136,14 @@ public class InspeccionGenListLinea extends AppCompatActivity {
                    // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
 
-                } else if (h.getEstado().equals("I")) {
+                } else if (h.getEstado().equals("Ingresado")) {
                     Intent intent = new Intent(InspeccionGenListLinea.this, InspeccionGen.class);
-                    intent.putExtra("tipoMant", "Editar");
+                    if (tipoSincro.equals("Offline") && cab.getEstado().equals("E") ){
+                        intent.putExtra("tipoMant", "Visor");
+                    }
+                    else {
+                        intent.putExtra("tipoMant", "Editar");
+                    }
                     intent.putExtra("tipoSincro", tipoSincro);
                     intent.putExtra("xcorrelativo", h.getNumero());
                    // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -129,7 +158,12 @@ public class InspeccionGenListLinea extends AppCompatActivity {
 
             SelectedFiltersOffline();
         }
+        else {
+            SelectedFiltersOnline();
+        }
     }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -166,6 +200,25 @@ public class InspeccionGenListLinea extends AppCompatActivity {
 
     }
 
+    public  void LoadSpinerEstado(){
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("TODOS");
+        if (tipoSincro.equals("Online")) {
+            list.add("PENDIENTE");
+            list.add("APROBADO");
+            list.add("ANULADO");
+        }
+        else {
+            list.add("INGRESADO");
+            list.add("ENVIADO");
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(InspeccionGenListLinea.this, android.R.layout.simple_spinner_dropdown_item, list);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spEstado.setPrompt("Seleccione estado");
+        spEstado.setAdapter(arrayAdapter);
+
+    }
+
     public void CreateSnackabar() {
 
         Snackbar snakbar = Snackbar
@@ -174,7 +227,6 @@ public class InspeccionGenListLinea extends AppCompatActivity {
                 .setAction("Buscar", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // Toast.makeText(InspeccionMaqListLinea.this, "click", Toast.LENGTH_SHORT).show();
                         if (tipoSincro.equals("Online")) {
 
                             SelectedFiltersOnline();
@@ -188,13 +240,35 @@ public class InspeccionGenListLinea extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if(requestCode==2)
+        {
+          SelectedFiltersOffline();
+        }
+    }
+
     public void SelectedFiltersOffline() {
         ProdMantDataBase db = new ProdMantDataBase(InspeccionGenListLinea.this);
         ArrayList<HistorialInspGenDB> lisdata = new ArrayList<HistorialInspGenDB>();
+        String Fini , Ffin ;
+       // Ffin =  FechasFormatOff( "FF",txtFFin.getText().toString());
+       // Fini =  FechasFormatOff("FI",txtFInicio.getText().toString());
         int spinerTipIndex = spTipoInsp.getSelectedItemPosition();
-        String fechaInicio = FinicioGlobal;
-        String fechaFin = FFinGlobal;
-        String accion = "";
+        String fechaInicio = txtFInicio.getText().toString(); //Fini.substring(6,10) +"-"+Fini.substring(3,5)+"-"+Fini.substring(0,2); // FinicioGlobal;
+        String fechaFin =  FechasFormatOff( "FF",txtFFin.getText().toString()); //Ffin.substring(6,10) +"-"+Ffin.substring(3,5)+"-"+Ffin.substring(0,2);
+        Log.i("fechas params" ,fechaInicio +"|"  + fechaFin );
+
+        String accion = "",sEstado= "";
+        if (spEstado.getSelectedItem().toString().equals("TODOS")){
+            sEstado = "%";
+        }
+        else {
+            sEstado = spEstado.getSelectedItem().toString().substring(0,1);
+        }
 
         if (spinerTipIndex > 0 && fechaFin.equals("") && fechaInicio.equals("")) {
             accion = "1";
@@ -215,19 +289,20 @@ public class InspeccionGenListLinea extends AppCompatActivity {
             accion = "4";
         }
 
-        lisdata = db.GetHistorialInsGenpList(accion, GetValueSpiner(), fechaInicio, fechaFin);
+        lisdata = db.GetHistorialInsGenpList(accion, GetValueSpiner(), fechaInicio, fechaFin,sEstado);
+        Log.i("parametros filtros" , accion + "/"+GetValueSpiner() + "/" + fechaInicio + "/"+ fechaFin + "/" + sEstado );
         if (lisdata != null && lisdata.size() > 0) {
 
-            for (int i = 0  ; i <  lisdata.size();i++){
+            /*for (int i = 0  ; i <  lisdata.size();i++){
                 HistorialInspGenDB  h   = lisdata.get(i);
-                String sfecha =  h.getFecha();
-                sfecha = sfecha.substring(3,5)+ "/" + sfecha.substring(0,2) + "/" + sfecha.substring(6,10);
-                lisdata.get(i).setFecha(sfecha);
-            }
+                Log.i("Fecha data off" , lisdata.get(i).getFecha());
+            }*/
 
             adapater = new HistorialInspGenAdapater(InspeccionGenListLinea.this, R.layout.item_list_busq_insp_gen, lisdata);
+            adapater.flagFormat= "S";
             LVHinspeGen.setAdapter(adapater);
         } else {
+            LVHinspeGen.setAdapter(null);
             CreateCustomToast("No se encontro resultados ", Constans.icon_warning, Constans.layot_warning);
 
         }
@@ -241,7 +316,13 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         int spinerTipIndex = spTipoInsp.getSelectedItemPosition();
         String fechaInicio = txtFInicio.getText().toString();
         String fechaFin = txtFFin.getText().toString();
-        String accion = "";
+        String accion = "", sEstado="";
+        if (spEstado.getSelectedItem().toString().equals("TODOS")){
+            sEstado = "%";
+        }
+        else {
+            sEstado = spEstado.getSelectedItem().toString().substring(0,2);
+        }
 
         if (spinerTipIndex > 0 && fechaFin.equals("") && fechaInicio.equals("")) {
             accion = "1";
@@ -262,7 +343,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         }
 
         try {
-            asyncTaskOnline = getHistorialInspGenTask.execute(accion, GetValueSpiner(), fechaInicio, fechaFin);
+            asyncTaskOnline = getHistorialInspGenTask.execute(accion, GetValueSpiner(), fechaInicio, fechaFin,sEstado);
             lisdata = (ArrayList<HistorialInspGenDB>) asyncTaskOnline.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -274,6 +355,7 @@ public class InspeccionGenListLinea extends AppCompatActivity {
             adapater = new HistorialInspGenAdapater(InspeccionGenListLinea.this, R.layout.item_list_busq_insp_gen, lisdata);
             LVHinspeGen.setAdapter(adapater);
         } else {
+            LVHinspeGen.setAdapter(null);
             CreateCustomToast("No se encontro resultados ", Constans.icon_warning, Constans.layot_warning);
 
         }
@@ -364,6 +446,39 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         toast.setView(layout);
         toast.show();
 
+
+    }
+
+    public  String FechasFormatOff ( String sTipoFecha , String dateString ){
+        String result = "";
+        int  aumentarDias = 0 ;
+        if (sTipoFecha.equals("FI")){
+            aumentarDias = -1;
+        }
+        else {
+            aumentarDias = 1 ;
+        }
+
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date convertedDate = new Date();
+        try {
+            convertedDate = dateFormat.parse(dateString);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(convertedDate);
+            cal.add(Calendar.DAY_OF_YEAR,aumentarDias);
+            Date newDate = cal.getTime();
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            result = formatter.format(newDate);
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Log.i("add date convert " , dateString +"/"+result );
+
+        return  result  ;
 
     }
 }

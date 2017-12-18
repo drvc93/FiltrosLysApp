@@ -388,7 +388,7 @@ public class InspeccionMaqListLinea extends AppCompatActivity {
                         String mes = String.format("%02d", month);
 
                         String dia = String.format("%02d",day);
-                        txtFecha.setText(mes + "/" + dia + "/" + String.valueOf(year));
+                        txtFecha.setText(dia + "/" + mes + "/" + String.valueOf(year));
                         if (etiqueta.equals("Inicio")) {
                             FinicioGlobal = String.valueOf(year) + "-" + mes + "-" + dia;
                         } else {

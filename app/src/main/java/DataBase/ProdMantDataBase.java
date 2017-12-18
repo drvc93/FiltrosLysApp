@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 
 import com.filtroslys.filtroslysapp.InspeccionGen;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import Model.InspeccionGenCabecera;
@@ -200,6 +201,9 @@ public class ProdMantDataBase {
     }
 
     public ContentValues InspGenCabContentValues(InspeccionGenCabecera cab) {
+        Log.i("content values fehca", cab.getFechaInsp());
+       // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+       // cab.setFechaInsp(dateFormat.format(cab.getFechaInsp()));
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_COMPANIA, cab.getCompania());
         contentValues.put(ConstasDB.MTP_INSP_GEN_CAB_CORRELATIVO, cab.getCorrelativo());
@@ -490,35 +494,36 @@ public class ProdMantDataBase {
 
     }
 
-    public ArrayList<HistorialInspGenDB> GetHistorialInsGenpList(String accion, String tipoInsp, String fechaIni, String fechFin) {
+    public ArrayList<HistorialInspGenDB> GetHistorialInsGenpList(String accion, String tipoInsp, String fechaIni, String fechFin, String sEstado) {
 
 
         String query = "";
         ArrayList<HistorialInspGenDB> list = new ArrayList<HistorialInspGenDB>();
         this.OpenWritableDB();
         Cursor c;
+        Log.i("Accion query ", accion);
         switch (accion) {
 
             case "1":
                 query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado "
-                        + "FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "'";
+                        + "FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "'"+ " and c_estado like '"+sEstado+"'";
                 break;
             case "2":
                 query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado" +
-                        " FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "' and datetime (substr(d_fechainspeccion,7,4 )||'-'|| substr(d_fechainspeccion,1,2 )|| '-' ||substr(d_fechainspeccion,4,2 ) ) between '" + fechaIni + "'  and '" + fechFin + "'";
+                        " FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "' and   d_fechainspeccion between '" + fechaIni + "'  and '" + fechFin +"'"+ " and c_estado like '"+sEstado+"'";
                 break;
             case "3":
                 query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado" +
-                        " FROM  MTP_INSPECCIONGENERAL_CAB where  datetime (substr(d_fechainspeccion,7,4 )||'-'|| substr(d_fechainspeccion,1,2 )|| '-' ||substr(d_fechainspeccion,4,2 ) ) between '" + fechaIni + "'  and '" + fechFin + "'";
+                        " FROM  MTP_INSPECCIONGENERAL_CAB where  d_fechainspeccion between '" + fechaIni + "'  and '" + fechFin + "'"+ " and c_estado like '"+sEstado+"'";
                 break;
             case "4":
-                query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado" +
-                        " FROM  MTP_INSPECCIONGENERAL_CAB ";
+                query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado"  +
+                        " FROM  MTP_INSPECCIONGENERAL_CAB " +" where c_estado like '"+sEstado+"'";
                 break;
 
 
         }
-
+        Log.i("query " , query );
         c = db.rawQuery(query, null);
         while (c.moveToNext()) {
             HistorialInspGenDB h = new HistorialInspGenDB();

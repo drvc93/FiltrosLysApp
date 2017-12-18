@@ -2,6 +2,7 @@ package Util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ public class HistorialInspGenAdapater extends ArrayAdapter<HistorialInspGenDB> {
     private Context context;
     private ArrayList<HistorialInspGenDB> data;
     private int resourceID;
+    public  String flagFormat ="N";
 
     public HistorialInspGenAdapater(Context context, int resource, ArrayList<HistorialInspGenDB> data) {
         super(context, resource, data);
@@ -49,6 +51,14 @@ public class HistorialInspGenAdapater extends ArrayAdapter<HistorialInspGenDB> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         HistorialInspGenDB h = data.get(position);
+        if (flagFormat.equals("S")){
+            if (h.getEstado().equals("I")){
+                h.setEstado("Ingresado");
+            }
+            else  if (h.getEstado().equals("E")){
+                h.setEstado("Enviado");
+            }
+        }
         if (convertView == null) {
 
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -69,6 +79,7 @@ public class HistorialInspGenAdapater extends ArrayAdapter<HistorialInspGenDB> {
 
         viewHolder.lblNumero.setText(h.getNumero());
         viewHolder.lblFecha.setText(h.getFecha());
+        Log.i("adapter fecha insp", h.getFecha());
         viewHolder.lblMaquina.setText(h.getCodMaq());
         viewHolder.lblCentroC.setText(h.getCodCosto());
         viewHolder.lblUsuario.setText(h.getUsarioInp());
@@ -81,5 +92,12 @@ public class HistorialInspGenAdapater extends ArrayAdapter<HistorialInspGenDB> {
     public HistorialInspGenDB GetItem(int position) {
 
         return data.get(position);
+    }
+
+
+    public   String  FormatFecha (String sFecha){
+        String result = "";
+        result  = sFecha.substring(3,5) + "/"+ sFecha.substring(0,2) + "/"+sFecha.substring(6,10);
+        return  result;
     }
 }

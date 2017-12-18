@@ -22,7 +22,6 @@ public class EnviarInspGenCabTask extends AsyncTask<String, String, String> {
 
         final String NAMESPACE = Constans.NameSpaceWS;
         final String URL = Constans.UrlServer;
-        //final String URL="http://10.0.2.2:8084/SOAPLYS?wsdl";
         final String METHOD_NAME = "InsertInspGenCab";
         final String SOAP_ACTION = NAMESPACE + METHOD_NAME;
         SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);

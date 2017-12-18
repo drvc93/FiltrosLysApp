@@ -33,6 +33,7 @@ public class GetHistorialInspGenTask extends AsyncTask<String, String, ArrayList
         request.addProperty("tipoInsp", strings[1]);
         request.addProperty("FInicio", strings[2]);
         request.addProperty("FFin", strings[3]);
+        request.addProperty("estado", strings[4]);
 
 
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);

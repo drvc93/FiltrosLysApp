@@ -88,15 +88,11 @@ public class ListaSolServicios extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_sol_servicios);
         setTitle("Lista de Solicitudes de Servicio.");
-
         Calendar c = Calendar.getInstance();
-
         int month = c.get(Calendar.MONTH)+1;
         String mes = String.format("%02d", month);
         int year = c.get(Calendar.YEAR);
 
-
-        //btnFiltros = (Button)findViewById(R.id.btnFiltroSolicitudes);
         LVSolcitudesServ = (ListView)findViewById(R.id.lvSoliciudesServ);
         spEstado = (Spinner)findViewById(R.id.spEstadoSS);
         spMaquina  =(Spinner)findViewById(R.id.spMaquinaSS);

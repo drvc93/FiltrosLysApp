@@ -117,7 +117,7 @@ public class Login extends AppCompatActivity {
         } else{
 
         }
-      //  copyFile();
+        copyFile();
       //  ShowDialogAlert();
 
         // instanciando controles
@@ -129,17 +129,11 @@ public class Login extends AppCompatActivity {
         //***********************
 
          sModoTrabajo =  preferences.getString("TipoConexion",null);
-         if (sModoTrabajo == null ){
+         if (sModoTrabajo == null ) lblModoConexion.setText("Se esta trabajando en modo Externo.");
+         else if (sModoTrabajo.equals("E"))
              lblModoConexion.setText("Se esta trabajando en modo Externo.");
-
-         }
-         else if (sModoTrabajo.equals("E")){
-             lblModoConexion.setText("Se esta trabajando en modo Externo.");
-         }
-         else if (sModoTrabajo.equals("L")){
+         else if (sModoTrabajo.equals("L"))
              lblModoConexion.setText("Se esta trabajando en modo Local.");
-         }
-
 
         txtUser.addTextChangedListener(new TextWatcher() {
             @Override
@@ -246,17 +240,15 @@ public class Login extends AppCompatActivity {
             case 1: {
 
                 // If request is cancelled, the result arrays are empty.
+                // permission denied, boo! Disable the
+// functionality that depends on this permission.
+                // permission was granted, yay! Do the
+// contacts-related task you need to do.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                     CrearndoArchivosConfig();
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                else
                     Toast.makeText(Login.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                }
                 return;
             }
 
@@ -398,15 +390,10 @@ public class Login extends AppCompatActivity {
         progressDialog.setIcon(R.drawable.icn_sync_48);
         SincronizarAccesosTask sincronizarAccesosTask = new SincronizarAccesosTask(Login.this,accesosDBs,menuDBs,listaUsers,progressDialog);
         AsyncTask<Void,Void,Void> asyncTaskSincroAccesos ;
-
         asyncTaskSincroAccesos = sincronizarAccesosTask.execute();
-
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("Sync","Si");
         editor.commit();
-
-
-
     }
 
     public void copyFile()
@@ -576,4 +563,6 @@ public class Login extends AppCompatActivity {
             return true;
         }
     }
+
+
 }
