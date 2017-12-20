@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -379,18 +380,36 @@ public class ProdMantDataBase {
     public int CorrelativoInspGen() {
         int res = 0;
 
-        String query = "SELECT MAX(n_correlativo) FROM MTP_INSPECCIONGENERAL_CAB ";
+        String query = "SELECT n_correlativo FROM MTP_INSPECCIONGENERAL_CAB ORDER BY  n_correlativo  desc ";
         this.OpenWritableDB();
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.query("MTP_INSPECCIONGENERAL_CAB", new String [] {"MAX(n_correlativo)"}, null, null, null, null,null) ;
+        //Cursor c = db.query("MTP_INSPECCIONGENERAL_CAB", null, "n_correlativo=(SELECT MAX(n_correlativo) FROM  MTP_INSPECCIONGENERAL_CAB" + ")", null, null, null, null) ;
+           // Cursor c = db.rawQuery(query, null);
         if (c != null) {
+           /* int i = 0 ;
             while (c.moveToNext()) {
                 if (c.getString(0) != null) {
                     String var = c.getString(0);
-                    res = Integer.valueOf(var);
+                    Log.i("Cursor (" + String.valueOf(i+1)+ ") " , var );
+                    i = i + 1;
                 }
+            }*/
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                if (TextUtils.isEmpty(c.getString(0))){
+                    res = 0;
+                }
+                else  {
+                    res = Integer.parseInt(c.getString(0));
+                }
+
+
+            }
+            else {
+                res =  0 ;
             }
         }
-
+        Log.i("correlativo sqlite" , String.valueOf(res));
         res = res + 1;
 
         return res;
@@ -506,19 +525,19 @@ public class ProdMantDataBase {
 
             case "1":
                 query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado "
-                        + "FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "'"+ " and c_estado like '"+sEstado+"'";
+                        + "FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "'"+ " and c_estado like '"+sEstado+"' order by n_correlativo";
                 break;
             case "2":
                 query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado" +
-                        " FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "' and   d_fechainspeccion between '" + fechaIni + "'  and '" + fechFin +"'"+ " and c_estado like '"+sEstado+"'";
+                        " FROM  MTP_INSPECCIONGENERAL_CAB where c_tipoinspeccion  ='" + tipoInsp + "' and   d_fechainspeccion between '" + fechaIni + "'  and '" + fechFin +"'"+ " and c_estado like '"+sEstado+"' order by n_correlativo";
                 break;
             case "3":
                 query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado" +
-                        " FROM  MTP_INSPECCIONGENERAL_CAB where  d_fechainspeccion between '" + fechaIni + "'  and '" + fechFin + "'"+ " and c_estado like '"+sEstado+"'";
+                        " FROM  MTP_INSPECCIONGENERAL_CAB where  d_fechainspeccion between '" + fechaIni + "'  and '" + fechFin + "'"+ " and c_estado like '"+sEstado+"' order by n_correlativo";
                 break;
             case "4":
                 query = "SELECT n_correlativo  , case c_tipoinspeccion when   'OT' THEN  'OTROS'  ELSE 'MAQUINA' END TipoIns,c_maquina,c_centrocosto,c_usuarioinspeccion,substr(d_fechainspeccion ,0,11) fecha,c_comentario ,c_estado"  +
-                        " FROM  MTP_INSPECCIONGENERAL_CAB " +" where c_estado like '"+sEstado+"'";
+                        " FROM  MTP_INSPECCIONGENERAL_CAB " +" where c_estado like '"+sEstado+"' order by n_correlativo";
                 break;
 
 

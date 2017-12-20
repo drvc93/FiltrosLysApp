@@ -200,7 +200,7 @@ public class ListaSolServicios extends AppCompatActivity {
 
 
             } else {
-                Toast.makeText(ListaSolServicios.this,"permiso deneado", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(ListaSolServicios.this,"permiso deneado", Toast.LENGTH_SHORT).show();
             }
         }
 

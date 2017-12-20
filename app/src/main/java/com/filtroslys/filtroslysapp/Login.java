@@ -117,7 +117,7 @@ public class Login extends AppCompatActivity {
         } else{
 
         }
-        copyFile();
+        //copyFile();
       //  ShowDialogAlert();
 
         // instanciando controles
@@ -129,7 +129,8 @@ public class Login extends AppCompatActivity {
         //***********************
 
          sModoTrabajo =  preferences.getString("TipoConexion",null);
-         if (sModoTrabajo == null ) lblModoConexion.setText("Se esta trabajando en modo Externo.");
+         if (sModoTrabajo == null )
+             lblModoConexion.setText("Se esta trabajando en modo Externo.");
          else if (sModoTrabajo.equals("E"))
              lblModoConexion.setText("Se esta trabajando en modo Externo.");
          else if (sModoTrabajo.equals("L"))
@@ -485,16 +486,12 @@ public class Login extends AppCompatActivity {
                         Constans.SetConexion("P", Ipserver);
                         int i = android.os.Process.myPid();
                         android.os.Process.killProcess(i);
-                        //  showToast("selectedPosition: " + selectedPosition);
-
                     }
                 })
 
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // removes the dialog from the screen
-
                     }
                 })
 

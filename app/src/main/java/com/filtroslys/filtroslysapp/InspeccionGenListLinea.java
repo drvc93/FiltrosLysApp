@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -87,12 +88,15 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.RED);
             actionBar.hide();
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         } else {
             actionBar.hide();
         }
 
-        if (GetDisplaySize() < 4.5) {
+        if (GetDisplaySize() < 4.1) {
 
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
@@ -438,15 +442,11 @@ public class InspeccionGenListLinea extends AppCompatActivity {
         } else {
             parentLayout.setBackground(getResources().getDrawable(backgroundLayout));
         }
-
-
         toastText.setText(msj);
         Toast toast = new Toast(InspeccionGenListLinea.this);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
         toast.show();
-
-
     }
 
     public  String FechasFormatOff ( String sTipoFecha , String dateString ){

@@ -9,12 +9,12 @@ android {
             storePassword '123456'
         }
     }
-    compileSdkVersion 24
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.filtroslys.filtroslysapp"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 27
         versionCode 1
         versionName '1'
         signingConfig signingConfigs.config
@@ -34,10 +34,10 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:appcompat-v7:27.0.2'
     compile files('libs/commons-io-2.5.jar')
-    compile 'com.android.support:design:24.0.0'
+    compile 'com.android.support:design:27.0.2'
     compile files('libs/ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar')
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
+    //compile 'pl.droidsonroids.gif:android-gif-drawable:'
     compile 'com.squareup.picasso:picasso:2.5.2'
 }

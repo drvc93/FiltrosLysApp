@@ -7,22 +7,17 @@ import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
-
 import java.util.ArrayList;
-
-import DataBase.InspeccionDB;
 import Model.InspeccionGenCabecera;
 import Util.Constans;
 
-/**
- * Created by dvillanueva on 24/08/2016.
- */
+
 public class GetInspGenCabTask extends AsyncTask<String, String, ArrayList<InspeccionGenCabecera>> {
     ArrayList<InspeccionGenCabecera> result;
 
     @Override
     protected ArrayList<InspeccionGenCabecera> doInBackground(String... strings) {
-        ArrayList<InspeccionGenCabecera> listInspG = new ArrayList<InspeccionGenCabecera>();
+        ArrayList<InspeccionGenCabecera> listInspG = new ArrayList<>();
         final String NAMESPACE = Constans.NameSpaceWS;
         final String URL = Constans.UrlServer;
         //final String URL="http://10.0.2.2:8084/SOAPLYS?wsdl";
@@ -49,8 +44,8 @@ public class GetInspGenCabTask extends AsyncTask<String, String, ArrayList<Inspe
 
                 InspeccionGenCabecera cab = new InspeccionGenCabecera();
 
-                cab.setCentroCosto(ic.getProperty(0).toString());
-                cab.setComentario(ic.getProperty(1).toString());
+                cab.setCentroCosto(ic.getPropertyAsString(0));
+                cab.setComentario(ic.getPropertyAsString(1));
                 cab.setCompania(ic.getProperty(2).toString());
                 cab.setEstado(ic.getProperty(3).toString());
                 cab.setCod_maquina(ic.getProperty(4).toString());

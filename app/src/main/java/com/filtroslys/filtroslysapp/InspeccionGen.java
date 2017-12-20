@@ -11,8 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,7 +39,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,16 +50,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
-
 import DataBase.CentroCostoDB;
 import DataBase.MaquinaDB;
 import DataBase.ProdMantDataBase;
@@ -278,6 +272,12 @@ public class InspeccionGen extends AppCompatActivity {
             if (cabId > 0) {
                 ArrayList<InspeccionGenDetalle> list = detalleAdapter.Alldata();
                 for (int i = 0; i < list.size(); i++) {
+                    list.get(i).setUltUsuario(codUser);
+                    list.get(i).setCompania(cab.getCompania());
+                    list.get(i).setCorrelativo(cab.getCorrelativo());
+                    list.get(i).setUltFechaMod((FechaFormatEng(FechaActual())));
+                    list.get(i).setFlagadictipo("N");
+                    list.get(i).setLinea(String.valueOf(i+1));
                     detalleEnvio.add(list.get(i));
                     detID = db.InsertInspGenDet(list.get(i));
                     Log.i("ID INSPE GEN DET ID >", String.valueOf(detID));
@@ -312,6 +312,7 @@ public class InspeccionGen extends AppCompatActivity {
                 String correlativo = cab.getCorrelativo();
                 ArrayList<InspeccionGenDetalle> listdetalles = GetDetalle(correlativo);
                 for (int i = 0; i < listdetalles.size(); i++) {
+                    listdetalles.get(i).setLinea(String.valueOf(i+1));
                     detalleEnvio.add(listdetalles.get(i));
                     long detID = db.InsertInspGenDet(listdetalles.get(i));
                     Log.i("Id insp gen det >", String.valueOf(detID));
@@ -371,7 +372,8 @@ public class InspeccionGen extends AppCompatActivity {
                             d.getComentario(), d.getRutaFoto(), d.getUltUsuario(), d.getTipoRevision(), d.getFlagadictipo());
 
                     resultDet =  asyncDetalle.get();
-                    Log.i("Resul insert inp gen det =>", resultDet);
+                    Log.i("parametros detalle insp gen =>  ", correlativo +"|"+ d.getLinea());
+                    Log.i("Resul insert inp gen det  =>  ", resultDet);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
@@ -401,7 +403,7 @@ public class InspeccionGen extends AppCompatActivity {
                 }
                 if (stTransfer.equals("OK")) {
                     CreateCustomToast("Se realizó el envio del reporte correctamente", Constans.icon_succes, Constans.layout_success);
-                    if  ( tipoMant.equals("Editar")){
+                    if  ( tipoMant.equals("Editar") ||  tipoMant.equals("NEW")  ){
                          super.onBackPressed();
                     }
                 }
@@ -905,6 +907,7 @@ public class InspeccionGen extends AppCompatActivity {
         Log.i("Comentario =>> ", coment);
         Button btnSsalir = (Button) dialog.findViewById(R.id.btnDiaglogSalir);
         Button btnAceptar = (Button) dialog.findViewById(R.id.btnDialogOK);
+        txtDComentario.setText(txtvar.getText().toString());
         dialog.show();
 
         btnAceptar.setOnClickListener(new View.OnClickListener() {
@@ -1163,10 +1166,12 @@ public class InspeccionGen extends AppCompatActivity {
                         return;
                     }
                     data.remove(position);
-                    if (position>0) {
+                    detalleAdapter = new DetalleGenAdapater(InspeccionGen.this, R.layout.inspeccion_general_det, data);
+                    LVInspGen.setAdapter(detalleAdapter);
+                    /*if (position>0) {
                         finalViewHolder.index = position-1;
                     }
-                    detalleAdapter.notifyDataSetChanged();
+                    detalleAdapter.notifyDataSetChanged();*/
                 }
             });
 

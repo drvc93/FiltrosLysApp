@@ -283,7 +283,7 @@ public class ConstasDB {
             " CREATE TABLE " + TABLA_MTP_INSPECCIONGENERAL_CAB_NAME +
                     " ( " + MTP_INSP_GEN_CAB_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,  " +
                     MTP_INSP_GEN_CAB_COMPANIA + " TEXT , " +
-                    MTP_INSP_GEN_CAB_CORRELATIVO + " TEXT , " +
+                    MTP_INSP_GEN_CAB_CORRELATIVO + " INTEGER , " +
                     MTP_INSP_GEN_CAB_TIP_INSP + " TEXT , " +
                     MTP_INSP_GEN_CAB_COD_MAQ + " TEXT , " +
                     MTP_INSP_GEN_CAB_COD_CCOSTO + " TEXT , " +

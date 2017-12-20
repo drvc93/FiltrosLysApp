@@ -42,7 +42,7 @@ public class Constans {
     public static  String Carpeta_foto= "LysConfig/Fotos/";
     public static final String NroConpania = "00100000";
     public static  final  String FolderConfig ="appConfig";
-    public static  final  String IPDefault  = "100.100.100.57:8080" ;// "190.187.181.56:80";
+    public static  final  String IPDefault  = "190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
     public static  final  String FolderWs = "LysWsRest" ;
 
     public static void SetConexion(String LocalOExt, String con) {
@@ -64,7 +64,7 @@ public class Constans {
             writer.append(con);
             writer.flush();
             writer.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
         }
     }
 
@@ -83,8 +83,6 @@ public class Constans {
             myReader.close();
         } catch (IOException e) {
         }
-
-
 
         return aBuffer.toString().trim();
 
@@ -149,8 +147,6 @@ public class Constans {
 
             e.printStackTrace();
         }
-
-
     }
     public static void ifExistCreateFile(String TipoIp , String sIP) {
         try {
@@ -194,7 +190,7 @@ public class Constans {
             }
 
             String con = ReaderFielIpServer();
-            if ((con.toString() == null || con == "") && TipoIp.equals("CON") ) {
+            if ((con == null || con == "") && TipoIp.equals("CON") ) {
                 //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
 
                 String data = "http://"+IPDefault+"/"+FolderWs+"/SOAPLYS?wsdl/";

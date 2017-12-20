@@ -49,7 +49,7 @@ public class GetInspGenDetTask extends AsyncTask<String, String, ArrayList<Inspe
 
 
                 InspeccionGenDetalle d = new InspeccionGenDetalle();
-                d.setComentario(ic.getProperty(0).toString());
+                d.setComentario(ic.getPrimitivePropertyAsString("c_comentario"));
                 d.setCompania(ic.getProperty(1).toString());
                 d.setFlagadictipo(ic.getProperty(2).toString());
                 d.setRutaFoto(ic.getProperty(3).toString());
