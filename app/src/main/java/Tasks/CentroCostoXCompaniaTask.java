@@ -7,21 +7,19 @@ import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
-
 import java.util.ArrayList;
-
 import DataBase.CentroCostoDB;
 import Util.Constans;
 
 /**
- * Created by dvillanueva on 29/11/2017.
+ * Creado por dvillanueva el  29/11/2017 (FiltrosLysApp).
  */
 
 public class CentroCostoXCompaniaTask extends AsyncTask<String,String,ArrayList<CentroCostoDB>> {
     ArrayList<CentroCostoDB> result ;
     @Override
     protected ArrayList<CentroCostoDB> doInBackground(String... strings) {
-        ArrayList<CentroCostoDB> listCentro  = new ArrayList<CentroCostoDB>();
+        ArrayList<CentroCostoDB> listCentro  = new ArrayList<>();
         final String NAMESPACE = Constans.NameSpaceWS;
         final String URL = Constans.UrlServer;
         //final String URL="http://10.0.2.2:8084/SOAPLYS?wsdl";
@@ -41,26 +39,16 @@ public class CentroCostoXCompaniaTask extends AsyncTask<String,String,ArrayList<
         try {
             transporte.call(SOAP_ACTION, envelope);
             SoapObject resSoap = (SoapObject) envelope.bodyIn;
-
-
-
-            //lstProjects = new ArrayList<Parametros>();
             int num_projects = resSoap.getPropertyCount();
             Log.i("result Centro  Costo x Compania ",resSoap.toString());
             for (int i = 0; i < num_projects; i++) {
                 SoapObject ic = (SoapObject) resSoap.getProperty(i);
-
                 CentroCostoDB c = new CentroCostoDB();
-
                 c.setC_centrocosto(ic.getProperty(0).toString());
                 c.setC_compania(ic.getProperty(1).toString());
                 c.setC_descripcion(ic.getProperty(2).toString());
                 c.setC_estado(ic.getProperty(3).toString());
-
-
-
                 listCentro.add(c);
-                //  Log.i("Usuario Nro > ", String.valueOf(i));
             }
             if (resSoap.getPropertyCount() > 0) {
                 result = listCentro;
@@ -69,7 +57,6 @@ public class CentroCostoXCompaniaTask extends AsyncTask<String,String,ArrayList<
 
         } catch (Exception e) {
             Log.i("CCosto x Compania error---", e.getMessage());
-            // result = null;
         }
 
         return result;

@@ -10,19 +10,18 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import java.util.ArrayList;
 
-import Model.InspeccionGenCabecera;
 import Model.InspeccionGenDetalle;
 import Util.Constans;
 
 /**
- * Created by dvillanueva on 24/08/2016.
+ * Creado por dvillanueva el  24/08/2016 (FiltrosLysApp).
  */
 public class GetInspGenDetTask extends AsyncTask<String, String, ArrayList<InspeccionGenDetalle>> {
     ArrayList<InspeccionGenDetalle> result;
 
     @Override
     protected ArrayList<InspeccionGenDetalle> doInBackground(String... strings) {
-        ArrayList<InspeccionGenDetalle> listInspG = new ArrayList<InspeccionGenDetalle>();
+        ArrayList<InspeccionGenDetalle> listInspG = new ArrayList<>();
         final String NAMESPACE = Constans.NameSpaceWS;
         final String URL = Constans.UrlServer;
         //final String URL="http://10.0.2.2:8084/SOAPLYS?wsdl";

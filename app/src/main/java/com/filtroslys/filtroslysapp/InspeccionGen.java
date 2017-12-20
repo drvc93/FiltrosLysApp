@@ -1,5 +1,6 @@
 package com.filtroslys.filtroslysapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -187,7 +188,6 @@ public class InspeccionGen extends AppCompatActivity {
                 else {
                     LoadSpinerMaqCC(i);
                 }
-               // Log.i("index cambiado " , String.valueOf(i) + "/" + String.valueOf(l));
             }
 
             @Override
@@ -207,10 +207,6 @@ public class InspeccionGen extends AppCompatActivity {
                         Log.i("cod maquina" , codMaq);
                         AsignarCodCcostoTexBox(codMaq);
                 }
-                else {
-                  //  txtProblemadetect.setText("");
-                }
-                Log.i("index  spiner maq cc" , String.valueOf(i));
 
             }
 
@@ -258,7 +254,7 @@ public class InspeccionGen extends AppCompatActivity {
             CreateCustomToast("Debe seleccionar una Maquina o Centro de Costo en el combo.", Constans.icon_warning, Constans.layot_warning);
             return;
         }
-        if (ValidarCabecera() == true && ValidarDetalle() == true) {
+        if (ValidarCabecera() && ValidarDetalle()) {
             InspeccionGenCabecera cab = GetCabecera(TipoGuardado);
             cab.setFechaInsp(txtFechaInsp.getText().toString());
             cab.setCorrelativo(xcorrelativo);
@@ -302,7 +298,7 @@ public class InspeccionGen extends AppCompatActivity {
         InspeccionGenCabecera cabEnvio;
         ArrayList<InspeccionGenDetalle> detalleEnvio = new ArrayList<InspeccionGenDetalle>();
         int cont = 0;
-        if (ValidarCabecera() == true || ValidarDetalle() == true) {
+        if (ValidarCabecera() || ValidarDetalle()) {
 
             InspeccionGenCabecera cab = GetCabecera(TipoGuardado);
             cabEnvio = cab;
@@ -464,7 +460,7 @@ public class InspeccionGen extends AppCompatActivity {
 
     public String GetCodSpinerMaqCC(String tip) {
         String result = "";
-        String str = "";
+        String str;
         if (tip.equals("MAQ")) {
             str = spMaqCC.getSelectedItem().toString();
             result = str.substring(0, 7);
@@ -519,12 +515,16 @@ public class InspeccionGen extends AppCompatActivity {
         builder.setIcon(R.drawable.icn_save32);
         builder.setItems(items, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
-                if (tipoMant.equals("NEW")) {
-                    GuardarReporte(item);
-                } else if (tipoMant.equals("Editar")) {
-                    ActualizarReporte(item);
-                } else if (tipoMant.equals("Visor")) {
-                    CreateCustomToast("No se puede  modificar el reporte porque ya fue enviado ", Constans.layot_warning, Constans.layot_warning);
+                switch (tipoMant) {
+                    case "NEW":
+                        GuardarReporte(item);
+                        break;
+                    case "Editar":
+                        ActualizarReporte(item);
+                        break;
+                    case "Visor":
+                        CreateCustomToast("No se puede  modificar el reporte porque ya fue enviado ", Constans.layot_warning, Constans.layot_warning);
+                        break;
                 }
                 dialog.dismiss();
 
@@ -534,7 +534,7 @@ public class InspeccionGen extends AppCompatActivity {
 
     public void ResizeAndSaveImage(Bitmap bitmap) {
 
-        Bitmap foto = bitmap;
+        Bitmap foto;
         foto = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         foto.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -668,7 +668,7 @@ public class InspeccionGen extends AppCompatActivity {
 
         if (cab != null && detalles != null) {
 
-            int indexSPTipo = 0;
+            int indexSPTipo;
             String getValueForSp ;
             String problemaDetec ;
 
@@ -704,7 +704,7 @@ public class InspeccionGen extends AppCompatActivity {
     public void LoadListView() {
         ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
         ArrayList<TipoRevisionGBD> list = db.GetAllTipoReivision();
-        ArrayList<InspeccionGenDetalle> data = new ArrayList<InspeccionGenDetalle>();
+        ArrayList<InspeccionGenDetalle> data = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             TipoRevisionGBD revision = list.get(i);
             InspeccionGenDetalle detalle = new InspeccionGenDetalle();
@@ -723,7 +723,7 @@ public class InspeccionGen extends AppCompatActivity {
         int result = 0;
         for (int i = 0; i < spMaqCC.getCount(); i++) {
 
-            String item = "";
+            String item;
             if (spTipoInsp.getSelectedItemPosition() == 1) {
                 item = spMaqCC.getItemAtPosition(i).toString();
                 item = item.substring(0, 5);
@@ -764,7 +764,7 @@ public class InspeccionGen extends AppCompatActivity {
         if (res != null) {
             Log.i("tipo revision " , res.getDescripcionInspGen());
             boolean exist = detalleAdapter.AddObject(res);
-            if (exist == false) {
+            if (!exist) {
 
                 CreateCustomToast("Ya se agregó este tipo de revisión al detalle ", Constans.icon_warning, Constans.layot_warning);
             }
@@ -792,16 +792,17 @@ public class InspeccionGen extends AppCompatActivity {
         spTipoInsp.setAdapter(adapter);
     }
 
+    @SuppressLint("SetTextI18n")
     public void LoadSpinerMaqCC(int selecTipoInsp) {
 
         ProdMantDataBase db = new ProdMantDataBase(InspeccionGen.this);
         ArrayList<CentroCostoDB> liscCcosto;
         ArrayList<MaquinaDB> listMaq;
         ArrayList<String> data;
-        String msjPrompt = "";
+        String msjPrompt;
 
         if (selecTipoInsp == INSP_OTROS) {
-            data = new ArrayList<String>();
+            data = new ArrayList<>();
             var_tipoIsnpeccion = INSP_OTROS;
             liscCcosto = db.GetCemtroCostos();
             msjPrompt = "- SELECCIONE CENTRO DE COSTO -";
