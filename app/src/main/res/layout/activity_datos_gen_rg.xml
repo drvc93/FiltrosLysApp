@@ -1,0 +1,489 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:mask="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_silver_2"
+    tools:context="com.filtroslys.filtroslysapp.DatosGenRG">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp">
+
+                <EditText
+                    android:id="@+id/txtNroFormtRG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:hint="Nº Formato"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:id="@+id/textView95"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="R.G." />
+
+                <EditText
+                    android:id="@+id/txtNroRecGar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="4"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:id="@+id/textView98"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  F." />
+
+                <EditText
+                    android:id="@+id/txtFechaRegRG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_round_border"
+                    android:clickable="true"
+                    android:ems="5"
+                    android:focusableInTouchMode="false"
+                    android:inputType="textPersonName" />
+            </GridLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6sp">
+
+                    <TextView
+                        android:id="@+id/textView99"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tipo:   " />
+
+                    <Spinner
+                        android:id="@+id/spTipoRG"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/spiner_style"
+                        android:padding="5dp"
+                        android:spinnerMode="dialog" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6sp">
+
+                    <TextView
+                        android:id="@+id/textView100"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cliente  " />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/txtBSClienteRG"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/edittext_round_border"
+                            android:ellipsize="end"
+                            android:ems="14"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:textColorHint="@android:color/black"
+                            android:textSize="18sp">
+
+                        </EditText>
+
+                        <ImageView
+                            android:id="@+id/btnBuscarClienteRG"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/txtBSClienteRG"
+                            android:layout_alignRight="@+id/txtBSClienteRG"
+                            android:layout_alignTop="@+id/txtBSClienteRG"
+
+                            app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+                    </RelativeLayout>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6sp">
+
+                    <TextView
+                        android:id="@+id/textView101"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Filtro  " />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/txtBFiltroRG"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/edittext_round_border"
+                            android:ems="15"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp">
+
+                        </EditText>
+
+                        <ImageView
+                            android:id="@+id/btnBuscarFiltroRG"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/txtBFiltroRG"
+                            android:layout_alignRight="@+id/txtBFiltroRG"
+                            android:layout_alignTop="@+id/txtBFiltroRG"
+
+                            app:srcCompat="@drawable/icn_succes_32" />
+
+                    </RelativeLayout>
+                </TableRow>
+
+            </TableLayout>
+
+
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:id="@+id/textView94"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lote       " />
+
+                <EditText
+                    android:id="@+id/txtLoteRG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="4"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:id="@+id/textView96"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Serie    " />
+
+                <EditText
+                    android:id="@+id/txtSerieFiltroRG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="4"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+            </GridLayout>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:id="@+id/textView103"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Factura " />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/txtFactRG"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/edittext_round_border"
+                        android:ems="7">
+
+                    </EditText>
+
+                    <ImageView
+                        android:id="@+id/btnBuscarFact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/txtFactRG"
+                        android:layout_alignRight="@+id/txtFactRG"
+                        android:layout_alignTop="@+id/txtFactRG"
+
+                        app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textView102"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  XX-XXX-####" />
+
+            </GridLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="#b9e2a925"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView114"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="DETALLE LOTE"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="7sp">
+
+                    <TextView
+                        android:id="@+id/textView104"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cantidad" />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/txtCantidadGenRG"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+
+                        android:ems="4"
+                        android:enabled="false"
+                        android:inputType="number"
+                        android:typeface="monospace"
+                        app:keep_hint="false"
+                        app:mask="######"
+                        mask:allowed_chars="1234567890" />
+
+                    <TextView
+                        android:id="@+id/textView105"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:text="Estado " />
+
+                    <EditText
+                        android:id="@+id/txtEstadoRG"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+                        android:ems="5"
+                        android:enabled="false"
+                        android:inputType="textPersonName" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="7sp">
+
+                    <TextView
+                        android:id="@+id/textView107"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lote Prod.1  " />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/txtLoteProd1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+
+                        android:inputType="number"
+                        android:typeface="monospace"
+                        mask:allowed_chars="1234567890"
+                        mask:keep_hint="false"
+                        mask:mask="####-##" />
+
+                    <TextView
+                        android:id="@+id/textView106"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:text="Cant. 1  " />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/txtCantLote1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+                        android:inputType="number"
+                        android:typeface="monospace"
+                        app:mask="######"
+                        mask:allowed_chars="1234567890"
+                        mask:keep_hint="false" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="7sp">
+
+                    <TextView
+                        android:id="@+id/textView108"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lote Prod.2  " />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/txtLoteProd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+
+                        android:inputType="number"
+                        android:typeface="monospace"
+                        mask:allowed_chars="1234567890"
+                        mask:keep_hint="false"
+                        mask:mask="####-##" />
+
+                    <TextView
+                        android:id="@+id/textView109"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:text="Cant. 2  " />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/txtCantLote2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+
+                        android:inputType="number"
+                        android:typeface="monospace"
+                        mask:allowed_chars="1234567890"
+                        mask:keep_hint="false"
+
+                        mask:mask="######" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="7sp">
+
+                    <TextView
+                        android:id="@+id/textView110"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lote Prod.3 " />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/txtLoteProd3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+
+                        android:inputType="number"
+                        android:typeface="monospace"
+                        mask:allowed_chars="1234567890"
+                        mask:keep_hint="false"
+                        mask:mask="####-##" />
+
+                    <TextView
+                        android:id="@+id/textView111"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:text="Cant. 3   " />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/txtCantLote3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+
+                        android:inputType="number"
+                        android:typeface="monospace"
+                        app:mask="######"
+                        mask:allowed_chars="1234567890"
+                        mask:keep_hint="false" />
+                </TableRow>
+            </TableLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.01"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancelRegRG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/shape_silver"
+                android:text="Cancelar" />
+
+            <Button
+                android:id="@+id/btnSigDatosGRG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/boton_shape_green"
+                android:text="Siguiente" />
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
+
+
+

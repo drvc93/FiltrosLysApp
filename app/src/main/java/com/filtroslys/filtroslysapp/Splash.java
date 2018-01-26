@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Window;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,15 +22,16 @@ public class Splash extends AppCompatActivity {
         currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
             actionBar = getSupportActionBar();
-            actionBar.hide();
+            if (actionBar != null) {
+                actionBar.hide();
+            }
         }
-        if (currentapiVersion>=20){
-            actionBar.hide();
+        if (currentapiVersion>=16){
+            if (actionBar != null) {
+                actionBar.hide();
+            }
             getWindow().setStatusBarColor(Color.parseColor("#fc0101"));
         }
-
-
-
         TimerTask task = new TimerTask() {
             @Override
             public void run() {

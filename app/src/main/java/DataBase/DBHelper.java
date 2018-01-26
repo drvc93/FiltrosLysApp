@@ -29,6 +29,15 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_TIPOREVISION_SQL);
         sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_INSPECCIONGENERAL_CAB_SQL);
         sqLiteDatabase.execSQL(ConstasDB.TABLA_MTP_INSPECCIONGENERAL_DET_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.TMA_CLIENTES_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.TMA_FALL_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.TMA_MARCA_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.TMA_MODELO_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.TMA_PRUEBALAB_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.TMA_TIPORECLAMO_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.TMA_VENDEDOR_SQL);
+
+
 
     }
 

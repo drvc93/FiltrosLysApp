@@ -90,7 +90,6 @@ public class Login extends AppCompatActivity {
 
          preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
 
-        /** /////////  GENERANDO ARCHIVOS  DE CONFIG. IP   ///////// **/
         GenFile = preferences.getString("GenFile",null);
         CompDefault = preferences.getString("CompDefault" , null) ;
 
@@ -124,7 +123,7 @@ public class Login extends AppCompatActivity {
         btnIngresar = (Button) findViewById(R.id.btnIngresarLogin);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtUser = (EditText) findViewById(R.id.txtUser);
-        lblModoConexion  = (TextView)  findViewById(R.id.txtModoConexion);
+        lblModoConexion  =   findViewById(R.id.txtModoConexion);
         txtUser.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         //***********************
 

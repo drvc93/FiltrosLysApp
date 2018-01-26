@@ -7,22 +7,19 @@ import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
-
 import java.util.ArrayList;
-
 import DataBase.HistorialInspGenDB;
-import DataBase.HistorialInspMaqDB;
 import Util.Constans;
 
 /**
- * Created by dvillanueva on 23/08/2016.
+ * Creado por dvillanueva el  23/08/2016 (FiltrosLysApp).
  */
 public class GetHistorialInspGenTask extends AsyncTask<String, String, ArrayList<HistorialInspGenDB>> {
     ArrayList<HistorialInspGenDB> result;
 
     @Override
     protected ArrayList<HistorialInspGenDB> doInBackground(String... strings) {
-        ArrayList<HistorialInspGenDB> listHistorial = new ArrayList<HistorialInspGenDB>();
+        ArrayList<HistorialInspGenDB> listHistorial = new ArrayList<>();
         final String NAMESPACE = Constans.NameSpaceWS;
         final String URL = Constans.UrlServer;
         //final String URL="http://10.0.2.2:8084/SOAPLYS?wsdl";

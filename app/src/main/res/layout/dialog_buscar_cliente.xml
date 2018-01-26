@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txtSearchCliente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/edittext_round_border"
+                android:ems="12"
+                android:hint="Razon Social/Codigo"
+                android:inputType="textPersonName"
+                android:padding="3sp" />
+
+            <Button
+                android:id="@+id/btnSearchCliente"
+                android:layout_width="20dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/botones_items_detalle"
+                android:drawableStart="@android:drawable/ic_menu_search" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lvSearchCliente"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </ListView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.01"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancelSearchCli"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:background="@drawable/shape_yellow"
+                android:text="Cancelar" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -39,14 +39,28 @@ import DataBase.UsuarioDB;
 import Model.Menu;
 import Model.Permisos;
 import Model.SubMenuBotones;
+import Model.TMACliente;
+import Model.TMAFalla;
+import Model.TMAMarca;
+import Model.TMAModelo;
+import Model.TMAPruebaLab;
+import Model.TMATipoReclamo;
+import Model.TMAVendedor;
 import Tasks.GetAccesosDataTask;
 import Tasks.GetCentroCostoTask;
+import Tasks.GetClientesTask;
+import Tasks.GetFallasTask;
 import Tasks.GetInspeccionesTask;
 import Tasks.GetMaquinasTask;
+import Tasks.GetMarcasTask;
 import Tasks.GetMenuDataTask;
+import Tasks.GetModelosTask;
 import Tasks.GetPeriodosInspTask;
+import Tasks.GetPruebasLabTask;
+import Tasks.GetTipoReclamosTask;
 import Tasks.GetTipoRevisionGTask;
 import Tasks.GetUsuariosTask;
+import Tasks.GetVendedoresTask;
 import Tasks.RefrescarBaseDeDatosTask;
 import Tasks.SincronizarAccesosTask;
 import Tasks.SincronizarMaestrosTask;
@@ -158,7 +172,7 @@ public class MenuOpciones extends AppCompatActivity {
             }
 
             SubMenuBotones subMenuBotones = getItem(position);
-            Button btnOpcList =(Button) view.findViewById(R.id.btnListOpciones);
+            Button btnOpcList = view.findViewById(R.id.btnListOpciones);
             if (btnOpcList!=null){
 
                 btnOpcList.setText(subMenuBotones.getDescripcion());
@@ -184,8 +198,6 @@ public class MenuOpciones extends AppCompatActivity {
     }
 
     public  void  IrActivity (SubMenuBotones sb){
-        ProdMantDataBase db = new ProdMantDataBase(MenuOpciones.this);
-        ArrayList<Permisos> permiso = new ArrayList<Permisos>() ;
         String var_concatenado =  sb.getCodPadre()+sb.getCodSubmenu()+sb.getCodMenuBoton();
         Log.i("Contaenado nivel ==> ",var_concatenado);
 
@@ -271,13 +283,18 @@ public class MenuOpciones extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if (var_concatenado.equals("050101")){
+            Intent intent = new Intent(getApplicationContext(),DatosGenRG.class);
+            startActivity(intent);
+        }
+
 
 
     }
 
     public void AlertSyncro(final String tipoSincronizacion) {
 
-        String mensaje = "";
+        String mensaje;
         if (tipoSincronizacion.equals("MAESTROS")){
             mensaje = "¿Desea sincronizar las tablas maestros?";
 
@@ -344,7 +361,7 @@ public class MenuOpciones extends AppCompatActivity {
 
         GetMenuDataTask getMenuDataTask = new GetMenuDataTask();
         AsyncTask<String,String,ArrayList<MenuDB>> asyncTask;
-        ArrayList<MenuDB> menuDBs= new ArrayList<MenuDB>();
+        ArrayList<MenuDB> menuDBs= new ArrayList<>();
         ProdMantDataBase db =  new ProdMantDataBase(MenuOpciones.this);
         db.deleteTables();
 
@@ -384,7 +401,7 @@ public class MenuOpciones extends AppCompatActivity {
 
         try {
             asyncTaskAccesos = getAccesosDataTask.execute();
-            accesosDBs = (ArrayList<AccesosDB>)asyncTaskAccesos.get();
+            accesosDBs = asyncTaskAccesos.get();
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -417,7 +434,7 @@ public class MenuOpciones extends AppCompatActivity {
         AsyncTask<String,String,String >asyncTaskRefresh ;
         try {
             asyncTaskRefresh = refrescarBaseDeDatosTask.execute();
-            resultRefresh = (String)asyncTaskRefresh.get();
+            resultRefresh = asyncTaskRefresh.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -517,15 +534,111 @@ public class MenuOpciones extends AppCompatActivity {
             e.printStackTrace();
         }
 
-       /* if (listCentroCosto.size()<= 0 && listMaquinas.size()<= 0){
-            CreateCustomToast("No se pudo sincrnizar la informacion " , Constans.icon_warning,Constans.layot_warning);
-            return;
-        }*/
+        // Lista de clientes
+        AsyncTask<String,String,ArrayList<TMACliente>> asyncTaskClientes ;
+        GetClientesTask getClientesTask = new GetClientesTask();
+        ArrayList<TMACliente>listClientes = new ArrayList<>();
+        try {
+            asyncTaskClientes = getClientesTask.execute();
+            listClientes = asyncTaskClientes.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // lista de fallas
+        AsyncTask<String,String,ArrayList<TMAFalla>> asyncTaskFalla;
+        GetFallasTask getFallasTask = new GetFallasTask();
+        ArrayList<TMAFalla> listaFallas =  new ArrayList<>();
+        try {
+            asyncTaskFalla = getFallasTask.execute();
+            listaFallas = asyncTaskFalla.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // lista marcas
+        AsyncTask<String,String,ArrayList<TMAMarca>> asyncTaskMarcas ;
+        GetMarcasTask getMarcasTask = new GetMarcasTask();
+        ArrayList<TMAMarca>  listaMarca = new ArrayList<>() ;
+        try {
+            asyncTaskMarcas = getMarcasTask.execute();
+            listaMarca = asyncTaskMarcas.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // lista modelos
+        AsyncTask<String,String,ArrayList<TMAModelo>>  asyncTaskModelos;
+        GetModelosTask getModelosTask = new GetModelosTask() ;
+        ArrayList<TMAModelo> listModelos  = new ArrayList<>();
+        try {
+            asyncTaskModelos  = getModelosTask.execute();
+            listModelos = asyncTaskModelos.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // lista  pruebas lab
+
+        AsyncTask<String,String,ArrayList<TMAPruebaLab>> asyncTaskPruebasLab;
+        GetPruebasLabTask  getPruebasLabTask = new GetPruebasLabTask();
+        ArrayList<TMAPruebaLab> listPruebasLab =  new ArrayList<>() ;
+        try {
+            asyncTaskPruebasLab = getPruebasLabTask.execute();
+            listPruebasLab  = asyncTaskPruebasLab.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // LISTA TIPO RECLAMO
+
+        AsyncTask<String,String,ArrayList<TMATipoReclamo>> asyncTaskTipoReclamos ;
+        GetTipoReclamosTask  getTipoReclamosTask = new GetTipoReclamosTask();
+        ArrayList<TMATipoReclamo> listTipoReclamo = new ArrayList<>();
+        try {
+            asyncTaskTipoReclamos = getTipoReclamosTask.execute();
+            listTipoReclamo = asyncTaskTipoReclamos.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // Lista Vendedores
+        AsyncTask<String,String,ArrayList<TMAVendedor>> asyncTaskVendedor ;
+        GetVendedoresTask  getVendedoresTask = new GetVendedoresTask();
+        ArrayList<TMAVendedor> listVendedor = new ArrayList<>();
+        try {
+            asyncTaskVendedor = getVendedoresTask.execute();
+            listVendedor = asyncTaskVendedor.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
         Log.i("Pre ejecuion de maestroTask",".");
         // progress dialog with asynctask
         AsyncTask<Void,Void,Void> asyncMaestros;
         SincronizarMaestrosTask sincroMaestrosTask = new SincronizarMaestrosTask(MenuOpciones.this, progressDialogo, listMaquinas, listPeriodos, listInspecciones, listCentroCosto, listTipoRevision);
+        sincroMaestrosTask.listClientes = listClientes;
+        sincroMaestrosTask.listFallas = listaFallas;
+        sincroMaestrosTask.listMarcas  = listaMarca;
+        sincroMaestrosTask.listModelo = listModelos;
+        sincroMaestrosTask.listPruebaLab = listPruebasLab;
+        sincroMaestrosTask.listTipoReclamo = listTipoReclamo;
+        sincroMaestrosTask.listVendedor = listVendedor;
+
          asyncMaestros = sincroMaestrosTask.execute();
         Log.i("Post ejecuion de maestroTask",".");
     }
@@ -534,9 +647,9 @@ public class MenuOpciones extends AppCompatActivity {
 
         LayoutInflater infator = getLayoutInflater();
         View layout =infator.inflate(R.layout.toast_alarm_success, (ViewGroup) findViewById(R.id.toastlayout));
-        TextView toastText = (TextView)layout.findViewById(R.id.txtDisplayToast);
-        ImageView imgIcon =  (ImageView)layout.findViewById(R.id.imgToastSucc);
-        LinearLayout parentLayout = ( LinearLayout)layout.findViewById(R.id.toastlayout);
+        TextView toastText = layout.findViewById(R.id.txtDisplayToast);
+        ImageView imgIcon = layout.findViewById(R.id.imgToastSucc);
+        LinearLayout parentLayout = layout.findViewById(R.id.toastlayout);
         imgIcon.setImageResource(icon);
         final int sdk = android.os.Build.VERSION.SDK_INT;
         if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {

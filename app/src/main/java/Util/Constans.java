@@ -23,7 +23,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 /**
- * Created by dvillanueva on 04/08/2016.
+ * Creado por dvillanueva el  04/08/2016 (FiltrosLysApp).
  */
 public class Constans {
 
@@ -42,19 +42,23 @@ public class Constans {
     public static  String Carpeta_foto= "LysConfig/Fotos/";
     public static final String NroConpania = "00100000";
     public static  final  String FolderConfig ="appConfig";
-    public static  final  String IPDefault  = "190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
+    public static  final  String IPDefault  = "100.100.100.57:8080" ;//"190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
     public static  final  String FolderWs = "LysWsRest" ;
 
     public static void SetConexion(String LocalOExt, String con) {
 
         String filename = "";
-        if (LocalOExt.equals("E")) {
-            filename = FolderConfig+File.separator+ "ext.txt";
-        } else if (LocalOExt.equals("L")) {
-             filename = FolderConfig+File.separator+ "local.txt";
-        } else if (LocalOExt.equals("P")) {
+        switch (LocalOExt) {
+            case "E":
+                filename = FolderConfig + File.separator + "ext.txt";
+                break;
+            case "L":
+                filename = FolderConfig + File.separator + "local.txt";
+                break;
+            case "P":
 
-            filename = "con.txt";
+                filename = "con.txt";
+                break;
         }
         try {
             Clear();

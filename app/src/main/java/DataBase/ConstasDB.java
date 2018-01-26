@@ -323,6 +323,78 @@ public class ConstasDB {
                     MTP_INSP_GEN_DET_TIPO_REVISION + " TEXT , " +
                     MTP_INSP_GEN_DET_FLAG_ADIC + " TEXT ); ";
 
+    // tabla TMA_MODELO
+    public static final String  TMA_MODELO_NAME =  "TMA_MODELO";
+
+    public static final String TMA_MODELO_SQL =
+            "CREATE TABLE "+ TMA_MODELO_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    " c_marca  TEXT, "+
+                    "c_modelo TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_estado TEXT );";
+
+    // TABBLA TMA_CLIENTES
+
+    public static final String TMA_CLIENTES_NAME = "TMA_CLIENTES";
+    public static final String TMA_CLIENTES_SQL =
+            "CREATE TABLE " + TMA_CLIENTES_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT ,"+
+                    "n_cliente INTEGER, "+
+                    "c_razonsocial TEXT )" ;
+
+    // tabla TMA_FALLA
+
+    public  static  final  String TMA_FALLA_NAME = "TMA_FALLA" ;
+    public  static  final  String TMA_FALL_SQL =
+            "CREATE TABLE " + TMA_FALLA_NAME+
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_codigo TEXT, "+
+                    "c_descripcion TEXT);";
+
+    // TABLA TMAMarca
+    public static final String TMA_MARCA_NAME = "TMA_MARCA";
+    public static final String TMA_MARCA_SQL =
+            "CREATE TABLE "+ TMA_MARCA_NAME+
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_marca TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_estado TEXT);";
+
+    //TABLA TMA_PRUEBALAB
+    public static final String TMA_PRUEBALAB_NAME = "TMA_PRUEBALAB";
+    public static final String TMA_PRUEBALAB_SQL =
+            "CREATE TABLE "+ TMA_PRUEBALAB_NAME+
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_codigo TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_tipo TEXT, "+
+                    "c_unidadcodigo TEXT ); " ;
+
+    // TABLA TMA_TIPORECLAMO
+
+    public static final String TMA_TIPORECLAMO_NAME = "TMA_TIPORECLAMO";
+    public static final String TMA_TIPORECLAMO_SQL =
+            "CREATE TABLE " + TMA_TIPORECLAMO_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_tiporeclamo TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_estado TEXT, "+
+                    "c_tipo TEXT);";
+
+    // tabla TMA_VENDEDOR
+
+    public static final String TMA_VENDEDOR_NAME = "TMA_VENDEDOR";
+    public static final String TMA_VENDEDOR_SQL =
+            "CREATE TABLE "+ TMA_VENDEDOR_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT , "+
+                    "c_vendedor TEXT , "+
+                    "c_ciasecundaria TEXT, "+
+                    "c_nombres TEXT , "+
+                    "c_estado TEXT); ";
+
 
 
 

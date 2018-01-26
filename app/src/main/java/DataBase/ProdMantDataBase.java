@@ -21,6 +21,13 @@ import Model.Menu;
 import Model.Permisos;
 import Model.SubMenu;
 import Model.SubMenuBotones;
+import Model.TMACliente;
+import Model.TMAFalla;
+import Model.TMAMarca;
+import Model.TMAModelo;
+import Model.TMAPruebaLab;
+import Model.TMATipoReclamo;
+import Model.TMAVendedor;
 
 /**
  * Created by dvillanueva on 04/08/2016.
@@ -238,6 +245,119 @@ public class ProdMantDataBase {
         return contentValues;
 
     }
+
+    public  ContentValues TMAClientesContentValues(TMACliente c){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania", c.getC_compania());
+        contentValues.put("n_cliente", c.getN_cliente());
+        contentValues.put("c_razonsocial",c.getC_razonsocial());
+        return  contentValues;
+
+    }
+    public  Long InsertTMACliente (TMACliente tmaCli){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_CLIENTES_NAME, null, TMAClientesContentValues(tmaCli));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  ContentValues TMAFallasContentValues(TMAFalla f){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_codigo",f.getC_codigo());
+        contentValues.put("c_descripcion",f.getC_descripcion());
+        return contentValues;
+    }
+
+    public  long InsertTMAFallas(TMAFalla fa) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_FALLA_NAME, null, TMAFallasContentValues(fa));
+        this.CloseDB();
+        return rowid;
+    }
+
+
+    public  ContentValues TMAVendedorContentValues (TMAVendedor vendedor){
+        ContentValues  contentValues = new ContentValues();
+        contentValues.put("c_compania", vendedor.getC_compania());
+        contentValues.put("c_vendedor",vendedor.getC_vendedor());
+        contentValues.put("c_ciasecundaria",vendedor.getC_ciasecundaria());
+        contentValues.put("c_nombres",vendedor.getC_nombres());
+        contentValues.put("c_estado",vendedor.getC_estado());
+        return  contentValues;
+    }
+    public  long InsertTMAVendedor(TMAVendedor v) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_VENDEDOR_NAME, null, TMAVendedorContentValues(v));
+        this.CloseDB();
+        return rowid;
+    }
+
+
+
+    public  ContentValues TMATipoReclamoContenValues(TMATipoReclamo tipoReclamo){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_tiporeclamo", tipoReclamo.getC_tiporeclamo());
+        contentValues.put("c_descripcion",tipoReclamo.getC_descripcion());
+        contentValues.put("c_estado",tipoReclamo.getC_estado());
+        contentValues.put("c_tipo", tipoReclamo.getC_tipo());
+        return contentValues;
+    }
+
+    public  long InsertTMATipoReclamo(TMATipoReclamo tipoReclamo){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_TIPORECLAMO_NAME, null, TMATipoReclamoContenValues(tipoReclamo));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public ContentValues TMAPruebaLabsContentValues (TMAPruebaLab pruebaLab){
+        ContentValues contentValues =  new ContentValues();
+        contentValues.put("c_codigo",pruebaLab.getC_codigo());
+        contentValues.put("c_descripcion", pruebaLab.getC_descripcion());
+        contentValues.put("c_tipo",pruebaLab.getC_tipo());
+        contentValues.put("c_unidadcodigo",pruebaLab.getC_unidadcodigo());
+        return  contentValues;
+    }
+
+    public  long InsertTMAPruebasLab(TMAPruebaLab pruebaLab){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_PRUEBALAB_NAME, null, TMAPruebaLabsContentValues(pruebaLab));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  ContentValues TMAModeloContentValues(TMAModelo modelo){
+        ContentValues contentValues =  new ContentValues();
+        contentValues.put("c_marca", modelo.getC_marca());
+        contentValues.put("c_modelo",modelo.getC_modelo());
+        contentValues.put("c_descripcion",modelo.getC_descripcion());
+        contentValues.put("c_estado",modelo.getC_estado());
+        return contentValues ;
+    }
+
+    public  long InsertTMAModelo (TMAModelo modelo){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_MODELO_NAME, null, TMAModeloContentValues(modelo));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  ContentValues TMAMarcaContentValues (TMAMarca marca ){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_marca", marca.getC_marca());
+        contentValues.put("c_descripcion",marca.getC_descripcion());
+        contentValues.put("c_estado",marca.getC_estado());
+        return contentValues;
+    }
+
+    public  long InsertTMAMarcas( TMAMarca marca) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_MARCA_NAME, null, TMAMarcaContentValues(marca));
+        this.CloseDB();
+        return rowid;
+    }
+
+
 
     public long InsertInspGenDet(InspeccionGenDetalle det) {
         this.OpenWritableDB();
@@ -875,6 +995,43 @@ public class ProdMantDataBase {
         }
         return result;
     }
+    public  ArrayList<TMATipoReclamo> GetSelectTipoReclamo (){
+        ArrayList<TMATipoReclamo> result = new ArrayList<>();
+        String query = "SELECT * FROM TMA_TIPORECLAMO where c_estado = 'A'";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+        TMATipoReclamo  tr = new TMATipoReclamo();
+        tr.setC_tiporeclamo(cursor.getString(cursor.getColumnIndex("c_tiporeclamo")));
+            tr.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            tr.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            tr.setC_tipo(cursor.getString(cursor.getColumnIndex("c_tipo")));
+            result.add(tr);
+
+        }
+        return  result ;
+    }
+
+    public  ArrayList<TMACliente> GetSelectClientes (String sFilterText)
+    {
+        ArrayList<TMACliente> listaclientes = new ArrayList<>();
+        String query = "select c_compania, n_cliente, c_razonsocial FROM  TMA_CLIENTES ";
+        if (!sFilterText.equals("%")){
+            query = query + " WHERE c_razonsocial like '%"+sFilterText+"%' or n_cliente like '%"+sFilterText+"%'" ;
+        }
+        Log.i("queery clientes"  , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()){
+            TMACliente c = new TMACliente();
+            c.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            c.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            c.setC_razonsocial(cursor.getString(cursor.getColumnIndex("c_razonsocial")));
+            listaclientes.add(c);
+
+        }
+        return  listaclientes;
+    }
 
     public ArrayList<Permisos> GetPermisos(String codigoUser, String nivel) {
 
@@ -933,6 +1090,13 @@ public class ProdMantDataBase {
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MAQUINAS_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCION_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TMA_CLIENTES_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TMA_FALLA_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TMA_MODELO_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TMA_MARCA_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TMA_PRUEBALAB_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TMA_TIPORECLAMO_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.TMA_VENDEDOR_NAME);
        /// db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME);
         this.CloseDB();
     }

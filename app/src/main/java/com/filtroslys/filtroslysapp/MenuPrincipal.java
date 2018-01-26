@@ -1,11 +1,6 @@
 package com.filtroslys.filtroslysapp;
-
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -16,14 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
-
-import DataBase.ConstasDB;
 import DataBase.ProdMantDataBase;
 import Model.Menu;
 import Model.SubMenu;
@@ -32,13 +22,11 @@ import Util.ExpandibleListMenuAdapater;
 
 public class MenuPrincipal extends AppCompatActivity {
 
-    Context context = this;
     ActionBar actionBarGlobal;
     ExpandibleListMenuAdapater menuAdapater;
    String codUser;
     ArrayList<Menu> MenuFinalList;
     ExpandableListView menuExpListView;
-    SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +46,13 @@ public class MenuPrincipal extends AppCompatActivity {
         }
         else  {
             ActionBar ac = getSupportActionBar();
-            ac.hide();
+            if (ac != null) {
+                ac.hide();
+            }
         }
       //  HideToolBar();
 
-        menuExpListView = (ExpandableListView)findViewById(R.id.ELVMenu);
+        menuExpListView = findViewById(R.id.ELVMenu);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MenuPrincipal.this);
         codUser = preferences.getString("UserCod",null);
@@ -94,8 +84,8 @@ public class MenuPrincipal extends AppCompatActivity {
        ProdMantDataBase db = new ProdMantDataBase(MenuPrincipal.this);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MenuPrincipal.this);
         codUser = preferences.getString("UserCod",null);
-        ArrayList<Menu> listMenu = new ArrayList<Menu>();
-        ArrayList<SubMenu> listSubMenu = new ArrayList<SubMenu>();
+        ArrayList<Menu> listMenu;
+        ArrayList<SubMenu> listSubMenu;
 
         listMenu = db.GetMenuPadre(codUser);
 
@@ -106,12 +96,12 @@ public class MenuPrincipal extends AppCompatActivity {
     }
     public  void AgregarItemsAMenu (ArrayList<Menu> menus , ArrayList<SubMenu> subMenus){
 
-        MenuFinalList = new ArrayList<Menu>();
+        MenuFinalList = new ArrayList<>();
 
         for (int i  = 0 ; i<menus.size(); i++){
             Log.i("menu count >" , String.valueOf(i));
             String codMenu = menus.get(i).getCodMenu();
-            ArrayList<SubMenu> listSubMenu = new ArrayList<SubMenu>();
+            ArrayList<SubMenu> listSubMenu = new ArrayList<>();
             for (int j =  0 ; j<subMenus.size();j++){
                 Log.i("SubMenu count >" , String.valueOf(j));
                 String codPadre = subMenus.get(j).getCodPadre();
@@ -162,7 +152,7 @@ public class MenuPrincipal extends AppCompatActivity {
 
         LayoutInflater infator = getLayoutInflater();
         View layout =infator.inflate(R.layout.toast_alarm_success, (ViewGroup) findViewById(R.id.toastlayout));
-        TextView toastText = (TextView)layout.findViewById(R.id.txtDisplayToast);
+        TextView toastText = layout.findViewById(R.id.txtDisplayToast);
         toastText.setText(msj);
         Toast toast = new Toast(MenuPrincipal.this);
         toast.setDuration(Toast.LENGTH_LONG);
