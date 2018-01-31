@@ -9,6 +9,8 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.filtroslys.filtroslysapp.InspeccionGen;
+import com.filtroslys.filtroslysapp.ListaReclamoGarantia;
+import com.filtroslys.filtroslysapp.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,13 +21,20 @@ import Model.InspeccionMaqCabecera;
 import Model.InspeccionMaqDetalle;
 import Model.Menu;
 import Model.Permisos;
+import Model.QuejaCliente;
+import Model.ReclamoGarantia;
 import Model.SubMenu;
 import Model.SubMenuBotones;
+import Model.TMAAccionesTomar;
+import Model.TMACalificacionQueja;
 import Model.TMACliente;
 import Model.TMAFalla;
 import Model.TMAMarca;
+import Model.TMAMedioRecepcion;
 import Model.TMAModelo;
+import Model.TMANotificacionQueja;
 import Model.TMAPruebaLab;
+import Model.TMATipoCalificacionQueja;
 import Model.TMATipoReclamo;
 import Model.TMAVendedor;
 
@@ -358,6 +367,61 @@ public class ProdMantDataBase {
     }
 
 
+    public  ContentValues ReclamoGarantiaContentValues (ReclamoGarantia rg){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania",rg.getC_compania());
+        contentValues.put("n_correlativo",rg.getN_correlativo());
+        contentValues.put("d_fecha",rg.getD_fecha());
+        contentValues.put("n_cliente",rg.getN_cliente());
+        contentValues.put("c_codproducto",rg.getC_codproducto());
+        contentValues.put("c_lote",rg.getC_lote());
+        contentValues.put("c_procedencia",rg.getC_procedencia());
+        contentValues.put("n_qtyingreso",rg.getN_qtyingreso());
+        contentValues.put("c_vendedor",rg.getC_vendedor());
+        contentValues.put("c_estado",rg.getC_estado());
+        contentValues.put("c_usuario",rg.getC_usuario());
+        contentValues.put("c_lote1",rg.getC_lote1());
+        contentValues.put("c_lote2",rg.getC_lote2());
+        contentValues.put("c_lote3",rg.getC_lote3());
+        contentValues.put("n_cantlote1",rg.getN_cantlote1());
+        contentValues.put("n_cantlote2",rg.getN_cantlote2());
+        contentValues.put("n_cantlote3",rg.getN_cantlote3());
+        contentValues.put("c_codmarca",rg.getC_codmarca());
+        contentValues.put("c_codmodelo",rg.getC_codmodelo());
+        contentValues.put("n_pyear",rg.getN_pyear());
+        contentValues.put("c_tiempouso",rg.getC_tiempouso());
+        contentValues.put("c_facturaRef",rg.getC_facturaRef());
+        contentValues.put("c_prediagnostico",rg.getC_prediagnostico());
+        contentValues.put("n_formato",rg.getN_formato());
+        contentValues.put("d_fechaformato",rg.getD_fechaformato());
+        contentValues.put("c_obscliente",rg.getC_obscliente());
+        contentValues.put("c_flagvisita",rg.getC_flagvisita());
+        contentValues.put("c_tiporeclamo",rg.getC_tiporeclamo());
+        contentValues.put("c_reembcliente",rg.getC_reembcliente());
+        contentValues.put("c_placavehic",rg.getC_placavehic());
+        contentValues.put("n_montoreembcli",rg.getN_montoreembcli());
+        contentValues.put("c_monedareembcli",rg.getC_monedareembcli());
+        contentValues.put("c_pruebalab1",rg.getC_pruebalab1());
+        contentValues.put("c_pruebalab2",rg.getC_pruebalab2());
+        contentValues.put("c_pruebalab3",rg.getC_pruebalab3());
+        contentValues.put("c_ensayo01",rg.getC_ensayo01());
+        contentValues.put("c_ensayo02",rg.getC_ensayo02());
+        contentValues.put("c_ensayo03",rg.getC_ensayo03());
+        contentValues.put("c_ensayo04",rg.getC_ensayo04());
+        contentValues.put("c_ensayo05",rg.getC_ensayo05());
+        contentValues.put("c_enviado",rg.getC_enviado());
+        return  contentValues ;
+
+    }
+
+    public long InsertReclamoGarantia(ReclamoGarantia rg) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MCO_RECLAMO_GARANTIA_NAME, null, ReclamoGarantiaContentValues(rg));
+        this.CloseDB();
+        return rowid;
+
+    }
+
 
     public long InsertInspGenDet(InspeccionGenDetalle det) {
         this.OpenWritableDB();
@@ -491,7 +555,6 @@ public class ProdMantDataBase {
                 }
             }
         }
-
         res = res+1;
 
         return  res;
@@ -503,17 +566,8 @@ public class ProdMantDataBase {
         String query = "SELECT n_correlativo FROM MTP_INSPECCIONGENERAL_CAB ORDER BY  n_correlativo  desc ";
         this.OpenWritableDB();
         Cursor c = db.query("MTP_INSPECCIONGENERAL_CAB", new String [] {"MAX(n_correlativo)"}, null, null, null, null,null) ;
-        //Cursor c = db.query("MTP_INSPECCIONGENERAL_CAB", null, "n_correlativo=(SELECT MAX(n_correlativo) FROM  MTP_INSPECCIONGENERAL_CAB" + ")", null, null, null, null) ;
-           // Cursor c = db.rawQuery(query, null);
         if (c != null) {
-           /* int i = 0 ;
-            while (c.moveToNext()) {
-                if (c.getString(0) != null) {
-                    String var = c.getString(0);
-                    Log.i("Cursor (" + String.valueOf(i+1)+ ") " , var );
-                    i = i + 1;
-                }
-            }*/
+
             if (c.getCount() > 0) {
                 c.moveToFirst();
                 if (TextUtils.isEmpty(c.getString(0))){
@@ -522,7 +576,6 @@ public class ProdMantDataBase {
                 else  {
                     res = Integer.parseInt(c.getString(0));
                 }
-
 
             }
             else {
@@ -774,6 +827,19 @@ public class ProdMantDataBase {
 
     }
 
+    public  String GetNombreClienteXCod(String codCliente){
+        String result = "";
+        String query = "SELECT * FROM TMA_CLIENTES where n_cliente = "+codCliente;
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            result = (cursor.getString(cursor.getColumnIndex("c_razonsocial")).trim());
+
+
+        }
+        return  result;
+    }
+
     public  MaquinaDB GetMAquinaPorCodigo (String codBarras){
         String query = "SELECT * FROM MTP_MAQUINAS WHERE  C_CODIGOBARRAS ='"+codBarras+"'";
         this.OpenWritableDB();
@@ -1012,6 +1078,94 @@ public class ProdMantDataBase {
         return  result ;
     }
 
+    public  ArrayList<TMAMarca> GetSelectMarca (){
+        ArrayList<TMAMarca> result = new ArrayList<>();
+        String query = "SELECT * FROM TMA_MARCA where c_estado = 'A' ORDER BY c_descripcion";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMAMarca  tr = new TMAMarca();
+            tr.setC_marca(cursor.getString(cursor.getColumnIndex("c_marca")));
+            tr.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            tr.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+
+            result.add(tr);
+
+        }
+        return  result ;
+    }
+
+    public  ArrayList<TMAModelo> GetSelectModelo (String sMarca){
+        ArrayList<TMAModelo> result = new ArrayList<>();
+        String query = "SELECT * FROM TMA_MODELO WHERE c_estado = 'A' and c_marca = '"+sMarca+"'";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMAModelo  tr = new TMAModelo();
+            tr.setC_marca(cursor.getString(cursor.getColumnIndex("c_marca")));
+            tr.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            tr.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            tr.setC_modelo(cursor.getString(cursor.getColumnIndex("c_modelo")));
+
+            result.add(tr);
+
+        }
+        return  result ;
+    }
+
+    public  ArrayList<TMAPruebaLab> GetSelectPruebasLab (){
+        ArrayList<TMAPruebaLab> result = new ArrayList<>();
+        String query = "SELECT * FROM TMA_PRUEBALAB ";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMAPruebaLab  p = new TMAPruebaLab();
+            p.setC_codigo(cursor.getString(cursor.getColumnIndex("c_codigo")).trim());
+            p.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            p.setC_tipo(cursor.getString(cursor.getColumnIndex("c_tipo")));
+            p.setC_unidadcodigo(cursor.getString(cursor.getColumnIndex("c_unidadcodigo")));
+            result.add(p);
+
+        }
+        return  result ;
+    }
+
+    public  ArrayList<TMAFalla> GetSelectFallas (){
+        ArrayList<TMAFalla> result = new ArrayList<>();
+        String query = "SELECT * FROM TMA_FALLA ";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMAFalla  f = new TMAFalla();
+            f.setC_codigo(cursor.getString(cursor.getColumnIndex("c_codigo")).trim());
+            f.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+
+            result.add(f);
+
+        }
+        return  result ;
+    }
+
+
+    public  ArrayList<TMAVendedor> GetSelectVendedor (){
+        ArrayList<TMAVendedor> result = new ArrayList<>();
+        String query = "SELECT * FROM TMA_VENDEDOR where c_estado = 'A' ";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMAVendedor  v = new TMAVendedor();
+            v.setC_vendedor(cursor.getString(cursor.getColumnIndex("c_vendedor")).trim());
+            v.setC_nombres(cursor.getString(cursor.getColumnIndex("c_nombres")));
+            v.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            v.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            v.setC_ciasecundaria(cursor.getString(cursor.getColumnIndex("c_ciasecundaria")));
+            result.add(v);
+
+        }
+        return  result ;
+    }
+
+
     public  ArrayList<TMACliente> GetSelectClientes (String sFilterText)
     {
         ArrayList<TMACliente> listaclientes = new ArrayList<>();
@@ -1031,6 +1185,307 @@ public class ProdMantDataBase {
 
         }
         return  listaclientes;
+    }
+
+    /************************************************/
+    /****************REGISTRO DE QUEJAS**************/
+    /************************************************/
+    //Insert Calificacion
+    public ContentValues TMACalifQJContentValues(TMACalificacionQueja oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_calificacion", oEnt.getC_calificacion());
+        contentValues.put("c_descripcion",oEnt.getC_descripcion());
+        contentValues.put("c_usuarioderivacion",oEnt.getC_usuarioderivacion());
+        contentValues.put("c_correo",oEnt.getC_correo());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        return contentValues ;
+    }
+
+    public long InsertTMACalificacionQJ(TMACalificacionQueja oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_CALIFICACIONQUEJA_NAME, null, TMACalifQJContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    //Insert Tipo Calificacion
+    public ContentValues TMATipoCalifQJContentValues(TMATipoCalificacionQueja oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_tipocalificacion", oEnt.getC_tipocalificacion());
+        contentValues.put("c_calificacion", oEnt.getC_calificacion());
+        contentValues.put("c_descripcion",oEnt.getC_descripcion());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        return contentValues ;
+    }
+
+    public long InsertTMATipoCalificacionQJ(TMATipoCalificacionQueja oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_TIPOCALIFICACIONQUEJA_NAME, null, TMATipoCalifQJContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    //Insert Medio Recepcion
+    public ContentValues TMAMedioRecQJContentValues(TMAMedioRecepcion oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_mediorecepcion", oEnt.getC_mediorecepcion());
+        contentValues.put("c_descripcion",oEnt.getC_descripcion());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        return contentValues ;
+    }
+
+    public long InsertTMAMedioRecQJ(TMAMedioRecepcion oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_MEDIORECEPCION_NAME, null, TMAMedioRecQJContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    //Insert Acciones Tomar
+    public ContentValues TMAAccionTomarQJContentValues(TMAAccionesTomar oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_codaccion", oEnt.getC_codaccion());
+        contentValues.put("c_descripcion",oEnt.getC_descripcion());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        return contentValues ;
+    }
+
+    public long InsertTMAAccionTomarQJ(TMAAccionesTomar oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_ACCIONESTOMAR_NAME, null, TMAAccionTomarQJContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    //Insert Notificacion Queja
+    public ContentValues TMANotificacionQJContentValues(TMANotificacionQueja oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_notificacion", oEnt.getC_notificacion());
+        contentValues.put("c_descripcion",oEnt.getC_descripcion());
+        contentValues.put("c_envianot",oEnt.getC_envianot());
+        contentValues.put("c_usuarionot",oEnt.getC_usuarionot());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        return contentValues ;
+    }
+
+    public long InsertTMANotificacionQJ(TMANotificacionQueja oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_NOTIFICAQUEJA_NAME, null, TMANotificacionQJContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    //Extraer Clase
+    public ArrayList<TMACalificacionQueja> GetClase(){
+        ArrayList<TMACalificacionQueja> oData = new ArrayList<>();
+        String query = "SELECT * FROM TMA_CALIFICACIONQUEJA where c_estado = 'A' ORDER BY c_descripcion";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMACalificacionQueja oEnt = new TMACalificacionQueja();
+            oEnt.setC_calificacion(cursor.getString(cursor.getColumnIndex("c_calificacion")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_usuarioderivacion(cursor.getString(cursor.getColumnIndex("c_usuarioderivacion")));
+            oEnt.setC_correo(cursor.getString(cursor.getColumnIndex("c_correo")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    //Estraer SubClase
+    public ArrayList<TMATipoCalificacionQueja> GetSubClase(String sClase){
+        ArrayList<TMATipoCalificacionQueja> oData = new ArrayList<>();
+        String query = "SELECT * FROM TMA_TIPOCALIFICACIONQUEJA WHERE c_estado = 'A' and c_calificacion = '"+sClase+"'";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMATipoCalificacionQueja oEnt = new TMATipoCalificacionQueja();
+            oEnt.setC_tipocalificacion(cursor.getString(cursor.getColumnIndex("c_tipocalificacion")));
+            oEnt.setC_calificacion(cursor.getString(cursor.getColumnIndex("c_calificacion")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    //Extraer Medio Recepcion
+    public ArrayList<TMAMedioRecepcion> GetMedioRecepcion(){
+        ArrayList<TMAMedioRecepcion> oData = new ArrayList<>();
+        String query = "SELECT * FROM TMA_MEDIORECEPCION where c_estado = 'A' ORDER BY c_descripcion";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMAMedioRecepcion oEnt = new TMAMedioRecepcion();
+            oEnt.setC_mediorecepcion(cursor.getString(cursor.getColumnIndex("c_mediorecepcion")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    //Extraer Acciones Tomar
+    public ArrayList<TMAAccionesTomar> GetAccionesTomar(){
+        ArrayList<TMAAccionesTomar> oData = new ArrayList<>();
+        String query = "SELECT * FROM TMA_ACCIONESTOMAR where c_estado = 'A' ORDER BY c_descripcion";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMAAccionesTomar oEnt = new TMAAccionesTomar();
+            oEnt.setC_codaccion(cursor.getString(cursor.getColumnIndex("c_codaccion")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    //Extraer Notificacion
+    public ArrayList<TMANotificacionQueja> GetNotificacion(){
+        ArrayList<TMANotificacionQueja> oData = new ArrayList<>();
+        String query = "SELECT * FROM TMA_NOTIFICAQUEJA where c_estado = 'A' ORDER BY c_descripcion";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMANotificacionQueja oEnt = new TMANotificacionQueja();
+            oEnt.setC_notificacion(cursor.getString(cursor.getColumnIndex("c_notificacion")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_envianot(cursor.getString(cursor.getColumnIndex("c_envianot")));
+            oEnt.setC_usuarionot(cursor.getString(cursor.getColumnIndex("c_usuarionot")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    //Insert QUEJA CLIENTE
+    public ContentValues QuejaClienteContentValues (QuejaCliente qj){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania",qj.getC_compania());
+        contentValues.put("n_correlativo",qj.getN_correlativo());
+        contentValues.put("c_queja","S_" + String.valueOf(qj.getN_correlativo()));
+        contentValues.put("c_nroformato",qj.getC_nroformato());
+        contentValues.put("n_cliente",qj.getN_cliente());
+        contentValues.put("d_fechareg",qj.getD_fechareg());
+        contentValues.put("c_documentoref",qj.getC_documentoref());
+        contentValues.put("c_mediorecepcion",qj.getC_mediorecepcion());
+        contentValues.put("c_calificacion",qj.getC_calificacion());
+        contentValues.put("c_tipocalificacion",qj.getC_tipocalificacion());
+        contentValues.put("c_item",qj.getC_item());
+        contentValues.put("c_lote",qj.getC_lote());
+        contentValues.put("n_cantidad",qj.getN_cantidad());
+        contentValues.put("c_desqueja",qj.getC_desqueja());
+        contentValues.put("c_observaciones",qj.getC_observaciones());
+        contentValues.put("c_usuario",qj.getC_usuario());
+        contentValues.put("c_estado",qj.getC_estado());
+        return contentValues ;
+    }
+
+    public long InsertQuejaCliente(QuejaCliente qu) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MCO_QUEJA_CLIENTE_NAME, null, QuejaClienteContentValues(qu));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public ArrayList<QuejaCliente> GetListQuejaCliente (String sComp,String sCliente,String sEstado,String sFechaIni,String sFechaFin){
+        ArrayList<QuejaCliente> result = new ArrayList<>();
+        String query = "SELECT * FROM MCO_QUEJAS " +
+                "where d_fechareg >=  '"+sFechaIni+" 00:00:00'  and d_fechareg <= '"+sFechaFin+" 23:59:59' " +
+                "and cast(n_cliente as text) like '"+sCliente+"' and c_estado like '"+sEstado+"' and c_compania  like '"+sComp+"';";
+        Log.i("query quejas " ,query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            QuejaCliente oEnt = new QuejaCliente();
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            oEnt.setC_queja(cursor.getString(cursor.getColumnIndex("c_queja")));
+            oEnt.setC_nroformato(cursor.getString(cursor.getColumnIndex("c_nroformato")));
+            oEnt.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            oEnt.setD_fechareg(cursor.getString(cursor.getColumnIndex("d_fechareg")));
+            oEnt.setC_documentoref(cursor.getString(cursor.getColumnIndex("c_documentoref")));
+            oEnt.setC_mediorecepcion(cursor.getString(cursor.getColumnIndex("c_mediorecepcion")));
+            oEnt.setC_centrocosto(cursor.getString(cursor.getColumnIndex("c_centrocosto")));
+            oEnt.setC_calificacion(cursor.getString(cursor.getColumnIndex("c_calificacion")));
+            oEnt.setC_usuarioderiv(cursor.getString(cursor.getColumnIndex("c_usuarioderiv")));
+            oEnt.setC_tipocalificacion(cursor.getString(cursor.getColumnIndex("c_tipocalificacion")));
+            oEnt.setC_item(cursor.getString(cursor.getColumnIndex("c_item")));
+            oEnt.setC_lote(cursor.getString(cursor.getColumnIndex("c_lote")));
+            oEnt.setN_cantidad(cursor.getDouble(cursor.getColumnIndex("n_cantidad")));
+            oEnt.setC_desqueja(cursor.getString(cursor.getColumnIndex("c_desqueja")));
+            oEnt.setC_observaciones(cursor.getString(cursor.getColumnIndex("c_observaciones")));
+            //oEnt.setC_unidadneg(cursor.getString(cursor.getColumnIndex("c_unidadneg")));
+           /// oEnt.setC_razonsocial(cursor.getString(cursor.getColumnIndex("c_razonsocial")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oEnt.setC_usuario(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            result.add(oEnt);
+        }
+        return result;
+    }
+    /************************************************/
+    /************************************************/
+    /************************************************/
+
+
+    public  ArrayList<ReclamoGarantia> GetListReclamosGar (String sComp,String sCliente , String sEstado,String sFechaIni , String sFechaFin ){
+        ArrayList<ReclamoGarantia> result = new ArrayList<>();
+        String query = "SELECT  * FROM MCO_RECLAMOGARANTIA " +
+                        "where   d_fechaformato >=  '"+sFechaIni+"'  and d_fechaformato <= '"+sFechaFin+"' " +
+                        "and cast(n_cliente as text) like '"+sCliente+"' and c_estado like '"+sEstado+"' and c_compania  like '"+sComp+"';";
+        Log.i("query reclamo garantia " ,query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            ReclamoGarantia  r = new ReclamoGarantia();
+            r.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            r.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            r.setD_fecha(cursor.getString(cursor.getColumnIndex("d_fecha")));
+            r.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            r.setC_codproducto(cursor.getString(cursor.getColumnIndex("c_codproducto")));
+            r.setC_lote(cursor.getString(cursor.getColumnIndex("c_lote")));
+            r.setC_procedencia(cursor.getString(cursor.getColumnIndex("c_procedencia")));
+            r.setN_qtyingreso(cursor.getDouble(cursor.getColumnIndex("n_qtyingreso")));
+            r.setC_vendedor(cursor.getString(cursor.getColumnIndex("c_vendedor")));
+            r.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            r.setC_usuario(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            r.setC_lote1(cursor.getString(cursor.getColumnIndex("c_lote1")));
+            r.setC_lote2(cursor.getString(cursor.getColumnIndex("c_lote2")));
+            r.setC_lote3(cursor.getString(cursor.getColumnIndex("c_lote3")));
+            r.setN_cantlote1(cursor.getDouble(cursor.getColumnIndex("n_cantlote1")));
+            r.setN_cantlote2(cursor.getDouble(cursor.getColumnIndex("n_cantlote2")));
+            r.setN_cantlote3(cursor.getDouble(cursor.getColumnIndex("n_cantlote3")));
+            r.setC_codmarca(cursor.getString(cursor.getColumnIndex("c_codmarca")));
+            r.setC_codmodelo(cursor.getString(cursor.getColumnIndex("c_codmodelo")));
+            r.setN_pyear(cursor.getInt(cursor.getColumnIndex("n_pyear")));
+            r.setC_tiempouso(cursor.getString(cursor.getColumnIndex("c_tiempouso")));
+            r.setC_facturaRef(cursor.getString(cursor.getColumnIndex("c_facturaRef")));
+            r.setC_prediagnostico(cursor.getString(cursor.getColumnIndex("c_prediagnostico")));
+            r.setN_formato(cursor.getInt(cursor.getColumnIndex("n_formato")));
+            r.setD_fechaformato(cursor.getString(cursor.getColumnIndex("d_fechaformato")));
+            r.setC_obscliente(cursor.getString(cursor.getColumnIndex("c_obscliente")));
+            r.setC_flagvisita(cursor.getString(cursor.getColumnIndex("c_flagvisita")));
+            r.setC_tiporeclamo(cursor.getString(cursor.getColumnIndex("c_tiporeclamo")));
+            r.setC_reembcliente(cursor.getString(cursor.getColumnIndex("c_reembcliente")));
+            r.setC_placavehic(cursor.getString(cursor.getColumnIndex("c_placavehic")));
+            r.setN_montoreembcli(cursor.getDouble(cursor.getColumnIndex("n_montoreembcli")));
+            r.setC_monedareembcli(cursor.getString(cursor.getColumnIndex("c_monedareembcli")));
+            r.setC_pruebalab1(cursor.getString(cursor.getColumnIndex("c_pruebalab1")));
+            r.setC_pruebalab2(cursor.getString(cursor.getColumnIndex("c_pruebalab2")));
+            r.setC_pruebalab3(cursor.getString(cursor.getColumnIndex("c_pruebalab3")));
+            r.setC_ensayo01(cursor.getString(cursor.getColumnIndex("c_ensayo01")));
+            r.setC_ensayo02(cursor.getString(cursor.getColumnIndex("c_ensayo02")));
+            r.setC_ensayo03(cursor.getString(cursor.getColumnIndex("c_ensayo03")));
+            r.setC_ensayo04(cursor.getString(cursor.getColumnIndex("c_ensayo04")));
+            r.setC_ensayo05(cursor.getString(cursor.getColumnIndex("c_ensayo05")));
+            r.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+
+            result.add(r);
+
+        }
+        return  result ;
     }
 
     public ArrayList<Permisos> GetPermisos(String codigoUser, String nivel) {
@@ -1097,7 +1552,7 @@ public class ProdMantDataBase {
         db.execSQL("DELETE FROM " + ConstasDB.TMA_PRUEBALAB_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TMA_TIPORECLAMO_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.TMA_VENDEDOR_NAME);
-       /// db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCIONMAQUINA_CAB_NAME);
+        db.execSQL("DELETE FROM " + ConstasDB.MCO_RECLAMO_GARANTIA_NAME);
         this.CloseDB();
     }
 

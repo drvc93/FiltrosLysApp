@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#7dd4ff">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nro Queja."
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblNroQueja"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Q_132"
+                android:textColor="@color/colorBlue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  F.Registro "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblFechaRegQJ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="01/01/2010"
+                android:textColor="@color/colorBlue" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cliente "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblClienteQJ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(24566) MACUOH ANTONO JAURES LINS"
+                android:textColor="@color/colorBlue" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="M.Recepcion "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblMedioRecQJ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="URGENTE"
+                android:textColor="@color/colorBlue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Estado  "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblEstadoQJ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CERRADO"
+                android:textColor="@color/colorBlue" />
+        </GridLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Detalle Queja "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblDescripcionQJ"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="COMENTARIO"
+                android:textColor="@color/colorBlue" />
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

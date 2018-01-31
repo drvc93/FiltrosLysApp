@@ -55,14 +55,14 @@ public class HistorialInspMaqAdapater extends ArrayAdapter<HistorialInspMaqDB> {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             convertView = inflater.inflate(layoutResourceId,parent,false);
             viewHolder = new ViewHolder();
-            viewHolder.lblNumero = (TextView) convertView.findViewById(R.id.txtHMNro);
-            viewHolder.lblFecha = (TextView) convertView.findViewById(R.id.txtHMFecha);
-            viewHolder.lblMaquina = (TextView) convertView.findViewById(R.id.txtHMMaq);
-            viewHolder.lblCentroC = (TextView)convertView.findViewById(R.id.txtHMCentroC);
-            viewHolder.lblFrecuencia = (TextView)convertView.findViewById(R.id.txtHMFrec);
-            viewHolder.lblUsuario = (TextView)convertView.findViewById(R.id.txtHMUsuario);
-            viewHolder.lblObserv = (TextView)convertView.findViewById(R.id.txtHMobservaciones);
-            viewHolder.lblEstado = (TextView) convertView.findViewById(R.id.txtHMestado);
+            viewHolder.lblNumero =  convertView.findViewById(R.id.txtHMNro);
+            viewHolder.lblFecha =  convertView.findViewById(R.id.txtHMFecha);
+            viewHolder.lblMaquina =  convertView.findViewById(R.id.txtHMMaq);
+            viewHolder.lblCentroC = convertView.findViewById(R.id.txtHMCentroC);
+            viewHolder.lblFrecuencia = convertView.findViewById(R.id.txtHMFrec);
+            viewHolder.lblUsuario = convertView.findViewById(R.id.txtHMUsuario);
+            viewHolder.lblObserv = convertView.findViewById(R.id.txtHMobservaciones);
+            viewHolder.lblEstado =  convertView.findViewById(R.id.txtHMestado);
 
             convertView.setTag(viewHolder);
 

@@ -39,24 +39,34 @@ import DataBase.UsuarioDB;
 import Model.Menu;
 import Model.Permisos;
 import Model.SubMenuBotones;
+import Model.TMAAccionesTomar;
+import Model.TMACalificacionQueja;
 import Model.TMACliente;
 import Model.TMAFalla;
 import Model.TMAMarca;
+import Model.TMAMedioRecepcion;
 import Model.TMAModelo;
+import Model.TMANotificacionQueja;
 import Model.TMAPruebaLab;
+import Model.TMATipoCalificacionQueja;
 import Model.TMATipoReclamo;
 import Model.TMAVendedor;
 import Tasks.GetAccesosDataTask;
+import Tasks.GetAccionesQJTask;
+import Tasks.GetCalifiQJTask;
 import Tasks.GetCentroCostoTask;
 import Tasks.GetClientesTask;
 import Tasks.GetFallasTask;
 import Tasks.GetInspeccionesTask;
 import Tasks.GetMaquinasTask;
 import Tasks.GetMarcasTask;
+import Tasks.GetMedioRecTask;
 import Tasks.GetMenuDataTask;
 import Tasks.GetModelosTask;
+import Tasks.GetNotificacionQJTask;
 import Tasks.GetPeriodosInspTask;
 import Tasks.GetPruebasLabTask;
+import Tasks.GetTipoCalifiQJTask;
 import Tasks.GetTipoReclamosTask;
 import Tasks.GetTipoRevisionGTask;
 import Tasks.GetUsuariosTask;
@@ -287,6 +297,20 @@ public class MenuOpciones extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(),DatosGenRG.class);
             startActivity(intent);
         }
+        if (var_concatenado.equals("050102")){
+            Intent intent = new Intent(getApplicationContext(),ListaReclamoGarantia.class);
+            startActivity(intent);
+        }
+
+        if (var_concatenado.equals("050201")){
+            Intent intent = new Intent(getApplicationContext(),DatosGenQueja.class);
+            intent.putExtra("AccionQJ","NEW");
+            startActivity(intent);
+        }
+        if (var_concatenado.equals("050202")){
+            Intent intent = new Intent(getApplicationContext(),ListaQuejaCliente.class);
+            startActivity(intent);
+        }
 
 
 
@@ -408,6 +432,8 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+
 
         progressDialog= new ProgressDialog(MenuOpciones.this);
         progressDialog.setTitle("Sincronizando");
@@ -627,6 +653,90 @@ public class MenuOpciones extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        //   LISTA CALIFICACION
+        ArrayList<TMACalificacionQueja> calaficaciones = new ArrayList<TMACalificacionQueja>();
+        //
+        GetCalifiQJTask getCalifiQJTask = new GetCalifiQJTask();
+        AsyncTask<String,String,ArrayList<TMACalificacionQueja>> asyncTaskCalificacion;
+
+        try {
+            asyncTaskCalificacion = getCalifiQJTask.execute();
+            calaficaciones = asyncTaskCalificacion.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // Lista tipo calificacion
+        ArrayList<TMATipoCalificacionQueja> tipocalaficaciones = new ArrayList<TMATipoCalificacionQueja>();
+        //
+        GetTipoCalifiQJTask getCalifiQJTask1 = new GetTipoCalifiQJTask();
+        AsyncTask<String,String,ArrayList<TMATipoCalificacionQueja>> asyncTaskTipoCalificacion;
+
+        try {
+            asyncTaskTipoCalificacion = getCalifiQJTask1.execute();
+            tipocalaficaciones = asyncTaskTipoCalificacion.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        //  lista medio recepcion
+
+        ArrayList<TMAMedioRecepcion> listMedioRecepcion = new ArrayList<TMAMedioRecepcion>();
+        //
+        GetMedioRecTask getMedioRecTask = new GetMedioRecTask();
+        AsyncTask<String,String,ArrayList<TMAMedioRecepcion>> asyncTaskMedioRecepcion;
+
+        try {
+            asyncTaskMedioRecepcion = getMedioRecTask.execute();
+            listMedioRecepcion = asyncTaskMedioRecepcion.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // lista acciones rq
+
+        ArrayList<TMAAccionesTomar> listAccionesRQ = new ArrayList<TMAAccionesTomar>();
+        //
+        GetAccionesQJTask getAccionesQJTask = new GetAccionesQJTask();
+        AsyncTask<String,String,ArrayList<TMAAccionesTomar>> asyncTaskAccionesQueja;
+
+        try {
+            asyncTaskAccionesQueja = getAccionesQJTask.execute();
+            listAccionesRQ = asyncTaskAccionesQueja.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // lista de notificaciones rq
+        ArrayList<TMANotificacionQueja> listNotificacion = new ArrayList<TMANotificacionQueja>();
+        //
+        GetNotificacionQJTask getNotificacionQJTask = new GetNotificacionQJTask();
+        AsyncTask<String,String,ArrayList<TMANotificacionQueja>> asyncTaskNotifi;
+
+        try {
+            asyncTaskNotifi = getNotificacionQJTask.execute();
+            listNotificacion = asyncTaskNotifi.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+
+
         Log.i("Pre ejecuion de maestroTask",".");
         // progress dialog with asynctask
         AsyncTask<Void,Void,Void> asyncMaestros;
@@ -638,6 +748,11 @@ public class MenuOpciones extends AppCompatActivity {
         sincroMaestrosTask.listPruebaLab = listPruebasLab;
         sincroMaestrosTask.listTipoReclamo = listTipoReclamo;
         sincroMaestrosTask.listVendedor = listVendedor;
+        sincroMaestrosTask.listCalifQJ = calaficaciones;
+        sincroMaestrosTask.listTipoCalifQJ = tipocalaficaciones;
+        sincroMaestrosTask.listMedioRecQJ = listMedioRecepcion;
+        sincroMaestrosTask.listAccionQJ = listAccionesRQ;
+        sincroMaestrosTask.listNotiQJ = listNotificacion;
 
          asyncMaestros = sincroMaestrosTask.execute();
         Log.i("Post ejecuion de maestroTask",".");

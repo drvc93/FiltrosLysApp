@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.filtroslys.filtroslysapp.ListaQuejaCliente">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp">
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="3dp">
+
+                <TextView
+                    android:id="@+id/textView01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Compania"
+                    android:textColor="@android:color/black" />
+
+                <Spinner
+                    android:id="@+id/spCompaniaQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="3"
+                    android:background="@drawable/spiner_style"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:spinnerMode="dialog"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textVwiew02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cliente"
+                    android:textColor="@android:color/black" />
+
+                <EditText
+                    android:id="@+id/txtClienteQJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:focusableInTouchMode="false"
+                    android:clickable="true"
+                    android:padding="5dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textView03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estado"
+                    android:textColor="@android:color/black" />
+
+                <Spinner
+                    android:id="@+id/spEstadoQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textView04"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="F.Ini"
+                    android:textColor="@android:color/black"/>
+
+                <LinearLayout>
+                    <EditText
+                        android:id="@+id/txtFechaIniQJ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+                        android:clickable="true"
+                        android:ems="7"
+                        android:focusableInTouchMode="false"
+                        android:inputType="date"
+                        android:paddingBottom="3dp"
+                        android:paddingTop="3dp" />
+
+                    <TextView
+                        android:id="@+id/textView05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="F.Fin"
+                        android:textColor="@android:color/black"/>
+
+                    <EditText
+                        android:id="@+id/txtFechaFinQJ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+                        android:clickable="true"
+                        android:ems="10"
+                        android:focusableInTouchMode="false"
+                        android:inputType="date"
+                        android:paddingBottom="3dp"
+                        android:paddingTop="3dp" />
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#FAAC58"
+            android:layout_marginTop="3dp"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/lblCantidadRegQJ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LISTA QUEJAS"
+                android:textColor="@android:color/black"/>
+
+            <LinearLayout
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:gravity="right">
+
+                <CheckBox
+                    android:id="@+id/chkOnlineQJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OnLine"/>
+                <Button
+                    android:id="@+id/btnBuscarQJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_gravity="right"
+                    android:background="@drawable/botones_items_detalle"
+                    android:drawableRight="@android:drawable/ic_menu_search" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/LvQuejaCliente"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

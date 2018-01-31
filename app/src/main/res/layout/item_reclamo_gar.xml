@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#7dd4ff">
+
+            <TextView
+                android:id="@+id/textView782"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nro. RG."
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblItemNroReclamo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Q_132"
+                android:textColor="@color/colorBlue" />
+
+            <TextView
+                android:id="@+id/textView722"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  F.Registro "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblItemFechaRG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="01/01/2010"
+                android:textColor="@color/colorBlue" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cliente "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblItemClienteRG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(24566) MACUOH ANTONO JAURES LINS"
+                android:textColor="@color/colorBlue" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5sp"
+                android:text="Filtro"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblItemFIltroRG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LF1A"
+                android:textColor="@color/colorBlue" />
+
+            <TextView
+                android:id="@+id/textView83"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Estado  "
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblItemEstadoRG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CERRADO"
+                android:textColor="@color/colorBlue" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView85"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="Obs. Cliente"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/lblItemObsCli"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="COMENTARIO"
+                android:textColor="@color/colorBlue" />
+        </GridLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

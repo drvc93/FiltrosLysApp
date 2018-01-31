@@ -5,4 +5,5 @@
     <color name="colorAccent">#0b99ff</color>
     <color name="colorBlue">#0c007b</color>
     <color name="WarningColor">#ffcc00</color>
+    <color name="avGray">#b59e9e9e</color>
 </resources>

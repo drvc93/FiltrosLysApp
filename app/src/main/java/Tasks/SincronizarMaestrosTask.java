@@ -17,11 +17,16 @@ import DataBase.MaquinaDB;
 import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
 import DataBase.TipoRevisionGBD;
+import Model.TMAAccionesTomar;
+import Model.TMACalificacionQueja;
 import Model.TMACliente;
 import Model.TMAFalla;
 import Model.TMAMarca;
+import Model.TMAMedioRecepcion;
 import Model.TMAModelo;
+import Model.TMANotificacionQueja;
 import Model.TMAPruebaLab;
+import Model.TMATipoCalificacionQueja;
 import Model.TMATipoReclamo;
 import Model.TMAVendedor;
 
@@ -44,6 +49,11 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
     public ArrayList<TMAPruebaLab> listPruebaLab;
     public ArrayList<TMATipoReclamo> listTipoReclamo;
     public ArrayList<TMAVendedor> listVendedor;
+    public ArrayList<TMACalificacionQueja> listCalifQJ;
+    public ArrayList<TMATipoCalificacionQueja> listTipoCalifQJ;
+    public ArrayList<TMAMedioRecepcion> listMedioRecQJ;
+    public ArrayList<TMAAccionesTomar> listAccionQJ;
+    public ArrayList<TMANotificacionQueja> listNotiQJ;
 
     public SincronizarMaestrosTask(Context context, ProgressDialog progressDialog, ArrayList<MaquinaDB> listMaquina,
                                    ArrayList<PeriodoInspeccionDB> listPeriodos, ArrayList<InspeccionDB> listInspecciones, ArrayList<CentroCostoDB> listCcosto,
@@ -63,6 +73,11 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         listPruebaLab = new ArrayList<>();
         listTipoReclamo = new ArrayList<>();
         listVendedor = new ArrayList<>();
+        listCalifQJ = new ArrayList<>();
+        listTipoCalifQJ = new ArrayList<>();
+        listMedioRecQJ = new ArrayList<>();
+        listAccionQJ  = new ArrayList<>();
+        listNotiQJ = new ArrayList<>();
     }
 
     @Override
@@ -84,6 +99,12 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_PRUEBALAB_NAME);
         dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_TIPORECLAMO_NAME);
         dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_VENDEDOR_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_CALIFICACIONQUEJA_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_TIPOCALIFICACIONQUEJA_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_MEDIORECEPCION_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_ACCIONESTOMAR_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_NOTIFICAQUEJA_NAME);
+
         dbBase.close();
         // prodMantDataBase.deleteTableMaquina();
 
@@ -173,6 +194,35 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
                prodMantDataBase.InsertTMAVendedor(listVendedor.get(i));
             }
         }
+        if (listCalifQJ!=null && listCalifQJ.size()>0){
+            for (int i = 0; i < listCalifQJ.size() ; i++) {
+                prodMantDataBase.InsertTMACalificacionQJ(listCalifQJ.get(i));
+            }
+        }
+
+        if (listTipoCalifQJ!=null && listTipoCalifQJ.size()>0){
+            for (int i = 0; i < listTipoCalifQJ.size() ; i++) {
+                prodMantDataBase.InsertTMATipoCalificacionQJ(listTipoCalifQJ.get(i));
+            }
+        }
+
+        if (listMedioRecQJ!=null && listMedioRecQJ.size()>0){
+            for (int i = 0; i < listMedioRecQJ.size() ; i++) {
+                prodMantDataBase.InsertTMAMedioRecQJ(listMedioRecQJ.get(i));
+            }
+        }
+
+        if (listAccionQJ!=null && listAccionQJ.size()>0){
+            for (int i = 0; i < listAccionQJ.size() ; i++) {
+                prodMantDataBase.InsertTMAAccionTomarQJ(listAccionQJ.get(i));
+            }
+        }
+
+        if (listNotiQJ!=null && listNotiQJ.size()>0){
+            for (int i = 0; i < listNotiQJ.size() ; i++) {
+                prodMantDataBase.InsertTMANotificacionQJ(listNotiQJ.get(i));
+            }
+        }
 
         return null;
     }
@@ -187,7 +237,7 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPreExecute() {
         progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(false);
+        //progressDialog.setIndeterminate(false);
         progressDialog.show();
     }
 }

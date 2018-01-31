@@ -395,8 +395,129 @@ public class ConstasDB {
                     "c_nombres TEXT , "+
                     "c_estado TEXT); ";
 
+    // tabla reclamo garantia
+    public  static  final String MCO_RECLAMO_GARANTIA_NAME = "MCO_RECLAMOGARANTIA";
+    public static final String  MCO_RECLAMO_GARANTIA_SQL  =
+            "CREATE TABLE "+ MCO_RECLAMO_GARANTIA_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT, "+
+                    "n_correlativo BIGINT, "+
+                    "d_fecha TEXT, " +
+                    "n_cliente BIGINT, "+
+                    "c_codproducto TEXT, "+
+                    "c_lote TEXT, "+
+                    "c_procedencia TEXT, "+
+                    "n_qtyingreso DECIMAL(10,5) , "+
+                    "c_vendedor TEXT, "+
+                    "c_estado TEXT, "+
+                    "c_usuario TEXT, "+
+                    " c_lote1 TEXT, "+
+                    "c_lote2 TEXT, "+
+                    "c_lote3 TEXT, "+
+                    "n_cantlote1 DECIMAL(10,5), "+
+                    "n_cantlote2 DECIMAL(10,5), " +
+                    "n_cantlote3 DECIMAL(10,5), "+
+                    "c_codmarca TEXT, "+
+                    "c_codmodelo TEXT, "+
+                    "n_pyear BIGINT , "+
+                    "c_tiempouso TEXT, "+
+                    "c_facturaRef TEXT, "+
+                    "d_fechaFacRef TEXT, "+
+                    "c_prediagnostico TEXT, " +
+                    "n_formato BIGINT, "+
+                    "d_fechaformato TEXT, "+
+                    "c_obscliente TEXT, "+
+                    "c_flagvisita TEXT, "+
+                    "c_tiporeclamo TEXT, "+
+                    "c_reembcliente TEXT, "+
+                    "c_placavehic TEXT, "+
+                    "n_montoreembcli DECIMAL(10,5), "+
+                    "c_monedareembcli TEXT, "+
+                    "c_pruebalab1 TEXT, "+
+                    "c_pruebalab2 TEXT, "+
+                    "c_pruebalab3 TEXT, "+
+                    "c_ensayo01 TEXT, "+
+                    "c_ensayo02 TEXT, "+
+                    "c_ensayo03 TEXT, "+
+                    "c_ensayo04 TEXT, "+
+                    "c_ensayo05 TEXT , " +
+                    "c_enviado TEXT);";
 
+    // TABLA TMA_CALIFICACIONQUEJA
+    public static final String TMA_CALIFICACIONQUEJA_NAME = "TMA_CALIFICACIONQUEJA";
+    public static final String TMA_CALIFICACIONQUEJA_SQL =
+            "CREATE TABLE " + TMA_CALIFICACIONQUEJA_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_calificacion TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_usuarioderivacion TEXT, "+
+                    "c_correo TEXT, "+
+                    "c_estado TEXT);";
 
+    // TABLA TMA_TIPOCALIFICACIONQUEJA
+    public static final String TMA_TIPOCALIFICACIONQUEJA_NAME = "TMA_TIPOCALIFICACIONQUEJA";
+    public static final String TMA_TIPOCALIFICACIONQUEJA_SQL =
+            "CREATE TABLE " + TMA_TIPOCALIFICACIONQUEJA_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_tipocalificacion TEXT, "+
+                    "c_calificacion TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_estado TEXT);";
+
+    // TABLA TMA_MEDIORECEPCION
+    public static final String TMA_MEDIORECEPCION_NAME = "TMA_MEDIORECEPCION";
+    public static final String TMA_MEDIORECEPCION_SQL =
+            "CREATE TABLE " + TMA_MEDIORECEPCION_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_mediorecepcion TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_estado TEXT);";
+
+    // TABLA TMA_ACCIONESTOMAR
+    public static final String TMA_ACCIONESTOMAR_NAME = "TMA_ACCIONESTOMAR";
+    public static final String TMA_ACCIONESTOMAR_SQL =
+            "CREATE TABLE " + TMA_ACCIONESTOMAR_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_codaccion TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_estado TEXT);";
+
+    // TABLA TMA_NOTIFICAQUEJA
+    public static final String TMA_NOTIFICAQUEJA_NAME = "TMA_NOTIFICAQUEJA";
+    public static final String TMA_NOTIFICAQUEJA_SQL =
+            "CREATE TABLE " + TMA_NOTIFICAQUEJA_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_notificacion TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_envianot TEXT, "+
+                    "c_usuarionot TEXT, "+
+                    "c_estado TEXT);";
+
+    // Tabla Queja Cliente
+    public static final String MCO_QUEJA_CLIENTE_NAME = "MCO_QUEJAS";
+    public static final String  MCO_QUEJA_CLIENTE_SQL  =
+            "CREATE TABLE "+ MCO_QUEJA_CLIENTE_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT, "+
+                    "n_correlativo BIGINT, "+
+                    "c_queja TEXT, " +
+                    "c_nroformato TEXT, " +
+                    "n_cliente BIGINT, "+
+                    "d_fechareg TEXT, " +
+                    "c_documentoref TEXT, "+
+                    "c_mediorecepcion TEXT, "+
+                    "c_centrocosto TEXT, "+
+                    "c_calificacion TEXT, "+
+                    "c_usuarioderiv TEXT, "+
+                    "c_tipocalificacion TEXT, "+
+                    "c_item TEXT, "+
+                    "c_lote TEXT, "+
+                    "n_cantidad DECIMAL(10,5) , "+
+                    "c_desqueja TEXT, "+
+                    "c_observaciones TEXT, "+
+                    "c_usuario TEXT, "+
+                    "c_estado TEXT, " +
+                    "c_enviado TEXT);";
 
 }
 

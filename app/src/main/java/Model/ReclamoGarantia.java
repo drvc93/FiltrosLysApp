@@ -45,11 +45,12 @@ public class ReclamoGarantia {
     private String c_ensayo03;
     private String c_ensayo04;
     private String c_ensayo05;
+    private String c_enviado ;
 
     public ReclamoGarantia() {
     }
 
-    public ReclamoGarantia(String c_compania, long n_correlativo, String d_fecha, int n_cliente, String c_codproducto, String c_lote, String c_procedencia, double n_qtyingreso, String c_vendedor, String c_estado, String c_usuario, String c_lote1, String c_lote2, String c_lote3, double n_cantlote1, double n_cantlote2, double n_cantlote3, String c_codmarca, String c_codmodelo, int n_pyear, String c_tiempouso, String c_facturaRef, String c_prediagnostico, int n_formato, String d_fechaformato, String c_obscliente, String c_flagvisita, String c_tiporeclamo, String c_reembcliente, String c_placavehic, double n_montoreembcli, String c_monedareembcli, String c_pruebalab1, String c_pruebalab2, String c_pruebalab3, String c_ensayo01, String c_ensayo02, String c_ensayo03, String c_ensayo04, String c_ensayo05) {
+    public ReclamoGarantia(String c_compania, long n_correlativo, String d_fecha, int n_cliente, String c_codproducto, String c_lote, String c_procedencia, double n_qtyingreso, String c_vendedor, String c_estado, String c_usuario, String c_lote1, String c_lote2, String c_lote3, double n_cantlote1, double n_cantlote2, double n_cantlote3, String c_codmarca, String c_codmodelo, int n_pyear, String c_tiempouso, String c_facturaRef, String c_prediagnostico, int n_formato, String d_fechaformato, String c_obscliente, String c_flagvisita, String c_tiporeclamo, String c_reembcliente, String c_placavehic, double n_montoreembcli, String c_monedareembcli, String c_pruebalab1, String c_pruebalab2, String c_pruebalab3, String c_ensayo01, String c_ensayo02, String c_ensayo03, String c_ensayo04, String c_ensayo05, String c_enviado) {
         this.c_compania = c_compania;
         this.n_correlativo = n_correlativo;
         this.d_fecha = d_fecha;
@@ -90,6 +91,7 @@ public class ReclamoGarantia {
         this.c_ensayo03 = c_ensayo03;
         this.c_ensayo04 = c_ensayo04;
         this.c_ensayo05 = c_ensayo05;
+        this.c_enviado = c_enviado;
     }
 
     public String getC_compania() {
@@ -410,5 +412,13 @@ public class ReclamoGarantia {
 
     public void setC_ensayo05(String c_ensayo05) {
         this.c_ensayo05 = c_ensayo05;
+    }
+
+    public String getC_enviado() {
+        return c_enviado;
+    }
+
+    public void setC_enviado(String c_enviado) {
+        this.c_enviado = c_enviado;
     }
 }
