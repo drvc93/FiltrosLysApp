@@ -95,6 +95,7 @@ public class GetListReclamoGar extends AsyncTask<String,String,ArrayList<Reclamo
                 r.setC_ensayo03(ic.getPrimitivePropertyAsString("c_ensayo03"));
                 r.setC_ensayo04(ic.getPrimitivePropertyAsString("c_ensayo04"));
                 r.setC_ensayo05(ic.getPrimitivePropertyAsString("c_ensayo05"));
+                r.setC_enviado("S");
 
                 listaReq.add(r);
 

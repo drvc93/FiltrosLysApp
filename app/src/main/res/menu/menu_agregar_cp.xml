@@ -4,7 +4,9 @@
     <item
         android:id="@+id/Agregar"
         android:icon="@drawable/icn_add_crclie"
-        android:title="Agregar"
+        android:title="Back"
         app:showAsAction="always" />
+
+
 
 </menu>

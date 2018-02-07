@@ -20,14 +20,17 @@ import DataBase.TipoRevisionGBD;
 import Model.TMAAccionesTomar;
 import Model.TMACalificacionQueja;
 import Model.TMACliente;
+import Model.TMADireccionCli;
 import Model.TMAFalla;
 import Model.TMAMarca;
 import Model.TMAMedioRecepcion;
 import Model.TMAModelo;
 import Model.TMANotificacionQueja;
 import Model.TMAPruebaLab;
+import Model.TMATemaCapacitacion;
 import Model.TMATipoCalificacionQueja;
 import Model.TMATipoReclamo;
+import Model.TMATipoSugerencia;
 import Model.TMAVendedor;
 
 /**
@@ -54,6 +57,9 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
     public ArrayList<TMAMedioRecepcion> listMedioRecQJ;
     public ArrayList<TMAAccionesTomar> listAccionQJ;
     public ArrayList<TMANotificacionQueja> listNotiQJ;
+    public ArrayList<TMATipoSugerencia> listTipoSug;
+    public ArrayList<TMATemaCapacitacion> listTemaCap;
+    public ArrayList<TMADireccionCli> listDirecCli;
 
     public SincronizarMaestrosTask(Context context, ProgressDialog progressDialog, ArrayList<MaquinaDB> listMaquina,
                                    ArrayList<PeriodoInspeccionDB> listPeriodos, ArrayList<InspeccionDB> listInspecciones, ArrayList<CentroCostoDB> listCcosto,
@@ -78,6 +84,9 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         listMedioRecQJ = new ArrayList<>();
         listAccionQJ  = new ArrayList<>();
         listNotiQJ = new ArrayList<>();
+        listTipoSug = new ArrayList<>();
+        listTemaCap = new ArrayList<>();
+        listDirecCli = new ArrayList<>();
     }
 
     @Override
@@ -104,6 +113,9 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_MEDIORECEPCION_NAME);
         dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_ACCIONESTOMAR_NAME);
         dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_NOTIFICAQUEJA_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_TIPOSUGERENCIA_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_TEMACAPACITACION_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_DIRECCIONCLI_NAME);
 
         dbBase.close();
         // prodMantDataBase.deleteTableMaquina();
@@ -223,7 +235,23 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
                 prodMantDataBase.InsertTMANotificacionQJ(listNotiQJ.get(i));
             }
         }
+        if (listTipoSug!=null && listTipoSug.size()>0){
+            for (int i = 0; i < listTipoSug.size() ; i++) {
+                prodMantDataBase.InsertTMATipoSugerencia(listTipoSug.get(i));
+            }
+        }
 
+        if (listTemaCap!=null && listTemaCap.size()>0){
+            for (int i = 0; i < listTemaCap.size() ; i++) {
+                prodMantDataBase.InsertTMATemaCapacitacion(listTemaCap.get(i));
+            }
+        }
+
+        if (listDirecCli!=null && listDirecCli.size()>0){
+            for (int i = 0; i < listDirecCli.size() ; i++) {
+                prodMantDataBase.InsertTMADireccionCli(listDirecCli.get(i));
+            }
+        }
         return null;
     }
 

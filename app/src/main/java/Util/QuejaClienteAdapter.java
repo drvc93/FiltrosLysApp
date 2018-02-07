@@ -88,8 +88,12 @@ public class QuejaClienteAdapter extends ArrayAdapter<QuejaCliente>{
         viewHolder.lblFechaRegQJ.setText(sFormatFecha);
         viewHolder.lblEstadoQJ.setText(sEstadoDescrip);
         viewHolder.lblClienteQJ.setText(String.valueOf(oEnt.getN_cliente()) + " | " + db.GetNombreClienteXCod(String.valueOf(oEnt.getN_cliente())) );
-        viewHolder.lblMedioRecQJ.setText(oEnt.getC_mediorecepcion());
+        viewHolder.lblMedioRecQJ.setText( db.MedioRecepcionDesc(oEnt.getC_mediorecepcion()));
         viewHolder.lblDescripcionQJ.setText(oEnt.getC_desqueja());
         return convertView;
+    }
+
+    public QuejaCliente getObject (int pos){
+        return  data.get(pos);
     }
 }

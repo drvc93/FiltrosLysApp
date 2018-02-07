@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.filtroslys.filtroslysapp.SelecCliente">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="2dp">
+
+            <EditText
+                android:id="@+id/txtClienteSelec"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_round_border"
+                android:ellipsize="end"
+                android:ems="14"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:textColorHint="@android:color/black"
+                android:textSize="18sp">
+
+            </EditText>
+
+            <ImageView
+                android:id="@+id/btnBuscarClienteSelect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/txtClienteSelec"
+                android:layout_alignRight="@+id/txtClienteSelec"
+                android:layout_alignTop="@+id/txtClienteSelec"
+
+                app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView93"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fbe486"
+                android:text="LISTA DE CLIENTES"
+                android:textColor="@color/pdlg_color_black"
+                android:textColorLink="@color/pdlg_color_black"
+                android:textStyle="bold" />
+
+            <ListView
+                android:id="@+id/lvBuscarClienteSelec"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

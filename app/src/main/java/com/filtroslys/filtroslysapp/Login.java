@@ -95,7 +95,7 @@ public class Login extends AppCompatActivity {
 
             if ( GenFile  == null) {
                 ActivityCompat.requestPermissions(Login.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE ,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE},
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE ,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE,Manifest.permission.CAMERA},
                         1);
 
             }
@@ -116,7 +116,7 @@ public class Login extends AppCompatActivity {
         } else{
 
         }
-        //copyFile();
+        copyFile();
       //  ShowDialogAlert();
 
         // instanciando controles

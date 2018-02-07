@@ -172,13 +172,15 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
 
-            <GridLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8sp">
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8sp"
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/txtNroFormtRG"
@@ -213,7 +215,7 @@
 
                 <EditText
                     android:id="@+id/txtFechaRegRG"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_round_border"
                     android:clickable="true"
@@ -221,114 +223,121 @@
                     android:focusableInTouchMode="false"
                     android:hint="00/00/0000"
                     android:inputType="textPersonName" />
-            </GridLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:id="@+id/textView99"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tipo:   " />
+
+                <Spinner
+                    android:id="@+id/spTipoRG"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="55sp"
+                    android:background="@drawable/spiner_style"
+                    android:padding="5dp"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:id="@+id/textView100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cliente  " />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="55sp">
+
+                    <EditText
+                        android:id="@+id/txtBSClienteRG"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+                        android:ellipsize="end"
+                        android:ems="14"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColorHint="@android:color/black"
+                        android:textSize="18sp">
+
+                    </EditText>
+
+                    <ImageView
+                        android:id="@+id/btnBuscarClienteRG"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/txtBSClienteRG"
+                        android:layout_alignRight="@+id/txtBSClienteRG"
+                        android:layout_alignTop="@+id/txtBSClienteRG"
+
+                        app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+                </RelativeLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:id="@+id/textView101"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Filtro  " />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="55sp">
+
+                    <EditText
+                        android:id="@+id/txtBFiltroRG"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+                        android:ems="15"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp">
+
+                    </EditText>
+
+                    <ImageView
+                        android:id="@+id/btnBuscarFiltroRG"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/txtBFiltroRG"
+                        android:layout_alignRight="@+id/txtBFiltroRG"
+                        android:layout_alignTop="@+id/txtBFiltroRG"
+
+                        app:srcCompat="@drawable/icn_succes_32" />
+
+                </RelativeLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"></FrameLayout>
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="6sp">
-
-                    <TextView
-                        android:id="@+id/textView99"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tipo:   " />
-
-                    <Spinner
-                        android:id="@+id/spTipoRG"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/spiner_style"
-                        android:padding="5dp"
-                        android:spinnerMode="dialog" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="6sp">
-
-                    <TextView
-                        android:id="@+id/textView100"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cliente  " />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-
-                        android:layout_height="wrap_content">
-
-                        <EditText
-                            android:id="@+id/txtBSClienteRG"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ellipsize="end"
-                            android:ems="14"
-                            android:paddingBottom="5dp"
-                            android:paddingTop="5dp"
-                            android:textColorHint="@android:color/black"
-                            android:textSize="18sp">
-
-                        </EditText>
-
-                        <ImageView
-                            android:id="@+id/btnBuscarClienteRG"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/txtBSClienteRG"
-                            android:layout_alignRight="@+id/txtBSClienteRG"
-                            android:layout_alignTop="@+id/txtBSClienteRG"
-
-                            app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
-
-                    </RelativeLayout>
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="6sp">
-
-                    <TextView
-                        android:id="@+id/textView101"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Filtro  " />
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <EditText
-                            android:id="@+id/txtBFiltroRG"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="15"
-                            android:paddingBottom="5dp"
-                            android:paddingTop="5dp">
-
-                        </EditText>
-
-                        <ImageView
-                            android:id="@+id/btnBuscarFiltroRG"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/txtBFiltroRG"
-                            android:layout_alignRight="@+id/txtBFiltroRG"
-                            android:layout_alignTop="@+id/txtBFiltroRG"
-
-                            app:srcCompat="@drawable/icn_succes_32" />
-
-                    </RelativeLayout>
-                </TableRow>
 
             </TableLayout>
 
@@ -458,9 +467,9 @@
                         android:enabled="false"
                         android:inputType="number"
                         android:typeface="monospace"
+                        app:allowed_chars="1234567890."
                         app:keep_hint="false"
-                        app:mask="######"
-                        mask:allowed_chars="1234567890" />
+                        app:mask="######" />
 
                     <TextView
                         android:id="@+id/textView105"
@@ -515,10 +524,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/edittext_round_border"
-                        android:inputType="number"
+                        android:inputType="numberDecimal"
                         android:typeface="monospace"
-                        app:mask="######"
-                        mask:allowed_chars="1234567890"
+                        app:allowed_chars="1234567890."
+                        app:mask="########"
+
                         mask:keep_hint="false" />
 
                 </TableRow>
@@ -561,10 +571,10 @@
 
                         android:inputType="number"
                         android:typeface="monospace"
-                        mask:allowed_chars="1234567890"
+                        mask:allowed_chars="1234567890."
                         mask:keep_hint="false"
 
-                        mask:mask="######" />
+                        mask:mask="#######" />
 
                 </TableRow>
 
@@ -606,8 +616,8 @@
 
                         android:inputType="number"
                         android:typeface="monospace"
-                        app:mask="######"
-                        mask:allowed_chars="1234567890"
+                        app:mask="#######"
+                        mask:allowed_chars="1234567890."
                         mask:keep_hint="false" />
                 </TableRow>
             </TableLayout>
@@ -621,118 +631,113 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
-            <TableLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
 
-                <TableRow
+                <TextView
+                    android:id="@+id/textView42"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Marca" />
+
+                <Spinner
+                    android:id="@+id/spMarcaRG"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="4dp"
-                    android:paddingTop="7sp">
+                    android:layout_height="30sp"
+                    android:layout_marginLeft="60sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
 
-                    <TextView
-                        android:id="@+id/textView42"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Marca" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
 
-                    <Spinner
-                        android:id="@+id/spMarcaRG"
-                        android:layout_width="match_parent"
-                        android:layout_height="30sp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/spiner_style"
-                        android:spinnerMode="dialog" />
+                <TextView
+                    android:id="@+id/textView97"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Modelo" />
 
-                </TableRow>
-
-                <TableRow
+                <Spinner
+                    android:id="@+id/spModeloVRG"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:paddingTop="7sp">
+                    android:layout_height="30sp"
+                    android:layout_marginLeft="60sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
 
-                    <TextView
-                        android:id="@+id/textView97"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Modelo" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
 
-                    <Spinner
-                        android:id="@+id/spModeloVRG"
-                        android:layout_width="match_parent"
-                        android:layout_height="30sp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/spiner_style"
-                        android:spinnerMode="dialog" />
-                </TableRow>
+                <TextView
+                    android:id="@+id/textView112"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Año" />
 
-                <TableRow
+                <EditText
+                    android:id="@+id/txtAnioVRG"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:paddingTop="7sp">
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60sp"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="14"
+                    android:inputType="number"
+                    android:padding="5dp" />
+            </FrameLayout>
 
-                    <TextView
-                        android:id="@+id/textView112"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Año" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
 
-                    <EditText
-                        android:id="@+id/txtAnioVRG"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/edittext_round_border"
-                        android:ems="14"
-                        android:inputType="number" />
-                </TableRow>
+                <TextView
+                    android:id="@+id/textView113"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Placa" />
 
-                <TableRow
+                <EditText
+                    android:id="@+id/txtPlacaVRG"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:paddingTop="7sp">
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60sp"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="14"
+                    android:inputType="text"
+                    android:padding="5dp" />
+            </FrameLayout>
 
-                    <TextView
-                        android:id="@+id/textView113"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Placa" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
 
-                    <EditText
-                        android:id="@+id/txtPlacaVRG"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/edittext_round_border"
-                        android:ems="14"
-                        android:inputType="text" />
-                </TableRow>
+                <TextView
+                    android:id="@+id/textView115"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tiempo Uso" />
 
-                <TableRow
+                <EditText
+                    android:id="@+id/txtTiempoUso"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:paddingTop="7sp">
-
-                    <TextView
-                        android:id="@+id/textView115"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tiempo Uso" />
-
-                    <EditText
-                        android:id="@+id/txtTiempoUso"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/edittext_round_border"
-                        android:ems="14"
-                        android:inputType="text" />
-                </TableRow>
-            </TableLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60sp"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="14"
+                    android:inputType="text"
+                    android:padding="5dp" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

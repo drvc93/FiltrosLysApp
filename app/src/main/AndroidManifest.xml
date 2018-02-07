@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SEND_RESPOND_VIA_MESSAGE" />
     <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
     <uses-permission
         android:name="android.permission.BROADCAST_SMS"
         tools:ignore="ProtectedPermissions" />
@@ -42,9 +43,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".DatosGenRG" />
-        <activity android:name=".ListaReclamoGarantia"></activity>
+        <activity android:name=".ListaReclamoGarantia" />
         <activity android:name=".DatosGenQueja" />
-        <activity android:name=".ListaQuejaCliente"></activity>
+        <activity android:name=".ListaQuejaCliente" />
+        <activity android:name=".DatosGenSugerencia" />
+        <activity android:name=".ListaSugerenciaCliente" />
+        <activity android:name=".DatosGenCapacitacion" />
+        <activity android:name=".ListaCapacitacionCliente" />
+        <activity android:name=".SelecCliente"></activity>
     </application>
 
 </manifest>

@@ -111,6 +111,9 @@ public class ReclamogarantiaAdapter  extends ArrayAdapter<ReclamoGarantia>{
         return convertView;
 
     }
+    public  ReclamoGarantia getObject (int pos){
+        return   data.get(pos);
+    }
 
 
 }

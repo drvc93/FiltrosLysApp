@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.util.Calendar;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,61 +27,60 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-
 import DataBase.ProdMantDataBase;
-import Model.ReclamoGarantia;
+import Model.SugerenciaCliente;
 import Model.TMACliente;
 import Model.UsuarioCompania;
 import Tasks.GetCompUserComercialTask;
 import Tasks.GetListReclamoGar;
-import Util.ReclamogarantiaAdapter;
-import Util.ReqLogisticaAdapter;
+import Tasks.GetListSugerencia;
+import Util.SugerenciaClienteAdapter;
 import spencerstudios.com.fab_toast.FabToast;
 
-public class ListaReclamoGarantia extends AppCompatActivity {
+public class ListaSugerenciaCliente extends AppCompatActivity {
 
     EditText txtFehcaIni , txtFechaFin , txtCliente;
     Spinner spCompania , spEstado;
+    TextView lblCantidadRegSG;
     SharedPreferences preferences;
     String sFechaI , sFechaF;
     String codUser;
     CheckBox chkOnline;
-    ListView lvReclamoG;
-    Button btnBuscarRg;
-    String sFlagOffOnline;
-    ReclamogarantiaAdapter adapter;
+    ListView lvSugerencia;
+    Button btnBuscarSG;
+    String sFlagOnOf = "OFF",sTipoInfo="";
+    SugerenciaClienteAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lista_reclamo_garantia);
-        setTitle("Lista de Reclamos de Garantia");
+        setContentView(R.layout.activity_lista_sugerencia);
 
-        txtFechaFin = findViewById(R.id.txtFechaFinRG);
-        preferences = PreferenceManager.getDefaultSharedPreferences(ListaReclamoGarantia.this);
+        txtFechaFin = findViewById(R.id.txtFechaFinSG);
+        preferences = PreferenceManager.getDefaultSharedPreferences(ListaSugerenciaCliente.this);
         codUser = preferences.getString("UserCod", null);
-        txtFehcaIni = findViewById(R.id.txtFechaIniRG);
-        txtCliente = findViewById(R.id.txtClienteListRG);
-        spCompania = findViewById(R.id.spCompaniaRG);
-        spEstado = findViewById(R.id.spEstadoListRG) ;
-        chkOnline = findViewById(R.id.chkOnlineRG);
-        lvReclamoG = findViewById(R.id.LvReclamoGarantia);
-        btnBuscarRg = findViewById(R.id.btnBuscarRG);
-        sFlagOffOnline = "OFF";
+        txtFehcaIni = findViewById(R.id.txtFechaIniSG);
+        txtCliente = findViewById(R.id.txtClienteListSG);
+        spCompania = findViewById(R.id.spCompaniaSG);
+        spEstado = findViewById(R.id.spEstadoListSG) ;
+        chkOnline = findViewById(R.id.chkOnlineSG);
+        lvSugerencia = findViewById(R.id.LvSugerencia);
+        btnBuscarSG = findViewById(R.id.btnBuscarSG);
+        lblCantidadRegSG = findViewById(R.id.lblCantidadRegSG);
 
+        sTipoInfo = getIntent().getStringExtra("TipoInfo");
 
         InicializarFechas();
         LoadSpinerCompania();
         LoadSpinerEstado();
 
         if (!chkOnline.isChecked()){
-            LoadOffLineLVReclamoG();
+            LoadOffLineLvSugerencia();
         }
-
 
         txtFehcaIni.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,24 +100,45 @@ public class ListaReclamoGarantia extends AppCompatActivity {
                 AlertDialogBuscarCliente();
             }
         });
-        btnBuscarRg.setOnClickListener(new View.OnClickListener() {
+        btnBuscarSG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (chkOnline.isChecked()){
-                    LoadOnlineLvReclamo();
-                    sFlagOffOnline = "ON";
+                    sFlagOnOf ="ON";
+                    LoadOnLineLvSugerencia();
                 }
                 else {
-                    LoadOffLineLVReclamoG();
-                    sFlagOffOnline = "OFF";
+                    sFlagOnOf="OFF";
+                    LoadOffLineLvSugerencia();
                 }
             }
         });
 
-        lvReclamoG.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvSugerencia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String sOpe = "";
+                SugerenciaCliente sg =  new SugerenciaCliente();
+                if (sFlagOnOf.equals("ON")) {
+                    sg = adapter.getObject(position);
+                }else  if (sFlagOnOf.equals("OFF")){
+                    ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+                    sg = db.GetSugerenciaItem(String.valueOf( adapter.getObject(position).getN_correlativo()));
+                }
+
+                sOpe = sg.getC_enviado().equals("S") ? "VER":"MOD";
+                Gson gson = new Gson();
+                String ObjectSG = gson.toJson(sg);
+                Log.i("suegerencia gson > ", ObjectSG);
+                Intent intent = new Intent(ListaSugerenciaCliente.this, DatosGenSugerencia.class);
+                intent.putExtra("ObjectSG", ObjectSG);
+                intent.putExtra("Operacion", sOpe);
+                intent.putExtra("TipoInfo", sTipoInfo);
+
+                startActivity(intent);
+
+                /*
+                 String sOpe = "";
                 ReclamoGarantia r =  new ReclamoGarantia();
                 if (sFlagOffOnline.equals("ON")) {
                     r = adapter.getObject(position);
@@ -133,14 +153,34 @@ public class ListaReclamoGarantia extends AppCompatActivity {
                 intent.putExtra("ObjectRG", ObjectRG);
                 intent.putExtra("Operacion", sOpe);
                 startActivity(intent);
+                 */
             }
         });
+
+        switch (sTipoInfo){
+            case "SU":
+                lblCantidadRegSG.setText("Lista de Sugerencias");
+                setTitle("Lista de Sugerencias");
+                break;
+            case "SE":
+                lblCantidadRegSG.setText("Lista Sol.Compra Esp.");
+                setTitle("Lista Sol. Compra Esp.");
+                break;
+            case "MP":
+                lblCantidadRegSG.setText("Lista Sol.Mat.Public.");
+                setTitle("Lista Sol.Mat.Public.");
+                break;
+            case "CT":
+                lblCantidadRegSG.setText("Lista Consulta Tecnica");
+                setTitle("Lista Consulta Tecnica");
+                break;
+        }
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_agregar_rg, menu);
+        inflater.inflate(R.menu.menu_agregar_sg, menu);
         return true;
     }
     @Override
@@ -148,15 +188,15 @@ public class ListaReclamoGarantia extends AppCompatActivity {
 
         int id = item.getItemId();
         if (id == R.id.Agregar) {
-            Intent intent = new Intent(getApplicationContext(),DatosGenRG.class);
-            intent.putExtra("Operacion" ,"NEW");
+            Intent intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
+            intent.putExtra("Operacion", "NEW") ;
+            intent.putExtra("TipoInfo",sTipoInfo);
             startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    public  void  LoadOnlineLvReclamo(){
+    public void LoadOnLineLvSugerencia(){
         Log.i("Load online lv" , "online ");
         String sFechaIni , sFechaFin , sCliente , sEstado,sCompania;
         sFechaIni =sFechaI;
@@ -170,7 +210,7 @@ public class ListaReclamoGarantia extends AppCompatActivity {
         }
         sEstado = CodEstado();
         if (spCompania.getCount()<=0){
-            FabToast.makeText(ListaReclamoGarantia.this, "No tiene asigando ninguna compania asigna en el modulo comercial.", FabToast.LENGTH_LONG, FabToast.ERROR,  FabToast.POSITION_DEFAULT).show();
+            FabToast.makeText(ListaSugerenciaCliente.this, "No tiene asigando ninguna compania asigna en el modulo comercial.", FabToast.LENGTH_LONG, FabToast.ERROR,  FabToast.POSITION_DEFAULT).show();
             return;
         }
         else {
@@ -178,32 +218,30 @@ public class ListaReclamoGarantia extends AppCompatActivity {
             sCompania = sCompania.substring(0,sCompania.indexOf("|")-1).trim();
         }
 
-        ArrayList<ReclamoGarantia> listRG = new ArrayList<>();
-        AsyncTask<String,String,ArrayList<ReclamoGarantia> > asyncTaskListReclamog;
-        GetListReclamoGar getListReclamoGar = new GetListReclamoGar();
+        ArrayList<SugerenciaCliente> listSG = new ArrayList<>();
+        AsyncTask<String,String,ArrayList<SugerenciaCliente> > asyncTaskListSuger;
+        GetListSugerencia getListSugerencia = new GetListSugerencia();
 
         try {
-            asyncTaskListReclamog = getListReclamoGar.execute(sCompania,sCliente,sEstado,sFechaIni,sFechaFin);
-            listRG = asyncTaskListReclamog.get();
+            asyncTaskListSuger = getListSugerencia.execute(sCompania,sCliente,sEstado,sFechaIni,sFechaFin,sTipoInfo);
+            listSG = asyncTaskListSuger.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
-        if (listRG!=null && listRG.size()>0){
-            SetAdaptadorListView(listRG);
+        if (listSG!=null && listSG.size()>=0){
+            SetAdaptadorListView(listSG);
         }
         else {
-            FabToast.makeText(ListaReclamoGarantia.this, "No se encontro información.", FabToast.LENGTH_LONG, FabToast.WARNING,  FabToast.POSITION_DEFAULT).show();
-            lvReclamoG.setAdapter(null);
+            FabToast.makeText(ListaSugerenciaCliente.this, "No se encontro información.", FabToast.LENGTH_LONG, FabToast.WARNING,  FabToast.POSITION_DEFAULT).show();
+            lvSugerencia.setAdapter(null);
             return;
         }
-
-
     }
 
-    public void  LoadOffLineLVReclamoG (){
+    public void LoadOffLineLvSugerencia(){
         ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
         String sFechaIni , sFechaFin , sCliente , sEstado,sCompania;
         sFechaIni =sFechaI;
@@ -217,7 +255,7 @@ public class ListaReclamoGarantia extends AppCompatActivity {
         }
         sEstado = CodEstado();
         if (spCompania.getCount()<=0){
-            FabToast.makeText(ListaReclamoGarantia.this, "No tiene asigando ninguna compania asigna en el modulo comercial.", FabToast.LENGTH_LONG, FabToast.ERROR,  FabToast.POSITION_DEFAULT).show();
+            FabToast.makeText(ListaSugerenciaCliente.this, "No tiene asigando ninguna compania asigna en el modulo comercial.", FabToast.LENGTH_LONG, FabToast.ERROR,  FabToast.POSITION_DEFAULT).show();
             return;
         }
         else {
@@ -225,15 +263,15 @@ public class ListaReclamoGarantia extends AppCompatActivity {
             sCompania = sCompania.substring(0,sCompania.indexOf("|")-1).trim();
         }
 
-        ArrayList<ReclamoGarantia> listReclamo = new ArrayList<>();
-        listReclamo = db.GetListReclamosGar(sCompania,sCliente,sEstado,sFechaIni,sFechaFin);
-        SetAdaptadorListView(listReclamo);
+        ArrayList<SugerenciaCliente> listSuger = new ArrayList<>();
+        listSuger = db.GetListSugerenciaCliente(sCompania,sCliente,sEstado,sFechaIni,sFechaFin,sTipoInfo);
+        SetAdaptadorListView(listSuger);
 
     }
 
-    public  void SetAdaptadorListView(ArrayList<ReclamoGarantia> listrg){
-        adapter = new ReclamogarantiaAdapter(ListaReclamoGarantia.this, R.layout.item_reclamo_gar, listrg);
-        lvReclamoG.setAdapter(adapter);
+    public  void SetAdaptadorListView(ArrayList<SugerenciaCliente> listrg){
+        adapter = new SugerenciaClienteAdapter(ListaSugerenciaCliente.this, R.layout.item_sugerencia, listrg);
+        lvSugerencia.setAdapter(adapter);
     }
 
     public String CodEstado(){
@@ -243,29 +281,23 @@ public class ListaReclamoGarantia extends AppCompatActivity {
             case "Todos":
                 sResult = "%";
                 break;
-            case "Ingresado":
-                sResult ="C";
+            case "Pendiente":
+                sResult ="PE";
                 break;
-            case  "Pendiente":
-                sResult ="P";
+            case "Revisado":
+                sResult ="RE";
                 break;
-            case  "En Proceso":
-                sResult ="R";
+            case "Cerrado":
+                sResult ="CE";
                 break;
-            case  "Terminado":
-                sResult ="T";
+            case "Anulado":
+                sResult ="AN";
                 break;
-            case  "Anulado":
-                sResult ="A";
-                break;
-
-
         }
-
         return sResult;
     }
 
-    public  void  LoadSpinerCompania() {
+    public void LoadSpinerCompania() {
         ArrayList<UsuarioCompania> listComp = new ArrayList<>();
         AsyncTask<String,String,ArrayList<UsuarioCompania>> asyncTaskUserComp;
         GetCompUserComercialTask getCompUserComercialTask = new GetCompUserComercialTask();
@@ -280,28 +312,22 @@ public class ListaReclamoGarantia extends AppCompatActivity {
         }
 
         if (listComp.size()>0){
-
-            for (int i = 0; i <  listComp.size(); i++) {
+            for (int i=0;i<listComp.size();i++) {
                 UsuarioCompania  u = listComp.get(i);
                 dataSpinerComp.add(u.getC_compania() + " | "+u.getC_nombres());
-
             }
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                    this, android.R.layout.simple_spinner_item, dataSpinerComp);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dataSpinerComp);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spCompania.setAdapter(adapter);
         }
-
     }
 
-    public  void  LoadSpinerEstado(){
+    public void LoadSpinerEstado(){
         ArrayList<String> dataSpinerComp = new ArrayList<String>() ;
         dataSpinerComp.add("Todos");
-        dataSpinerComp.add("Ingresado");
         dataSpinerComp.add("Pendiente");
-        dataSpinerComp.add("En Proceso");
-        dataSpinerComp.add("Terminado");
+        dataSpinerComp.add("Revisado");
+        dataSpinerComp.add("Cerrado");
         dataSpinerComp.add("Anulado");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -310,8 +336,8 @@ public class ListaReclamoGarantia extends AppCompatActivity {
         spEstado.setAdapter(adapter);
     }
 
-    public  void  AlertDialogBuscarCliente () {
-        final Dialog dialog  = new Dialog(ListaReclamoGarantia.this);
+    public void AlertDialogBuscarCliente () {
+        final Dialog dialog  = new Dialog(ListaSugerenciaCliente.this);
         dialog.setContentView(R.layout.dialog_buscar_cliente);
         dialog.setTitle("Buscar Cliente");
         Window window = dialog.getWindow();
@@ -347,14 +373,13 @@ public class ListaReclamoGarantia extends AppCompatActivity {
     }
 
     public ArrayAdapter<String> getAdapterBuscarCliente(String sFilterText){
-        ProdMantDataBase db = new ProdMantDataBase(ListaReclamoGarantia.this);
+        ProdMantDataBase db = new ProdMantDataBase(ListaSugerenciaCliente.this);
         ArrayList<TMACliente> clientes = db.GetSelectClientes(sFilterText);
         ArrayList<String> data = new ArrayList<>();
         if (clientes.size()>0){
             for (int i = 0; i < clientes.size() ; i++) {
                 TMACliente c = clientes.get(i);
                 data.add(String.valueOf(c.n_cliente)+ " | " + c.getC_razonsocial());
-
             }
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
@@ -366,11 +391,10 @@ public class ListaReclamoGarantia extends AppCompatActivity {
     }
 
     public void SelecFecha(final EditText txtFecha , final String sTipoFecha) {
-
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.datapicker_layout, null, false);
         final DatePicker myDatePicker = (DatePicker) view.findViewById(R.id.myDatePicker);
-        new AlertDialog.Builder(ListaReclamoGarantia.this).setView(view)
+        new AlertDialog.Builder(ListaSugerenciaCliente.this).setView(view)
                 .setTitle("Seleccionar Fecha")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     // @TargetApi(11)
@@ -393,7 +417,7 @@ public class ListaReclamoGarantia extends AppCompatActivity {
 
                 }).show();
     }
-    public  void InicializarFechas (){
+    public void InicializarFechas (){
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH)+1;
@@ -405,6 +429,5 @@ public class ListaReclamoGarantia extends AppCompatActivity {
 
         txtFehcaIni.setText("01/"+mes+"/"+String.valueOf(year));
         txtFechaFin.setText( dia+ "/"+mes+"/"+String.valueOf(year));
-
     }
 }

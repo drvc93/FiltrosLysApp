@@ -2,9 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/Agregar"
-        android:icon="@drawable/icn_add_crclie"
+        android:id="@+id/AddFotos"
+        android:icon="@android:drawable/ic_menu_camera"
         android:title="Agregar"
         app:showAsAction="always" />
-
 </menu>

@@ -15,6 +15,9 @@ import com.filtroslys.filtroslysapp.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import Model.CapacitacionCliente;
+import Model.DocsQuejaCliente;
+import Model.DocsReclamoGarantia;
 import Model.InspeccionGenCabecera;
 import Model.InspeccionGenDetalle;
 import Model.InspeccionMaqCabecera;
@@ -25,17 +28,21 @@ import Model.QuejaCliente;
 import Model.ReclamoGarantia;
 import Model.SubMenu;
 import Model.SubMenuBotones;
+import Model.SugerenciaCliente;
 import Model.TMAAccionesTomar;
 import Model.TMACalificacionQueja;
 import Model.TMACliente;
+import Model.TMADireccionCli;
 import Model.TMAFalla;
 import Model.TMAMarca;
 import Model.TMAMedioRecepcion;
 import Model.TMAModelo;
 import Model.TMANotificacionQueja;
 import Model.TMAPruebaLab;
+import Model.TMATemaCapacitacion;
 import Model.TMATipoCalificacionQueja;
 import Model.TMATipoReclamo;
+import Model.TMATipoSugerencia;
 import Model.TMAVendedor;
 
 /**
@@ -420,6 +427,13 @@ public class ProdMantDataBase {
         this.CloseDB();
         return rowid;
 
+    }
+
+    public long UpdateReclamoGarantia( ReclamoGarantia  rg){
+        this.OpenWritableDB();
+        long rowid = db.update(ConstasDB.MCO_RECLAMO_GARANTIA_NAME, ReclamoGarantiaContentValues(rg),"_id="+rg.getN_correlativo(),null);
+        this.CloseDB();
+        return rowid;
     }
 
 
@@ -1326,6 +1340,19 @@ public class ProdMantDataBase {
         return oData;
     }
 
+    public  String MedioRecepcionDesc (String sCod){
+       String result ="";
+        String query = "SELECT c_descripcion FROM TMA_MEDIORECEPCION where c_mediorecepcion ='"+sCod+"'";
+        Log.i("query > " ,query );
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMAMedioRecepcion oEnt = new TMAMedioRecepcion();
+            result = (cursor.getString(cursor.getColumnIndex("c_descripcion")));
+        }
+        return result;
+    }
+
     //Extraer Acciones Tomar
     public ArrayList<TMAAccionesTomar> GetAccionesTomar(){
         ArrayList<TMAAccionesTomar> oData = new ArrayList<>();
@@ -1380,7 +1407,15 @@ public class ProdMantDataBase {
         contentValues.put("c_observaciones",qj.getC_observaciones());
         contentValues.put("c_usuario",qj.getC_usuario());
         contentValues.put("c_estado",qj.getC_estado());
+        contentValues.put("c_enviado",qj.getC_enviado());
         return contentValues ;
+    }
+
+    public long UpdareQuejaCliente( QuejaCliente  qj){
+        this.OpenWritableDB();
+        long rowid = db.update(ConstasDB.MCO_QUEJA_CLIENTE_NAME, QuejaClienteContentValues(qj),"_id="+qj.getN_correlativo(),null);
+        this.CloseDB();
+        return rowid;
     }
 
     public long InsertQuejaCliente(QuejaCliente qu) {
@@ -1393,8 +1428,8 @@ public class ProdMantDataBase {
     public ArrayList<QuejaCliente> GetListQuejaCliente (String sComp,String sCliente,String sEstado,String sFechaIni,String sFechaFin){
         ArrayList<QuejaCliente> result = new ArrayList<>();
         String query = "SELECT * FROM MCO_QUEJAS " +
-                "where d_fechareg >=  '"+sFechaIni+" 00:00:00'  and d_fechareg <= '"+sFechaFin+" 23:59:59' " +
-                "and cast(n_cliente as text) like '"+sCliente+"' and c_estado like '"+sEstado+"' and c_compania  like '"+sComp+"';";
+                "where  d_fechareg >=  '"+sFechaIni+" 00:00:00'  and d_fechareg <= '"+sFechaFin+" 23:59:59' " +
+                "and cast(n_cliente as text) like '"+sCliente+"' and c_estado like '"+sEstado+"' and c_compania  like '"+sComp+"' and c_enviado='N';";
         Log.i("query quejas " ,query);
         this.OpenWritableDB();
         Cursor cursor  =db.rawQuery(query,null);
@@ -1417,13 +1452,44 @@ public class ProdMantDataBase {
             oEnt.setN_cantidad(cursor.getDouble(cursor.getColumnIndex("n_cantidad")));
             oEnt.setC_desqueja(cursor.getString(cursor.getColumnIndex("c_desqueja")));
             oEnt.setC_observaciones(cursor.getString(cursor.getColumnIndex("c_observaciones")));
-            //oEnt.setC_unidadneg(cursor.getString(cursor.getColumnIndex("c_unidadneg")));
-           /// oEnt.setC_razonsocial(cursor.getString(cursor.getColumnIndex("c_razonsocial")));
             oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
             oEnt.setC_usuario(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            oEnt.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
             result.add(oEnt);
         }
         return result;
+    }
+
+    public QuejaCliente GetQuejaClienteItem (String sCorrrelativo){
+        QuejaCliente oEnt = new QuejaCliente();
+        String query = "SELECT * FROM MCO_QUEJAS  where _id="+sCorrrelativo;
+        Log.i("query quejas " ,query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            oEnt.setC_queja(cursor.getString(cursor.getColumnIndex("c_queja")));
+            oEnt.setC_nroformato(cursor.getString(cursor.getColumnIndex("c_nroformato")));
+            oEnt.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            oEnt.setD_fechareg(cursor.getString(cursor.getColumnIndex("d_fechareg")));
+            oEnt.setC_documentoref(cursor.getString(cursor.getColumnIndex("c_documentoref")));
+            oEnt.setC_mediorecepcion(cursor.getString(cursor.getColumnIndex("c_mediorecepcion")));
+            oEnt.setC_centrocosto(cursor.getString(cursor.getColumnIndex("c_centrocosto")));
+            oEnt.setC_calificacion(cursor.getString(cursor.getColumnIndex("c_calificacion")));
+            oEnt.setC_usuarioderiv(cursor.getString(cursor.getColumnIndex("c_usuarioderiv")));
+            oEnt.setC_tipocalificacion(cursor.getString(cursor.getColumnIndex("c_tipocalificacion")));
+            oEnt.setC_item(cursor.getString(cursor.getColumnIndex("c_item")));
+            oEnt.setC_lote(cursor.getString(cursor.getColumnIndex("c_lote")));
+            oEnt.setN_cantidad(cursor.getDouble(cursor.getColumnIndex("n_cantidad")));
+            oEnt.setC_desqueja(cursor.getString(cursor.getColumnIndex("c_desqueja")));
+            oEnt.setC_observaciones(cursor.getString(cursor.getColumnIndex("c_observaciones")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oEnt.setC_usuario(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            oEnt.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+        }
+        return oEnt;
     }
     /************************************************/
     /************************************************/
@@ -1434,7 +1500,7 @@ public class ProdMantDataBase {
         ArrayList<ReclamoGarantia> result = new ArrayList<>();
         String query = "SELECT  * FROM MCO_RECLAMOGARANTIA " +
                         "where   d_fechaformato >=  '"+sFechaIni+"'  and d_fechaformato <= '"+sFechaFin+"' " +
-                        "and cast(n_cliente as text) like '"+sCliente+"' and c_estado like '"+sEstado+"' and c_compania  like '"+sComp+"';";
+                        "and cast(n_cliente as text) like '"+sCliente+"' and c_estado like '"+sEstado+"' and c_compania  like '"+sComp+"' and c_enviado='N';";
         Log.i("query reclamo garantia " ,query);
         this.OpenWritableDB();
         Cursor cursor  =db.rawQuery(query,null);
@@ -1488,6 +1554,61 @@ public class ProdMantDataBase {
         return  result ;
     }
 
+    public  ReclamoGarantia GetReclamoGarantiaItem (String sId ){
+        ReclamoGarantia r = new ReclamoGarantia();
+        String query = "SELECT  * FROM MCO_RECLAMOGARANTIA where _id="+sId;
+        Log.i("query reclamo garantia " ,query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            r.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            r.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            r.setD_fecha(cursor.getString(cursor.getColumnIndex("d_fecha")));
+            r.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            r.setC_codproducto(cursor.getString(cursor.getColumnIndex("c_codproducto")));
+            r.setC_lote(cursor.getString(cursor.getColumnIndex("c_lote")));
+            r.setC_procedencia(cursor.getString(cursor.getColumnIndex("c_procedencia")));
+            r.setN_qtyingreso(cursor.getDouble(cursor.getColumnIndex("n_qtyingreso")));
+            r.setC_vendedor(cursor.getString(cursor.getColumnIndex("c_vendedor")));
+            r.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            r.setC_usuario(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            r.setC_lote1(cursor.getString(cursor.getColumnIndex("c_lote1")));
+            r.setC_lote2(cursor.getString(cursor.getColumnIndex("c_lote2")));
+            r.setC_lote3(cursor.getString(cursor.getColumnIndex("c_lote3")));
+            r.setN_cantlote1(cursor.getDouble(cursor.getColumnIndex("n_cantlote1")));
+            r.setN_cantlote2(cursor.getDouble(cursor.getColumnIndex("n_cantlote2")));
+            r.setN_cantlote3(cursor.getDouble(cursor.getColumnIndex("n_cantlote3")));
+            r.setC_codmarca(cursor.getString(cursor.getColumnIndex("c_codmarca")));
+            r.setC_codmodelo(cursor.getString(cursor.getColumnIndex("c_codmodelo")));
+            r.setN_pyear(cursor.getInt(cursor.getColumnIndex("n_pyear")));
+            r.setC_tiempouso(cursor.getString(cursor.getColumnIndex("c_tiempouso")));
+            r.setC_facturaRef(cursor.getString(cursor.getColumnIndex("c_facturaRef")));
+            r.setC_prediagnostico(cursor.getString(cursor.getColumnIndex("c_prediagnostico")));
+            r.setN_formato(cursor.getInt(cursor.getColumnIndex("n_formato")));
+            r.setD_fechaformato(cursor.getString(cursor.getColumnIndex("d_fechaformato")));
+            r.setC_obscliente(cursor.getString(cursor.getColumnIndex("c_obscliente")));
+            r.setC_flagvisita(cursor.getString(cursor.getColumnIndex("c_flagvisita")));
+            r.setC_tiporeclamo(cursor.getString(cursor.getColumnIndex("c_tiporeclamo")));
+            r.setC_reembcliente(cursor.getString(cursor.getColumnIndex("c_reembcliente")));
+            r.setC_placavehic(cursor.getString(cursor.getColumnIndex("c_placavehic")));
+            r.setN_montoreembcli(cursor.getDouble(cursor.getColumnIndex("n_montoreembcli")));
+            r.setC_monedareembcli(cursor.getString(cursor.getColumnIndex("c_monedareembcli")));
+            r.setC_pruebalab1(cursor.getString(cursor.getColumnIndex("c_pruebalab1")));
+            r.setC_pruebalab2(cursor.getString(cursor.getColumnIndex("c_pruebalab2")));
+            r.setC_pruebalab3(cursor.getString(cursor.getColumnIndex("c_pruebalab3")));
+            r.setC_ensayo01(cursor.getString(cursor.getColumnIndex("c_ensayo01")));
+            r.setC_ensayo02(cursor.getString(cursor.getColumnIndex("c_ensayo02")));
+            r.setC_ensayo03(cursor.getString(cursor.getColumnIndex("c_ensayo03")));
+            r.setC_ensayo04(cursor.getString(cursor.getColumnIndex("c_ensayo04")));
+            r.setC_ensayo05(cursor.getString(cursor.getColumnIndex("c_ensayo05")));
+            r.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+
+
+        }
+        return  r ;
+    }
+
+
     public ArrayList<Permisos> GetPermisos(String codigoUser, String nivel) {
 
         ArrayList<Permisos> result = new ArrayList<Permisos>();
@@ -1516,6 +1637,422 @@ public class ProdMantDataBase {
         return result;
 
     }
+    /************************************************/
+    /**************REGISTRO DE SUGERENCIA************/
+    /************************************************/
+    //Insert Tipo Sugerencia
+    public ContentValues TMATipoSugerenciaContentValues(TMATipoSugerencia oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_tiposugerencia", oEnt.getC_tiposugerencia());
+        contentValues.put("c_descripcion",oEnt.getC_descripcion());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        return contentValues ;
+    }
+
+    public long InsertTMATipoSugerencia(TMATipoSugerencia oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_TIPOSUGERENCIA_NAME, null, TMATipoSugerenciaContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+
+    //Extraer Tipo Sugerencia
+    public ArrayList<TMATipoSugerencia> GetTipoSugerencia(){
+        ArrayList<TMATipoSugerencia> oData = new ArrayList<>();
+        String query = "SELECT * FROM TMA_TIPOSUGERENCIA where c_estado = 'A'";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMATipoSugerencia oEnt = new TMATipoSugerencia();
+            oEnt.setC_tiposugerencia(cursor.getString(cursor.getColumnIndex("c_tiposugerencia")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    public String GetNombreTipoSugerencia(String codSugerencia){
+        String result = "";
+        String query = "SELECT * FROM TMA_TIPOSUGERENCIA where c_tiposugerencia = '" + codSugerencia + "'";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            result = (cursor.getString(cursor.getColumnIndex("c_descripcion")).trim());
+        }
+        return  result;
+    }
+
+    //Insert SUGERENCIA CLIENTE
+    public ContentValues SugerenciaClienteContentValues (SugerenciaCliente oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania",oEnt.getC_compania());
+        contentValues.put("n_correlativo",oEnt.getN_correlativo());
+        contentValues.put("n_identinfo",oEnt.getN_identinfo());
+        contentValues.put("c_tipoinfo",oEnt.getC_tipoinfo());
+        contentValues.put("n_cliente",oEnt.getN_cliente());
+        contentValues.put("d_fechareg",oEnt.getD_fechareg());
+        contentValues.put("c_tiposug",oEnt.getC_tiposug());
+        contentValues.put("c_descripcion",oEnt.getC_descripcion());
+        contentValues.put("c_observacion",oEnt.getC_observacion());
+        contentValues.put("c_usuario",oEnt.getC_usuarioreg());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        contentValues.put("c_enviado",oEnt.getC_enviado());
+        return contentValues ;
+    }
+
+    public long InsertSugerenciaCliente(SugerenciaCliente oEnt) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MCO_SUGERENCIA_NAME, null, SugerenciaClienteContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  long UpdateSugerenciaCliente (SugerenciaCliente oEnt){
+        this.OpenWritableDB();
+        long rowid = db.update(ConstasDB.MCO_SUGERENCIA_NAME, SugerenciaClienteContentValues(oEnt),"_id="+oEnt.getN_correlativo(),null);
+        this.CloseDB();
+        return rowid;
+    }
+
+    public ArrayList<SugerenciaCliente> GetListSugerenciaCliente (String sComp,String sCliente,String sEstado,String sFechaIni,String sFechaFin, String sTipoInfo){
+        ArrayList<SugerenciaCliente> result = new ArrayList<>();
+        String query = "SELECT * FROM MCO_SUGERENCIA " +
+                "where d_fechareg >=  '"+sFechaIni+" 00:00:00'  and d_fechareg <= '"+sFechaFin+" 23:59:59' " +
+                "and cast(n_cliente as text) like '"+sCliente+"' and c_estado like '"+sEstado+"' and c_compania  like '"+sComp+"'  " +
+                "and c_tipoinfo ='" + sTipoInfo + "' and c_enviado='N';";
+        Log.i("query quejas " ,query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            SugerenciaCliente oEnt = new SugerenciaCliente();
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            oEnt.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            oEnt.setD_fechareg(cursor.getString(cursor.getColumnIndex("d_fechareg")));
+            oEnt.setC_tiposug(cursor.getString(cursor.getColumnIndex("c_tiposug")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oEnt.setC_usuarioreg(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            oEnt.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+            oEnt.setC_tipoinfo(cursor.getString(cursor.getColumnIndex("c_tipoinfo")));
+            oEnt.setN_identinfo(cursor.getInt(cursor.getColumnIndex("n_identinfo")));
+            oEnt.setC_observacion(cursor.getString(cursor.getColumnIndex("c_observacion")));
+            result.add(oEnt);
+        }
+        return result;
+    }
+        public SugerenciaCliente GetSugerenciaItem (String  sCod){
+            SugerenciaCliente oEnt = new SugerenciaCliente();
+        String query = "SELECT * FROM MCO_SUGERENCIA  where _id="+sCod;
+        Log.i("query MCO_SUGERENCIA  " ,query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            oEnt.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            oEnt.setD_fechareg(cursor.getString(cursor.getColumnIndex("d_fechareg")));
+            oEnt.setC_tiposug(cursor.getString(cursor.getColumnIndex("c_tiposug")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oEnt.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+            oEnt.setC_tipoinfo(cursor.getString(cursor.getColumnIndex("c_tipoinfo")));
+            oEnt.setN_identinfo(cursor.getInt(cursor.getColumnIndex("n_identinfo")));
+            oEnt.setC_observacion(cursor.getString(cursor.getColumnIndex("c_observacion")));
+        }
+        return oEnt;
+    }
+
+    /************************************************/
+    /*************REGISTRO DE CAPACITACION***********/
+    /************************************************/
+    //Insert Tema Capacitacion
+    public ContentValues TMATemaCapacitacionContentValues(TMATemaCapacitacion oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_temacapacitacion", oEnt.getC_temacapacitacion());
+        contentValues.put("c_descripcion",oEnt.getC_descripcion());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        return contentValues ;
+    }
+
+    public long InsertTMATemaCapacitacion(TMATemaCapacitacion oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_TEMACAPACITACION_NAME, null, TMATemaCapacitacionContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    //Direccion Cliente
+    public ContentValues TMADireccionCliContentValues(TMADireccionCli oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania", oEnt.getC_compania());
+        contentValues.put("n_cliente", oEnt.getN_cliente());
+        contentValues.put("n_secuencia", oEnt.getN_secuencia());
+        contentValues.put("c_descripcion",oEnt.getC_descripcion());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        return contentValues ;
+    }
+
+    public long InsertTMADireccionCli(TMADireccionCli oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.TMA_DIRECCIONCLI_NAME, null, TMADireccionCliContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    //Extraer Tema Capacitacion
+    public ArrayList<TMATemaCapacitacion> GetTemaCapacitacion(){
+        ArrayList<TMATemaCapacitacion> oData = new ArrayList<>();
+        String query = "SELECT * FROM TMA_TEMACAPACITACION where c_estado = 'A' order by c_descripcion";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMATemaCapacitacion oEnt = new TMATemaCapacitacion();
+            oEnt.setC_temacapacitacion(cursor.getString(cursor.getColumnIndex("c_temacapacitacion")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    //Extraer Direccion Cliente
+    public ArrayList<TMADireccionCli> GetDireccionCli(String compania, String cliente){
+        ArrayList<TMADireccionCli> oData = new ArrayList<>();
+        String query = "SELECT * FROM TMA_DIRECCIONCLI " +
+                "where c_compania='" + compania + "' " +
+                "and n_cliente=" + cliente + " " +
+                "and c_estado = 'A' order by c_descripcion";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            TMADireccionCli oEnt = new TMADireccionCli();
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            oEnt.setN_secuencia(cursor.getInt(cursor.getColumnIndex("n_secuencia")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    public String GetNombreTemaCapacitacion(String codTema){
+        String result = "";
+        String query = "SELECT * FROM TMA_TEMACAPACITACION where c_temacapacitacion = '" + codTema + "'";
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            result = (cursor.getString(cursor.getColumnIndex("c_descripcion")).trim());
+        }
+        return result;
+    }
+    public long InsertCapacitacionCliente(CapacitacionCliente oEnt) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MCO_SOLCAPACITACION_NAME, null, CapacitacionClienteContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  long UpdateCapacitacion (CapacitacionCliente oEnt){
+        this.OpenWritableDB();
+        long rowid = db.update(ConstasDB.MCO_SOLCAPACITACION_NAME, CapacitacionClienteContentValues(oEnt),"_id="+oEnt.getN_correlativo(),null);
+        this.CloseDB();
+        return rowid;
+    }
+
+    //Insert SUGERENCIA CLIENTE
+    public ContentValues CapacitacionClienteContentValues (CapacitacionCliente oEnt){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania",oEnt.getC_compania());
+        contentValues.put("n_correlativo",oEnt.getN_correlativo());
+        contentValues.put("n_cliente",oEnt.getN_cliente());
+        contentValues.put("d_fechareg",oEnt.getD_fechareg());
+        contentValues.put("n_personas",oEnt.getN_personas());
+        contentValues.put("d_fechaprob",oEnt.getD_fechaprob());
+        contentValues.put("d_horaprob",oEnt.getD_horaprob());
+        contentValues.put("c_lugar",oEnt.getC_lugar());
+        contentValues.put("n_direccion",oEnt.getN_direccioncli());
+        contentValues.put("c_direccionreg",oEnt.getC_direccionreg());
+        contentValues.put("c_temacapacitacion",oEnt.getC_temacapacitacion());
+        contentValues.put("c_descripciontema",oEnt.getC_descripciontema());
+        contentValues.put("c_usuario",oEnt.getC_usuarioreg());
+        contentValues.put("c_estado",oEnt.getC_estado());
+        contentValues.put("c_enviado",oEnt.getC_enviado());
+        contentValues.put("c_observacion",oEnt.getC_observacion());
+        return contentValues;
+    }
+
+
+
+    public ArrayList<CapacitacionCliente> GetListCapacitacionCliente (String sComp,String sCliente,String sEstado,String sFechaIni,String sFechaFin){
+        ArrayList<CapacitacionCliente> result = new ArrayList<>();
+        String query = "SELECT * FROM MCO_SOLCAPACITACION " +
+                "where d_fechareg >=  '"+sFechaIni+" 00:00:00'  and d_fechareg <= '"+sFechaFin+" 23:59:59' " +
+                "and cast(n_cliente as text) like '"+sCliente+"' and c_estado like '"+sEstado+"' and c_compania  like '"+sComp+"' and c_enviado='N';";
+        Log.i("query quejas " ,query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            CapacitacionCliente oEnt = new CapacitacionCliente();
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            oEnt.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            oEnt.setD_fechareg(cursor.getString(cursor.getColumnIndex("d_fechareg")));
+            oEnt.setN_personas(cursor.getInt(cursor.getColumnIndex("n_personas")));
+            oEnt.setD_fechaprob(cursor.getString(cursor.getColumnIndex("d_fechaprob")));
+            oEnt.setD_horaprob(cursor.getString(cursor.getColumnIndex("d_horaprob")));
+            oEnt.setC_lugar(cursor.getString(cursor.getColumnIndex("c_lugar")));
+            oEnt.setN_direccioncli(cursor.getInt(cursor.getColumnIndex("n_direccion")));
+            oEnt.setC_direccionreg(cursor.getString(cursor.getColumnIndex("c_direccionreg")));
+            oEnt.setC_temacapacitacion(cursor.getString(cursor.getColumnIndex("c_temacapacitacion")));
+            oEnt.setC_descripciontema(cursor.getString(cursor.getColumnIndex("c_descripciontema")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oEnt.setC_usuarioreg(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            oEnt.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+            result.add(oEnt);
+        }
+        return result;
+    }
+
+    public CapacitacionCliente GetCapacitacionClienteItem (String sCod){
+        CapacitacionCliente oEnt = new CapacitacionCliente();
+        String query = "SELECT * FROM MCO_SOLCAPACITACION where _id="+sCod;
+        Log.i("query MCO_SOLCAPACITACION " ,query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            oEnt.setN_cliente(cursor.getInt(cursor.getColumnIndex("n_cliente")));
+            oEnt.setD_fechareg(cursor.getString(cursor.getColumnIndex("d_fechareg")));
+            oEnt.setN_personas(cursor.getInt(cursor.getColumnIndex("n_personas")));
+            oEnt.setD_fechaprob(cursor.getString(cursor.getColumnIndex("d_fechaprob")));
+            oEnt.setD_horaprob(cursor.getString(cursor.getColumnIndex("d_horaprob")));
+            oEnt.setC_lugar(cursor.getString(cursor.getColumnIndex("c_lugar")));
+            oEnt.setN_direccioncli(cursor.getInt(cursor.getColumnIndex("n_direccion")));
+            oEnt.setC_direccionreg(cursor.getString(cursor.getColumnIndex("c_direccionreg")));
+            oEnt.setC_temacapacitacion(cursor.getString(cursor.getColumnIndex("c_temacapacitacion")));
+            oEnt.setC_descripciontema(cursor.getString(cursor.getColumnIndex("c_descripciontema")));
+            oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
+            oEnt.setC_usuarioreg(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            oEnt.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+
+        }
+        return oEnt;
+    }
+    /************************************************/
+    /************************************************/
+    /************************************************/
+
+    /// Doc Fotos reclamo Garantia
+     public  ContentValues DocFotosReclamosGarantiaContentValues(DocsReclamoGarantia doc){
+      ContentValues contentValues = new ContentValues();
+      contentValues.put("c_compania",doc.getC_compania());
+      contentValues.put("n_numero",doc.getN_numero());
+      contentValues.put("n_linea",doc.getN_linea());
+      contentValues.put("c_descripcion" ,  doc.getC_descripcion());
+      contentValues.put("c_nombre_archivo", doc.getC_nombre_archivo());
+      contentValues.put("c_ruta_archivo",doc.getC_ruta_archivo());
+      contentValues.put("c_ultimousuario",doc.getC_ultimousuario());
+      contentValues.put("d_ultimafechamodificacion",doc.getD_ultimafechamodificacion());
+      return  contentValues ;
+
+     }
+
+     public  long InsertDocFotosReclamoGarantia(DocsReclamoGarantia doc){
+         this.OpenWritableDB();
+         long rowid = db.insert(ConstasDB.MCO_DOCS_RECLAMOGARANTIA_NAME, null, DocFotosReclamosGarantiaContentValues(doc));
+         this.CloseDB();
+         return rowid;
+     }
+
+    public ArrayList<DocsReclamoGarantia> GetListDocsRG( String correlativo){
+        ArrayList<DocsReclamoGarantia> oData = new ArrayList<>();
+        String query = "select * from MCO_DOCS_RECLAMOGARANTIA WHERE n_numero = "+correlativo;
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            DocsReclamoGarantia oEnt = new DocsReclamoGarantia();
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_numero(cursor.getInt(cursor.getColumnIndex("n_numero")));
+            oEnt.setN_linea(cursor.getInt(cursor.getColumnIndex("n_linea")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_nombre_archivo(cursor.getString(cursor.getColumnIndex("c_nombre_archivo")));
+            oEnt.setC_ruta_archivo(cursor.getString(cursor.getColumnIndex("c_ruta_archivo")));
+            oEnt.setC_ultimousuario(cursor.getString(cursor.getColumnIndex("c_ultimousuario")));
+            oEnt.setD_ultimafechamodificacion(cursor.getString(cursor.getColumnIndex("d_ultimafechamodificacion")));
+
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    /// docs qieja cliente
+    public  ContentValues DocsQuejaClienteContenValues(DocsQuejaCliente doc){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania",doc.getC_compania());
+        contentValues.put("n_queja",doc.getN_queja());
+        contentValues.put("n_linea",doc.getN_linea());
+        contentValues.put("c_descripcion" ,  doc.getC_descripcion());
+        contentValues.put("c_nombre_archivo", doc.getC_nombre_archivo());
+        contentValues.put("c_ruta_archivo",doc.getC_ruta_archivo());
+        contentValues.put("c_ultimousuario",doc.getC_ultimousuario());
+        contentValues.put("d_ultimafechamodificacion",doc.getD_ultimafechamodificacion());
+        return  contentValues ;
+
+    }
+    public  long InsertDocFotosQuejaCliente(DocsQuejaCliente doc){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MCO_DOCS_QUEJACLIENTE_NAME, null, DocsQuejaClienteContenValues(doc));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public ArrayList<DocsQuejaCliente> GetListDocsQuejaCliente( String correlativo){
+        ArrayList<DocsQuejaCliente> oData = new ArrayList<>();
+        String query = "select * from MCO_DOCS_QUEJACLIENTE WHERE     n_queja = "+correlativo;
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            DocsQuejaCliente oEnt = new DocsQuejaCliente();
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_queja(cursor.getInt(cursor.getColumnIndex("n_queja")));
+            oEnt.setN_linea(cursor.getInt(cursor.getColumnIndex("n_linea")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_nombre_archivo(cursor.getString(cursor.getColumnIndex("c_nombre_archivo")));
+            oEnt.setC_ruta_archivo(cursor.getString(cursor.getColumnIndex("c_ruta_archivo")));
+            oEnt.setC_ultimousuario(cursor.getString(cursor.getColumnIndex("c_ultimousuario")));
+            oEnt.setD_ultimafechamodificacion(cursor.getString(cursor.getColumnIndex("d_ultimafechamodificacion")));
+
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    /*public String GetNroQuejaXCorrelativo( String correlativo){
+        String result = "";
+        String query = "select * from MCO_DOCS_QUEJACLIENTE WHERE _id = "+correlativo;
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            DocsQuejaCliente oEnt = new DocsQuejaCliente();
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+             result = String.valueOf( cursor.getInt(cursor.getColumnIndex("n_queja")));
+            oEnt.setN_linea(cursor.getInt(cursor.getColumnIndex("n_linea")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_nombre_archivo(cursor.getString(cursor.getColumnIndex("c_nombre_archivo")));
+            oEnt.setC_ruta_archivo(cursor.getString(cursor.getColumnIndex("c_ruta_archivo")));
+            oEnt.setC_ultimousuario(cursor.getString(cursor.getColumnIndex("c_ultimousuario")));
+            oEnt.setD_ultimafechamodificacion(cursor.getString(cursor.getColumnIndex("d_ultimafechamodificacion")));
+
+            oData.add(oEnt);
+        }
+        return oData;
+    }*/
+
 
     public boolean deleteInspMaq(String correlativo) {
         boolean res = false;
@@ -1555,8 +2092,5 @@ public class ProdMantDataBase {
         db.execSQL("DELETE FROM " + ConstasDB.MCO_RECLAMO_GARANTIA_NAME);
         this.CloseDB();
     }
-
-
-
 
 }

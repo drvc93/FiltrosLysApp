@@ -518,6 +518,101 @@ public class ConstasDB {
                     "c_usuario TEXT, "+
                     "c_estado TEXT, " +
                     "c_enviado TEXT);";
+    //tabla TMA_TIPOSUGERENCIA
+    public static final String TMA_TIPOSUGERENCIA_NAME = "TMA_TIPOSUGERENCIA";
+    public static final String TMA_TIPOSUGERENCIA_SQL =
+            "CREATE TABLE "+ TMA_TIPOSUGERENCIA_NAME +
+                    " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_tiposugerencia  TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_estado TEXT );";
+
+    //tabla TMA_TEMACAPACITACION
+    public static final String TMA_TEMACAPACITACION_NAME = "TMA_TEMACAPACITACION";
+    public static final String TMA_TEMACAPACITACION_SQL =
+            "CREATE TABLE "+ TMA_TEMACAPACITACION_NAME +
+                    " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_temacapacitacion  TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_estado TEXT );";
+
+    //tabla TMA_DIRECCIONCLI
+    public static final String TMA_DIRECCIONCLI_NAME = "TMA_DIRECCIONCLI";
+    public static final String TMA_DIRECCIONCLI_SQL =
+            "CREATE TABLE "+ TMA_DIRECCIONCLI_NAME +
+                    " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT, "+
+                    "n_cliente INTEGER, "+
+                    "n_secuencia INTEGER, "+
+                    "c_descripcion TEXT, "+
+                    "c_estado TEXT );";
+
+    // Tabla Sugerencia
+    public static final String MCO_SUGERENCIA_NAME = "MCO_SUGERENCIA";
+    public static final String MCO_SUGERENCIA_SQL  =
+            "CREATE TABLE "+ MCO_SUGERENCIA_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT, "+
+                    "n_correlativo BIGINT, "+
+                    "c_tipoinfo TEXT," +
+                    "n_identinfo BIGINT," +
+                    "n_cliente BIGINT, " +
+                    "d_fechareg TEXT, " +
+                    "c_tiposug TEXT, "+
+                    "c_descripcion TEXT, "+
+                    "c_observacion TEXT, "+
+                    "c_usuario TEXT, "+
+                    "c_estado TEXT, " +
+                    "c_enviado TEXT);";
+
+    // Tabla Capacitacion
+    public static final String MCO_SOLCAPACITACION_NAME = "MCO_SOLCAPACITACION";
+    public static final String MCO_SOLCAPACITACION_SQL  =
+            "CREATE TABLE "+ MCO_SOLCAPACITACION_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT, "+
+                    "n_correlativo BIGINT, "+
+                    "n_cliente BIGINT, " +
+                    "d_fechareg TEXT, " +
+                    "n_personas INTEGER, "+
+                    "d_fechaprob TEXT, " +
+                    "d_horaprob TEXT, " +
+                    "c_lugar TEXT, " +
+                    "n_direccion INTEGER, " +
+                    "c_direccionreg TEXT, " +
+                    "c_temacapacitacion TEXT, "+
+                    "c_descripciontema TEXT, "+
+                    "c_observacion TEXT, "+
+                    "c_usuario TEXT, "+
+                    "c_estado TEXT, " +
+                    "c_enviado TEXT);";
+
+    public static final String MCO_DOCS_RECLAMOGARANTIA_NAME = "MCO_DOCS_RECLAMOGARANTIA";
+    public static final String MCO_DOCS_RECLAMOGARANTIA_SQL =
+            "CREATE TABLE "+ MCO_DOCS_RECLAMOGARANTIA_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT, "+
+                    "n_numero BIGINT, " +
+                    "n_linea BIGINT, " +
+                    "c_descripcion TEXT, "+
+                    "c_nombre_archivo TEXT, "+
+                    "c_ruta_archivo TEXT, "+
+                    "c_ultimousuario TEXT, "+
+                    "d_ultimafechamodificacion TEXT); ";
+
+    public static final String MCO_DOCS_QUEJACLIENTE_NAME = "MCO_DOCS_QUEJACLIENTE";
+    public static final String MCO_DOCS_QUEJACLIENTE_SQL =
+            "CREATE TABLE "+ MCO_DOCS_QUEJACLIENTE_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT, "+
+                    "n_queja BIGINT, " +
+                    "n_linea BIGINT, " +
+                    "c_descripcion TEXT, "+
+                    "c_nombre_archivo TEXT, "+
+                    "c_ruta_archivo TEXT, "+
+                    "c_ultimousuario TEXT, "+
+                    "d_ultimafechamodificacion TEXT); ";
+
 
 }
 

@@ -42,20 +42,24 @@ import Model.SubMenuBotones;
 import Model.TMAAccionesTomar;
 import Model.TMACalificacionQueja;
 import Model.TMACliente;
+import Model.TMADireccionCli;
 import Model.TMAFalla;
 import Model.TMAMarca;
 import Model.TMAMedioRecepcion;
 import Model.TMAModelo;
 import Model.TMANotificacionQueja;
 import Model.TMAPruebaLab;
+import Model.TMATemaCapacitacion;
 import Model.TMATipoCalificacionQueja;
 import Model.TMATipoReclamo;
+import Model.TMATipoSugerencia;
 import Model.TMAVendedor;
 import Tasks.GetAccesosDataTask;
 import Tasks.GetAccionesQJTask;
 import Tasks.GetCalifiQJTask;
 import Tasks.GetCentroCostoTask;
 import Tasks.GetClientesTask;
+import Tasks.GetDireccionCliTask;
 import Tasks.GetFallasTask;
 import Tasks.GetInspeccionesTask;
 import Tasks.GetMaquinasTask;
@@ -66,9 +70,11 @@ import Tasks.GetModelosTask;
 import Tasks.GetNotificacionQJTask;
 import Tasks.GetPeriodosInspTask;
 import Tasks.GetPruebasLabTask;
+import Tasks.GetTemaCapacitacionTask;
 import Tasks.GetTipoCalifiQJTask;
 import Tasks.GetTipoReclamosTask;
 import Tasks.GetTipoRevisionGTask;
+import Tasks.GetTipoSugerenciaTask;
 import Tasks.GetUsuariosTask;
 import Tasks.GetVendedoresTask;
 import Tasks.RefrescarBaseDeDatosTask;
@@ -294,10 +300,17 @@ public class MenuOpciones extends AppCompatActivity {
         }
 
         if (var_concatenado.equals("050101")){
-            Intent intent = new Intent(getApplicationContext(),DatosGenRG.class);
+            Intent intent = new Intent(getApplicationContext(),SelecCliente.class);
+            //intent.putExtra("Operacion","NEW");
             startActivity(intent);
         }
-        if (var_concatenado.equals("050102")){
+
+        if (var_concatenado.equals("050501")){
+            Intent intent = new Intent(getApplicationContext(),DatosGenRG.class);
+            intent.putExtra("Operacion","NEW");
+            startActivity(intent);
+        }
+        if (var_concatenado.equals("050502")){
             Intent intent = new Intent(getApplicationContext(),ListaReclamoGarantia.class);
             startActivity(intent);
         }
@@ -312,12 +325,74 @@ public class MenuOpciones extends AppCompatActivity {
             startActivity(intent);
         }
 
+        //Regisrtro Sugerencia
+        if (var_concatenado.equals("050301")){
+            Intent intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
+            intent.putExtra("Operacion", "NEW") ;
+            intent.putExtra("TipoInfo","SU");
+            startActivity(intent);
+        }
+        if (var_concatenado.equals("050302")){
+            Intent intent = new Intent(getApplicationContext(),ListaSugerenciaCliente.class);
+            intent.putExtra("TipoInfo","SU");
+            startActivity(intent);
+        }
 
+        //Capaccitacion
+        if (var_concatenado.equals("050401")){
+            Intent intent = new Intent(getApplicationContext(),DatosGenCapacitacion.class);
+            intent.putExtra("Operacion", "NEW") ;
+            startActivity(intent);
+        }
+        if (var_concatenado.equals("050402")){
+            Intent intent = new Intent(getApplicationContext(),ListaCapacitacionCliente.class);
+            startActivity(intent);
+        }
 
+        //Solicitud Compra Especial
+        if (var_concatenado.equals("050601")){
+            Intent intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
+            intent.putExtra("Operacion", "NEW") ;
+            intent.putExtra("TipoInfo","SE");
+            startActivity(intent);
+        }
+
+        if (var_concatenado.equals("050602")){
+            Intent intent = new Intent(getApplicationContext(),ListaSugerenciaCliente.class);
+            intent.putExtra("TipoInfo","SE");
+            startActivity(intent);
+        }
+
+        //Solicitud Material Publicitario
+        if (var_concatenado.equals("050701")){
+            Intent intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
+            intent.putExtra("Operacion", "NEW") ;
+            intent.putExtra("TipoInfo","MP");
+            startActivity(intent);
+        }
+
+        if (var_concatenado.equals("050702")){
+            Intent intent = new Intent(getApplicationContext(),ListaSugerenciaCliente.class);
+            intent.putExtra("TipoInfo","MP");
+            startActivity(intent);
+        }
+
+        //Consutla Tecnica
+        if (var_concatenado.equals("050801")){
+            Intent intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
+            intent.putExtra("Operacion", "NEW") ;
+            intent.putExtra("TipoInfo","CT");
+            startActivity(intent);
+        }
+
+        if (var_concatenado.equals("050802")){
+            Intent intent = new Intent(getApplicationContext(),ListaSugerenciaCliente.class);
+            intent.putExtra("TipoInfo","CT");
+            startActivity(intent);
+        }
     }
 
     public void AlertSyncro(final String tipoSincronizacion) {
-
         String mensaje;
         if (tipoSincronizacion.equals("MAESTROS")){
             mensaje = "¿Desea sincronizar las tablas maestros?";
@@ -734,6 +809,51 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+        // lista de Tipo Sugerencia
+        ArrayList<TMATipoSugerencia> listTipoSugerencia = new ArrayList<TMATipoSugerencia>();
+        GetTipoSugerenciaTask getTipoSugerenciaTask = new GetTipoSugerenciaTask();
+        AsyncTask<String,String,ArrayList<TMATipoSugerencia>> asyncTaskTipoSug;
+
+        try {
+            asyncTaskTipoSug = getTipoSugerenciaTask.execute();
+            listTipoSugerencia = asyncTaskTipoSug.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // lista de Tema Capacitacion
+        ArrayList<TMATemaCapacitacion> listTemaCapacitacion = new ArrayList<TMATemaCapacitacion>();
+        GetTemaCapacitacionTask getTemaCapacitacionTask = new GetTemaCapacitacionTask();
+        AsyncTask<String,String,ArrayList<TMATemaCapacitacion>> asyncTaskTemaCap;
+
+        try {
+            asyncTaskTemaCap = getTemaCapacitacionTask.execute();
+            listTemaCapacitacion = asyncTaskTemaCap.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // lista de Direccion Cliente
+        ArrayList<TMADireccionCli> listDireccionCli = new ArrayList<TMADireccionCli>();
+        GetDireccionCliTask getDireccionCliTask = new GetDireccionCliTask();
+        AsyncTask<String,String,ArrayList<TMADireccionCli>> asyncTaskDirCli;
+
+        try {
+            asyncTaskDirCli = getDireccionCliTask.execute();
+            listDireccionCli = asyncTaskDirCli.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
 
 
 
@@ -753,6 +873,9 @@ public class MenuOpciones extends AppCompatActivity {
         sincroMaestrosTask.listMedioRecQJ = listMedioRecepcion;
         sincroMaestrosTask.listAccionQJ = listAccionesRQ;
         sincroMaestrosTask.listNotiQJ = listNotificacion;
+        sincroMaestrosTask.listTipoSug = listTipoSugerencia;
+        sincroMaestrosTask.listTemaCap = listTemaCapacitacion;
+        sincroMaestrosTask.listDirecCli = listDireccionCli;
 
          asyncMaestros = sincroMaestrosTask.execute();
         Log.i("Post ejecuion de maestroTask",".");

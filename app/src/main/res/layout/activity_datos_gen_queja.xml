@@ -18,7 +18,340 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2sp"
+                android:layout_marginTop="5sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nº Queja:" />
+
+                <EditText
+                    android:id="@+id/txtNroQueja"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:hint="N° Queja"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="  F.Registro " />
+
+                <EditText
+                    android:id="@+id/txtFechaRegQJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:clickable="true"
+                    android:ems="5"
+                    android:focusableInTouchMode="false"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2sp"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cliente" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="70sp">
+
+                    <EditText
+                        android:id="@+id/txtBSClienteQJ"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+                        android:ellipsize="end"
+                        android:ems="14"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColorHint="@android:color/black"
+                        android:textSize="18sp"></EditText>
+
+                    <ImageView
+                        android:id="@+id/btnBuscarClienteQJ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/txtBSClienteQJ"
+                        android:layout_alignRight="@+id/txtBSClienteQJ"
+                        android:layout_alignTop="@+id/txtBSClienteQJ"
+                        app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+                </RelativeLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="M.Recep" />
+
+                <Spinner
+                    android:id="@+id/spMedioRecepcionQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_marginLeft="70sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20sp"
+                    android:text="Clase" />
+
+                <Spinner
+                    android:id="@+id/spClaseQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+
+                <TextView
+                    android:id="@+id/textView96"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text=" Sub-Cla" />
+
+                <Spinner
+                    android:id="@+id/spSubClaseQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/txtItemQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="55sp"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Item" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="5dp">
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="18dp"
+                    android:layout_weight="0"
+                    android:text="Serie " />
+
+                <EditText
+                    android:id="@+id/txtSerieQJ"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="Canti. " />
+
+                <br.com.sapereaude.maskedEditText.MaskedEditText
+                    android:id="@+id/txtCantidadQJ"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="4"
+                    android:enabled="false"
+                    android:inputType="number"
+                    android:typeface="monospace"
+                    app:keep_hint="false"
+                    app:mask="######"
+                    mask:allowed_chars="1234567890" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:ems="0"
+                    android:text="ForM " />
+
+                <EditText
+                    android:id="@+id/txtFormatoQJ"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Doc.Ref" />
+
+                <EditText
+                    android:id="@+id/txtDocRefQJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:text="Detalle Queja" />
+
+                <EditText
+                    android:id="@+id/txtDetalleQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="3" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:text="Observaciones" />
+
+                <EditText
+                    android:id="@+id/txtObservacionesQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="3" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="Derivado" />
+
+                <EditText
+                    android:id="@+id/txtDerivadoAQJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="F.Derivacion " />
+
+                <EditText
+                    android:id="@+id/txtFDerivacionQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -26,344 +359,11 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nº Queja:" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/txtNroQueja"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="5"
-                            android:hint="N° Queja"
-                            android:inputType="textPersonName" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="  F.Registro " />
-
-                        <EditText
-                            android:id="@+id/txtFechaRegQJ"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:clickable="true"
-                            android:ems="5"
-                            android:focusableInTouchMode="false"
-                            android:inputType="textPersonName" />
-                    </LinearLayout>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cliente" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <EditText
-                            android:id="@+id/txtBSClienteQJ"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ellipsize="end"
-                            android:ems="14"
-                            android:paddingBottom="5dp"
-                            android:paddingTop="5dp"
-                            android:textColorHint="@android:color/black"
-                            android:textSize="18sp"></EditText>
-
-                        <ImageView
-                            android:id="@+id/btnBuscarClienteQJ"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/txtBSClienteQJ"
-                            android:layout_alignRight="@+id/txtBSClienteQJ"
-                            android:layout_alignTop="@+id/txtBSClienteQJ"
-                            app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
-                    </RelativeLayout>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3sp"
-                    android:paddingBottom="8dp"
-                    android:paddingTop="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="M.Recep" />
-
-                    <Spinner
-                        android:id="@+id/spMedioRecepcionQJ"
-                        android:layout_width="match_parent"
-                        android:layout_height="25sp"
-                        android:background="@drawable/spiner_style"
-                        android:spinnerMode="dialog" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Clase" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingBottom="8dp"
-                        android:paddingTop="8dp">
-
-                        <Spinner
-                            android:id="@+id/spClaseQJ"
-                            android:layout_width="130sp"
-                            android:layout_height="25sp"
-                            android:background="@drawable/spiner_style"
-                            android:spinnerMode="dialog" />
-
-                        <TextView
-                            android:id="@+id/textView96"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" Sub-Cla" />
-
-                        <Spinner
-                            android:id="@+id/spSubClaseQJ"
-                            android:layout_width="100sp"
-                            android:layout_height="25sp"
-                            android:background="@drawable/spiner_style"
-                            android:spinnerMode="dialog" />
-                    </LinearLayout>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Item" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/txtItemQJ"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="5"
-                            android:enabled="false"
-                            android:inputType="textPersonName" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:text="Serie " />
-
-                        <EditText
-                            android:id="@+id/txtSerieQJ"
-                            android:layout_width="50dp"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="5"
-                            android:enabled="false"
-                            android:inputType="textPersonName" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:text="Canti. " />
-
-                        <br.com.sapereaude.maskedEditText.MaskedEditText
-                            android:id="@+id/txtCantidadQJ"
-                            android:layout_width="50dp"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="4"
-                            android:enabled="false"
-                            android:inputType="number"
-                            android:typeface="monospace"
-                            app:keep_hint="false"
-                            app:mask="######"
-                            mask:allowed_chars="1234567890" />
-                    </LinearLayout>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Doc.Ref" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <EditText
-                            android:id="@+id/txtDocRefQJ"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="5"
-                            android:enabled="false"
-                            android:inputType="textPersonName" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:text="ForM " />
-
-                        <EditText
-                            android:id="@+id/txtFormatoQJ"
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="5"
-                            android:enabled="false"
-                            android:inputType="textPersonName" />
-                    </LinearLayout>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="3dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:text="Detalle Queja" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="3dp">
-
-                    <EditText
-                        android:id="@+id/txtDetalleQJ"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:background="@drawable/edittext_round_border"
-                        android:ems="10"
-                        android:inputType="textMultiLine"
-                        android:lines="3" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="3dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:text="Observaciones" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="3dp">
-
-                    <EditText
-                        android:id="@+id/txtObservacionesQJ"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:background="@drawable/edittext_round_border"
-                        android:ems="10"
-                        android:inputType="textMultiLine"
-                        android:lines="3" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="3dp"
                     android:gravity="center_vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Derivado" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/txtDerivadoAQJ"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="5"
-                            android:enabled="false"
-                            android:inputType="textPersonName" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="3dp"
-                            android:text="F.Derivacion " />
-
-                        <EditText
-                            android:id="@+id/txtFDerivacionQJ"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="5"
-                            android:enabled="false"
-                            android:inputType="textPersonName" />
-                    </LinearLayout>
                 </TableRow>
             </TableLayout>
         </LinearLayout>
@@ -373,80 +373,81 @@
             android:id="@+id/layInvestigacionQJ"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_weight="1"
+            android:orientation="vertical"
             android:visibility="gone">
 
-            <TableLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <TableRow
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:layout_weight="1"
+                    android:ems="14"
+                    android:text="Observaciones" />
+
+                <CheckBox
+                    android:id="@+id/chkInvestigando"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
+                    android:layout_span="2"
+                    android:layout_weight="1"
+                    android:text="Investigado"
+                    tools:text="Investigado" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Investigando:" />
+            </LinearLayout>
 
-                    <CheckBox
-                        android:id="@+id/chkInvestigando"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                </TableRow>
-
-                <TableRow
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Observaciones"
-                        android:layout_span="2"/>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
+                    android:orientation="horizontal">
 
                     <EditText
                         android:id="@+id/txtDescripcionInvestigacionQJ"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_span="4"
+                        android:layout_weight="1"
                         android:background="@drawable/edittext_round_border"
                         android:ems="10"
                         android:inputType="textMultiLine"
-                        android:lines="8"
-                        android:layout_span="2"/>
-                </TableRow>
+                        android:lines="6" />
+                </android.support.design.widget.TextInputLayout>
 
-                <TableRow
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
+                    android:layout_height="match_parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Procede" />
+                        android:layout_marginTop="5sp"
+                        android:gravity="center_vertical">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Procede" />
 
                         <Spinner
                             android:id="@+id/spProcedeQJ"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="25sp"
                             android:background="@drawable/spiner_style"
-                            android:padding="5dp"
                             android:spinnerMode="dialog" />
 
                         <TextView
@@ -456,254 +457,29 @@
 
                         <EditText
                             android:id="@+id/txtFechaRespuestaQJ"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/edittext_round_border"
                             android:clickable="true"
                             android:ems="5"
                             android:focusableInTouchMode="false"
                             android:inputType="textPersonName" />
-                    </LinearLayout>
-                </TableRow>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
+                    </TableRow>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Investig.Por" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/txtInvestigadoPorQJ"
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:ems="5"
-                            android:enabled="false"
-                            android:inputType="textPersonName"
-                            android:layout_marginLeft="1dp"/>
+                        android:layout_marginTop="5sp"
+                        android:gravity="center_vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="F.Investig"
-                            android:layout_marginLeft="3dp"/>
+                            android:text="Investig.Por" />
 
                         <EditText
-                            android:id="@+id/txtFechaInvestigacionQJ"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_round_border"
-                            android:clickable="true"
-                            android:ems="5"
-                            android:focusableInTouchMode="false"
-                            android:inputType="textPersonName"
-                            android:layout_marginLeft="1dp"/>
-                    </LinearLayout>
-                </TableRow>
-            </TableLayout>
-        </LinearLayout>
-
-        <!-- Layout Cierre !-->
-        <LinearLayout
-            android:id="@+id/layCierreQJ"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cierre:" />
-
-                    <Spinner
-                        android:id="@+id/spSubClaseCierreQJ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/spiner_style"
-                        android:padding="5dp"
-                        android:spinnerMode="dialog" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:text="Disposicion" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
-
-                    <EditText
-                        android:id="@+id/txtDisposicionQJ"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:background="@drawable/edittext_round_border"
-                        android:ems="10"
-                        android:inputType="textMultiLine"
-                        android:lines="3" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Accion(1)" />
-
-                    <Spinner
-                        android:id="@+id/spAccionTomar1QJ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/spiner_style"
-                        android:padding="5dp"
-                        android:spinnerMode="dialog" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Accion(2)" />
-
-                    <Spinner
-                        android:id="@+id/spAccionTomar2QJ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/spiner_style"
-                        android:padding="5dp"
-                        android:spinnerMode="dialog" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Accion(3)" />
-
-                    <Spinner
-                        android:id="@+id/spAccionTomar3QJ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/spiner_style"
-                        android:padding="5dp"
-                        android:spinnerMode="dialog" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Accion(4)" />
-
-                    <Spinner
-                        android:id="@+id/spAccionTomar4QJ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/spiner_style"
-                        android:padding="5dp"
-                        android:spinnerMode="dialog" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Observ." />
-
-                    <CheckBox
-                        android:id="@+id/chkCerrarQueja"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Cerrar Queja?" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp">
-
-                    <EditText
-                        android:id="@+id/txtObservCierreQJ"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:background="@drawable/edittext_round_border"
-                        android:ems="10"
-                        android:inputType="textMultiLine"
-                        android:lines="3" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cerrado.Por" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/txtCerradoPorQJ"
+                            android:id="@+id/txtInvestigadoPorQJ"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="1dp"
@@ -716,10 +492,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="3dp"
-                            android:text="F.Cierre" />
+                            android:text="F.Investig" />
 
                         <EditText
-                            android:id="@+id/txtFechaCierreQJ"
+                            android:id="@+id/txtFechaInvestigacionQJ"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="1dp"
@@ -728,7 +504,233 @@
                             android:ems="5"
                             android:focusableInTouchMode="false"
                             android:inputType="textPersonName" />
-                    </LinearLayout>
+
+                    </TableRow>
+                </TableLayout>
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <!-- Layout Cierre !-->
+        <LinearLayout
+            android:id="@+id/layCierreQJ"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@+id/spSubClaseCierreQJ"
+                    android:text="Cierre:" />
+
+                <Spinner
+                    android:id="@+id/spSubClaseCierreQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_marginLeft="80sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:labelFor="@+id/txtDisposicionQJ"
+                    android:text="Disposicion" />
+
+                <EditText
+                    android:id="@+id/txtDisposicionQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="80sp"
+                    android:layout_span="2"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="3" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Accion(1)" />
+
+                <Spinner
+                    android:id="@+id/spAccionTomar1QJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_marginLeft="80sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Accion(2)" />
+
+                <Spinner
+                    android:id="@+id/spAccionTomar2QJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_marginLeft="80sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Accion(3)" />
+
+                <Spinner
+                    android:id="@+id/spAccionTomar3QJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_marginLeft="80sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Accion(4)" />
+
+                <Spinner
+                    android:id="@+id/spAccionTomar4QJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_marginLeft="80sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Observ." />
+
+                <CheckBox
+                    android:id="@+id/chkCerrarQueja"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="80sp"
+                    android:text="Cerrar Queja?" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2sp">
+
+                <EditText
+                    android:id="@+id/txtObservCierreQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="3" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cerrado.Por" />
+
+                <EditText
+                    android:id="@+id/txtCerradoPorQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="80sp"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:labelFor="@+id/txtFechaCierreQJ"
+                    android:text="F.Cierre" />
+
+                <EditText
+                    android:id="@+id/txtFechaCierreQJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="80sp"
+                    android:background="@drawable/edittext_round_border"
+                    android:clickable="true"
+                    android:ems="5"
+                    android:focusableInTouchMode="false"
+                    android:inputType="textPersonName" />
+            </FrameLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:gravity="center_vertical">
+
                 </TableRow>
             </TableLayout>
         </LinearLayout>

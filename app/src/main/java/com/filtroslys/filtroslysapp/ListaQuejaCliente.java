@@ -28,6 +28,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -54,6 +56,7 @@ public class ListaQuejaCliente extends AppCompatActivity {
     ListView lvQueja;
     Button btnBuscarQJ;
     QuejaClienteAdapter adapter;
+    String sFlagOffOn  ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +73,7 @@ public class ListaQuejaCliente extends AppCompatActivity {
         chkOnline = findViewById(R.id.chkOnlineQJ);
         lvQueja = findViewById(R.id.LvQuejaCliente);
         btnBuscarQJ = findViewById(R.id.btnBuscarQJ);
+        sFlagOffOn  = "OFF";
 
         InicializarFechas();
         LoadSpinerCompania();
@@ -101,10 +105,33 @@ public class ListaQuejaCliente extends AppCompatActivity {
             public void onClick(View v) {
                 if (chkOnline.isChecked()){
                     LoadOnlineLvReclamo();
+                    sFlagOffOn = "ON";
                 }
                 else {
                     LoadOffLinelvQueja();
+                    sFlagOffOn = "OFF";
                 }
+            }
+        });
+
+        lvQueja.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String sAccion = "";
+                QuejaCliente qj = new QuejaCliente();
+                if (sFlagOffOn.equals("ON")){
+                    qj = adapter.getObject(position);
+                }else if (sFlagOffOn.equals("OFF")){
+                    ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+                    qj = db.GetQuejaClienteItem(String.valueOf( adapter.getObject(position).getN_correlativo()));
+                }
+                sAccion = qj.getC_enviado().equals("S") ? "VER" :"MOD" ;
+                Gson gson = new Gson();
+                String ObjectRG = gson.toJson(qj);
+                Intent intent = new Intent(ListaQuejaCliente.this, DatosGenQueja.class);
+                intent.putExtra("ObjectQJ", ObjectRG);
+                intent.putExtra("AccionQJ", sAccion);
+                startActivity(intent);
             }
         });
     }

@@ -1,22 +1,40 @@
 package com.filtroslys.filtroslysapp;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -26,18 +44,30 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import DataBase.ConstasDB;
 import DataBase.ProdMantDataBase;
+import Model.DocsReclamoGarantia;
 import Model.EFacSerLot;
 import Model.ReclamoGarantia;
 import Model.TMACliente;
@@ -48,8 +78,12 @@ import Model.TMAPruebaLab;
 import Model.TMATipoReclamo;
 import Model.TMAVendedor;
 import Tasks.GetCorrelativoRecGarTask;
+import Tasks.GetFotoRG;
+import Tasks.GetListaDatosFotosRG;
 import Tasks.GetLoteSerieRGTask;
-import Tasks.GetReqLogDetalleTask;
+import Tasks.GuardaLocalFotoRGTask;
+import Tasks.GuardarFotoRGTask;
+import Tasks.InsertDocsReclamoGarTask;
 import Tasks.InsertReclamoGarantiaTask;
 import Tasks.TransferirReclamoGarantiaTask;
 import Tasks.VerificarItemExisteTask;
@@ -58,26 +92,35 @@ import br.com.sapereaude.maskedEditText.MaskedEditText;
 import libs.mjn.prettydialog.PrettyDialog;
 import spencerstudios.com.fab_toast.FabToast;
 
+
 public class DatosGenRG extends AppCompatActivity {
-    EditText txtNroFormato, txtNroRG, txtFechaRegistro, txtClienteCodNom , txtFiltroBuscar ;
-    EditText txtFacturaRG, txtLoteF , txtSerieF, txtEstado;
-    EditText txtPlaca,txtAnio,txtTiempoUso, txtObsCliente;
-    Spinner spTipoRG , spMarca,spModelo;
-    Spinner spPrueba1 , spPrueba2 , spPrueba3 ;
-    Spinner spFalla1,spFalla2,spFalla3,spFalla4,spFalla5,spVendedorDiag;
+    EditText txtNroFormato, txtNroRG, txtFechaRegistro, txtClienteCodNom, txtFiltroBuscar;
+    EditText txtFacturaRG, txtLoteF, txtSerieF, txtEstado;
+    EditText txtPlaca, txtAnio, txtTiempoUso, txtObsCliente;
+    Spinner spTipoRG, spMarca, spModelo;
+    Spinner spPrueba1, spPrueba2, spPrueba3;
+    Spinner spFalla1, spFalla2, spFalla3, spFalla4, spFalla5, spVendedorDiag;
     Spinner spMonedaRemb, spReembolso;
-    EditText txtMontoRemb ,txtObsVendedor;
+    EditText txtMontoRemb, txtObsVendedor;
     CheckBox chkNecVisita;
     int PantallaReal;
-    TextView lblav1,lblav2,lblav3,lblav4;
-    ImageView btnBuscarCliente , btnBuscarFiltro;
-    MaskedEditText  txtCantGen , txtLote1,txtLote2,txtLote3, txtCantLote1, txtCantLote2,txtCantLote3;
-    ReclamoGarantia objReclamo ;
-    Button btnSiguiente,btnCancelar;
-    LinearLayout ly_Datos_Generales,ly_Datos_Vehiculo,ly_Datos_Pruebas,ly_Datos_Diagnostico;
-    int nIndicadorLayout ;
-    String codUser,sFechaSelec;
+    TextView lblav1, lblav2, lblav3, lblav4;
+    ImageView btnBuscarCliente, btnBuscarFiltro;
+    MaskedEditText txtCantGen, txtLote1, txtLote2, txtLote3, txtCantLote1, txtCantLote2, txtCantLote3;
+    ReclamoGarantia objReclamo;
+    Button btnSiguiente, btnCancelar;
+    LinearLayout ly_Datos_Generales, ly_Datos_Vehiculo, ly_Datos_Pruebas, ly_Datos_Diagnostico;
+    int nIndicadorLayout;
+    String codUser, sFechaSelec, sOperacion;
     SharedPreferences preferences;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    DocsReclamoGarantiaAdapter docsAdapdater = null ;
+    ArrayList<DocsReclamoGarantia> listaDocsFotos = new ArrayList<>();
+    ListView lvFotosRG;
+    FrameLayout frameViewFotos;
+    ImageView imgviewFoto;
+    String pictureImagePath = "" ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,15 +139,15 @@ public class DatosGenRG extends AppCompatActivity {
         lblav2 = findViewById(R.id.lblAvance2);
         lblav3 = findViewById(R.id.lblAvance3);
         lblav4 = findViewById(R.id.lblAvance4);
-        nIndicadorLayout = 1 ;
-        ConfigurarPantalla(nIndicadorLayout,false);
+        nIndicadorLayout = 1;
+        ConfigurarPantalla(nIndicadorLayout, false);
 
-
+        sOperacion = getIntent().getStringExtra("Operacion");
         txtFechaRegistro = findViewById(R.id.txtFechaRegRG);
         txtNroFormato = findViewById(R.id.txtNroFormtRG);
         txtNroRG = findViewById(R.id.txtNroRecGar);
         spTipoRG = findViewById(R.id.spTipoRG);
-        txtClienteCodNom =  findViewById(R.id.txtBSClienteRG);
+        txtClienteCodNom = findViewById(R.id.txtBSClienteRG);
         txtLoteF = findViewById(R.id.txtLoteRG);
         txtSerieF = findViewById(R.id.txtSerieFiltroRG);
         txtClienteCodNom.setEnabled(false);
@@ -124,13 +167,13 @@ public class DatosGenRG extends AppCompatActivity {
         txtLote1 = findViewById(R.id.txtLoteProd1);
         txtLote2 = findViewById(R.id.txtLoteProd2);
         txtLote3 = findViewById(R.id.txtLoteProd3);
-        PantallaReal=1;
-        spMarca =  findViewById(R.id.spMarcaRG);
+        PantallaReal = 1;
+        spMarca = findViewById(R.id.spMarcaRG);
         spModelo = findViewById(R.id.spModeloVRG);
         txtAnio = findViewById(R.id.txtAnioVRG);
         txtPlaca = findViewById(R.id.txtPlacaVRG);
         txtObsCliente = findViewById(R.id.txtObsClienteRG);
-        txtTiempoUso =  findViewById(R.id.txtTiempoUso);
+        txtTiempoUso = findViewById(R.id.txtTiempoUso);
         spPrueba1 = findViewById(R.id.spPrueba01);
         spPrueba2 = findViewById(R.id.spPrueba02);
         spPrueba3 = findViewById(R.id.spPrueba03);
@@ -142,19 +185,14 @@ public class DatosGenRG extends AppCompatActivity {
         spVendedorDiag = findViewById(R.id.spVendedorDiag);
         spMonedaRemb = findViewById(R.id.spMonedaDiag);
         spReembolso = findViewById(R.id.spRembolsoDiag);
-        txtMontoRemb  = findViewById(R.id.txtMontoDIAG);
-        txtObsVendedor =  findViewById(R.id.txtObsVendedor);
+        txtMontoRemb = findViewById(R.id.txtMontoDIAG);
+        txtObsVendedor = findViewById(R.id.txtObsVendedor);
         chkNecVisita = findViewById(R.id.chkNecesitaVIisita);
         spMonedaRemb.setEnabled(false);
         txtMontoRemb.setEnabled(true);
+        txtFiltroBuscar.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
 
-
-
-        txtFiltroBuscar.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-
-        txtEstado.setText("Ingresado");
-        objReclamo  = new ReclamoGarantia();
         LoadSpinerTipoReclamo();
         LoadSpinerMarca();
         LoadSpinersPruebas();
@@ -163,38 +201,47 @@ public class DatosGenRG extends AppCompatActivity {
         LoadSpinerMoneda();
         LoadSpinerRembolso();
 
+        if (sOperacion.equals("NEW")) {
+            txtEstado.setText("Ingresado");
+            objReclamo = new ReclamoGarantia();
+            if (getIntent().getStringExtra("Cliente") != null) {
+                txtClienteCodNom.setText(getIntent().getStringExtra("Cliente"));
+            }
+        } else if (sOperacion.equals("MOD") || sOperacion.equals("VER")) {
+            Gson gson = new Gson();
+            String rgAsString = getIntent().getStringExtra("ObjectRG");
+            objReclamo = gson.fromJson(rgAsString, ReclamoGarantia.class);
+            SetControlsValues(objReclamo);
+            docsAdapdater = FillAdaptadorDocs(sOperacion,objReclamo.getC_compania(), String.valueOf( objReclamo.getN_correlativo()));
+        }
 
         spMarca.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position>0){
+                if (position > 0) {
                     String marca = spMarca.getSelectedItem().toString().trim();
-                    marca = marca.substring(0,marca.indexOf("|")-1).trim();
+                    marca = marca.substring(0, marca.indexOf("|") - 1).trim();
                     LoadSpinerModeo(marca);
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
         spReembolso.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (spReembolso.getSelectedItem().toString().equals("SI")){
+                if (spReembolso.getSelectedItem().toString().equals("SI")) {
                     txtMontoRemb.setEnabled(true);
                     spMonedaRemb.setEnabled(true);
-                }
-                else {
+                } else {
                     txtMontoRemb.setEnabled(false);
                     spMonedaRemb.setEnabled(false);
                     spMonedaRemb.setSelection(0);
                     txtMontoRemb.setText("");
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -204,11 +251,10 @@ public class DatosGenRG extends AppCompatActivity {
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nIndicadorLayout>1){
-                    nIndicadorLayout= nIndicadorLayout -1;
-                    ConfigurarPantalla(nIndicadorLayout,false);
-                }
-                else {
+                if (nIndicadorLayout > 1) {
+                    nIndicadorLayout = nIndicadorLayout - 1;
+                    ConfigurarPantalla(nIndicadorLayout, false);
+                } else {
                     DatosGenRG.super.onBackPressed();
                 }
             }
@@ -216,13 +262,15 @@ public class DatosGenRG extends AppCompatActivity {
         btnSiguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("index layout " , String.valueOf(nIndicadorLayout));
-                if (nIndicadorLayout<4) {
-                    nIndicadorLayout = nIndicadorLayout +1 ;
-                    ConfigurarPantalla(nIndicadorLayout,true);
-                }
-                else if (nIndicadorLayout==4){
-                    VaLidacionFinal();
+                Log.i("index layout ", String.valueOf(nIndicadorLayout));
+                if (nIndicadorLayout < 4) {
+                    nIndicadorLayout = nIndicadorLayout + 1;
+                    ConfigurarPantalla(nIndicadorLayout, true);
+                } else if (nIndicadorLayout == 4) {
+                    if (!sOperacion.equals("VER")) {
+                        VaLidacionFinal();
+                    }
+
                 }
             }
         });
@@ -244,14 +292,14 @@ public class DatosGenRG extends AppCompatActivity {
         txtFacturaRG.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
-                    String sFac="";
+                if (!hasFocus) {
+                    String sFac = "";
                     sFac = txtFacturaRG.getText().toString().toUpperCase();
-                    if (sFac.isEmpty() || txtClienteCodNom.getText().toString().isEmpty()){
-                        FabToast.makeText(DatosGenRG.this, "Se recomienda ingresar cliente primero.", FabToast.LENGTH_LONG, FabToast.WARNING,  FabToast.POSITION_DEFAULT).show();
+                    if (sFac.isEmpty() || txtClienteCodNom.getText().toString().isEmpty()) {
+                        FabToast.makeText(DatosGenRG.this, "Se recomienda ingresar cliente primero.", FabToast.LENGTH_LONG, FabToast.WARNING, FabToast.POSITION_DEFAULT).show();
                         return;
                     }
-                    ObtenerLoteSerieFiltro("F",txtFiltroBuscar.getText().toString().toUpperCase(),sFac);
+                    ObtenerLoteSerieFiltro("F", txtFiltroBuscar.getText().toString().toUpperCase(), sFac);
                 }
             }
         });
@@ -259,7 +307,7 @@ public class DatosGenRG extends AppCompatActivity {
         txtFiltroBuscar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
+                if (!hasFocus) {
                     VerificarItemExiste(txtFiltroBuscar.getText().toString());
                 }
             }
@@ -268,7 +316,7 @@ public class DatosGenRG extends AppCompatActivity {
         txtCantLote1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
+                if (!hasFocus) {
                     SumaCantidadesLotes();
                 }
             }
@@ -276,7 +324,7 @@ public class DatosGenRG extends AppCompatActivity {
         txtCantLote2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
+                if (!hasFocus) {
                     SumaCantidadesLotes();
                 }
             }
@@ -284,7 +332,7 @@ public class DatosGenRG extends AppCompatActivity {
         txtCantLote3.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
+                if (!hasFocus) {
                     SumaCantidadesLotes();
                 }
             }
@@ -293,15 +341,211 @@ public class DatosGenRG extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-       // super.onBackPressed();
-        if (nIndicadorLayout>1) {
-            nIndicadorLayout = nIndicadorLayout-1;
-            ConfigurarPantalla(nIndicadorLayout,false);
-        }
-        else {
+        // super.onBackPressed();
+        if (nIndicadorLayout > 1) {
+            nIndicadorLayout = nIndicadorLayout - 1;
+            ConfigurarPantalla(nIndicadorLayout, false);
+        } else {
             return;
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_add_fotos, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.AddFotos) {
+            AlertAgregarFotos();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+             Bitmap imageBitmap = (Bitmap) extras.get("data");
+             String codigo = CodigoFoto() ;
+             GuardarFoto(imageBitmap,codigo,"Local");
+             SetAdapterDocsFoto(codigo);
+             Log.i("paso " , ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        }
+        /* if (requestCode == 1) {
+            File imgFile = new  File(pictureImagePath);
+            if(imgFile.exists()){
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                String codigo = CodigoFoto() ;
+                GuardarFoto(myBitmap,codigo,"Local");
+                SetAdapterDocsFoto(codigo);
+
+            }
+        }*/
+    }
+
+    public  void SetAdapterDocsFoto(String sCodFoto){
+        DocsReclamoGarantia d = new DocsReclamoGarantia();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String sUltFecha =    sdf.format(new Date());
+        d.setD_ultimafechamodificacion(sUltFecha);
+        d.setC_ultimousuario(codUser);
+        d.setC_nombre_archivo(sCodFoto);
+        d.setC_ruta_archivo(sCodFoto+".jpg");
+        d.setC_compania(Constans.NroConpania);
+        listaDocsFotos.add(d);
+        if (docsAdapdater==null) {
+
+            docsAdapdater = new DocsReclamoGarantiaAdapter(DatosGenRG.this, R.layout.item_fotos_reclamogar, listaDocsFotos);
+            lvFotosRG.setAdapter(docsAdapdater);
+        }
+        else {
+
+            lvFotosRG.setAdapter(docsAdapdater);
+        }
+
+
+        //.setAdapter(adapter);
+    }
+    public  void GuardarFoto(Bitmap bmp , String sCodFoto, String sTipoSincron){
+
+        String filename =   Constans.Carpeta_foto_RG+sCodFoto+".jpg";
+        File sd = Environment.getExternalStorageDirectory();
+
+        File dest = new File(sd, filename);
+        Log.i("Destino",dest.getPath());
+        Bitmap bitmap = bmp ;
+        try {
+            FileOutputStream out = new FileOutputStream(dest);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void RecuperandoImagen(String filename) {
+        //File filefoto = null;
+        Bitmap bitmap = null;
+
+        File fileexist = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_RG + filename);
+        if (fileexist.exists()){
+            return;
+        }
+
+            AsyncTask<String, String, byte[]> asynckGetFoto;
+            GetFotoRG getFotoTask = new GetFotoRG();
+            byte[] bytes = null;
+            try {
+                asynckGetFoto = getFotoTask.execute(filename,"RG");
+                bytes = (byte[]) asynckGetFoto.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            AsyncTask<byte[], String, String> asyncSaveImglocal;
+            GuardaLocalFotoRGTask guardarImgLocalTask = new GuardaLocalFotoRGTask(filename, bytes);
+
+            try {
+                asyncSaveImglocal = guardarImgLocalTask.execute(bytes);
+                String resSaveImg = (String) asyncSaveImglocal.get();
+                Log.i("result save imag local => ", resSaveImg);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            String filePath2 = Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_RG + filename;
+            bitmap = BitmapFactory.decodeFile(filePath2);
+
+
+        }
+
+
+
+    public  void  GuardarFotoEnServer(ArrayList<DocsReclamoGarantia> listDocsF)
+    {
+        String fileCarp = Environment.getExternalStorageDirectory() +File.separator +Constans.Carpeta_foto_RG;
+        if (listDocsF!=null && listDocsF.size()>0) {
+            for (int i = 0; i < listDocsF.size(); i++) {
+            Log.i("ruta foto rg  save server " , listDocsF.get(i).getC_ruta_archivo());
+                String fileName = listDocsF.get(i).getC_ruta_archivo();
+                String filePath = fileCarp + fileName;
+                File file = new File(filePath);
+
+                byte[] bytes = new byte[(int) file.length()];
+                try {
+                    bytes = FileUtils.readFileToByteArray(file);
+                    AsyncTask asyncTask = null;
+                    GuardarFotoRGTask guardarImagenTask = new GuardarFotoRGTask(bytes, listDocsF.get(i).getC_ruta_archivo(),"RG");
+                    //Log.i("Parmaetro exex GuardarTask ===>", listDet.get(i).getRutaFoto());
+                    asyncTask = guardarImagenTask.execute();
+                    String resp = (String) asyncTask.get();
+                    Log.i("foto server guardada rg ===>", resp);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public  void ActualizarTablaLocalFotos(ArrayList<DocsReclamoGarantia> listFotos){
+
+        ProdMantDataBase  db = new ProdMantDataBase(getApplicationContext());
+        for (int i = 0; i < listFotos.size() ; i++) {
+            DocsReclamoGarantia dc = listFotos.get(i);
+            dc.setN_linea(i+1);
+            long rowdoc =  db.InsertDocFotosReclamoGarantia(dc);
+            Log.i("id row doc" ,String.valueOf(rowdoc));
+        }
+
+    }
+
+    public  void  ActualizarTablaServerFotos(ArrayList<DocsReclamoGarantia> listDocFotos){
+        String ressultDocInsert  = "";
+        for (int i = 0; i < listDocFotos.size() ; i++) {
+            DocsReclamoGarantia d =  listDocFotos.get(i);
+            AsyncTask<String,String,String> asyncTaskDocFoto;
+            InsertDocsReclamoGarTask insertDocsReclamoGarTask = new InsertDocsReclamoGarTask();
+           try {
+               asyncTaskDocFoto  = insertDocsReclamoGarTask.execute(d.getC_compania(),String.valueOf(d.getN_numero()),String.valueOf(i+1),d.getC_descripcion(),d.getC_nombre_archivo(),d.getC_ruta_archivo(),codUser);
+               ressultDocInsert = asyncTaskDocFoto.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    public String CodigoFoto() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return "";
+        }
+        String idImei = telephonyManager.getDeviceId();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String sCodigoFoto =   idImei +"_"+  sdf.format(new Date());
+        return sCodigoFoto ;
     }
 
     public  void  VaLidacionFinal (){
@@ -353,8 +597,6 @@ public class DatosGenRG extends AppCompatActivity {
         else  {
             sMoneda = "E";
         }
-
-
         objReclamo.setC_vendedor(sVendedor);
         objReclamo.setC_reembcliente(sRembolso.substring(0,1));
         objReclamo.setC_monedareembcli(sMoneda);
@@ -363,9 +605,7 @@ public class DatosGenRG extends AppCompatActivity {
         objReclamo.setC_prediagnostico(sObsVendedor);
         objReclamo.setC_usuario(codUser);
         objReclamo.setC_enviado("N");
-
         SeleccionarFormaGuardado();
-
     }
 
 
@@ -395,7 +635,7 @@ public class DatosGenRG extends AppCompatActivity {
 
     public  void  ConfigurarPantalla (int nIndicadorPantlla, boolean validar){
         Log.i("pantalla real", String.valueOf(PantallaReal));
-        if (validar){
+        if (validar && !sOperacion.equals("VER")){
             //Layout 1
             String nroFormato , sFechaIngreso, sTipoReclamo,sCliente,sFiltro,sLoteFiltro,sSerieFiltro,sFactura;
             String sCantidadGnrl  , sEstado,sLoteProd1,sLoteProd2,sLoteProd3,sCant1,sCant2,sCant3;
@@ -483,14 +723,14 @@ public class DatosGenRG extends AppCompatActivity {
                     objReclamo.setC_lote(sLoteFiltro);
                     objReclamo.setC_procedencia(sSerieFiltro);
                     objReclamo.setC_facturaRef(sFactura);
-                    objReclamo.setN_qtyingreso(Integer.valueOf(sCantidadGnrl));
+                    objReclamo.setN_qtyingreso(Double.valueOf(sCantidadGnrl));
                     objReclamo.setC_estado(CodEstado(sEstado));
                     objReclamo.setC_lote1(sLoteProd1);
                     objReclamo.setC_lote2(sLoteProd2);
                     objReclamo.setC_lote3(sLoteProd3);
-                    objReclamo.setN_cantlote1(Integer.valueOf(sCant1));
-                    objReclamo.setN_cantlote2(Integer.valueOf(sCant2));
-                    objReclamo.setN_cantlote3(Integer.valueOf(sCant3));
+                    objReclamo.setN_cantlote1(Double.valueOf(sCant1));
+                    objReclamo.setN_cantlote2(Double.valueOf(sCant2));
+                    objReclamo.setN_cantlote3(Double.valueOf(sCant3));
 
             }
             if(PantallaReal==2) {
@@ -608,6 +848,7 @@ public class DatosGenRG extends AppCompatActivity {
         ly_Datos_Diagnostico.setVisibility(View.GONE);
         setAvance(nIndicadorPantlla);
         PantallaReal=nIndicadorPantlla;
+        btnSiguiente.setEnabled(true);
         switch (nIndicadorPantlla){
             case 1:
                 btnCancelar.setText("Cancelar");
@@ -625,6 +866,9 @@ public class DatosGenRG extends AppCompatActivity {
                 ly_Datos_Pruebas.setVisibility(View.VISIBLE);
                 break;
             case 4:
+                if (sOperacion.equals("VER")){
+                    btnSiguiente.setEnabled(false);
+                }
                 btnCancelar.setText("Volver");
                 btnSiguiente.setText("Finalizar");
                 ly_Datos_Diagnostico.setVisibility(View.VISIBLE);
@@ -637,11 +881,27 @@ public class DatosGenRG extends AppCompatActivity {
 
 
     public  void  GuardarReclamoG(String sTipoGuardado){
+        Log.i("sOpera guardar " , sOperacion );
+        long rowid = 0;
         ProdMantDataBase  db =  new ProdMantDataBase(DatosGenRG.this);
-        long rowid = db.InsertReclamoGarantia(objReclamo);
+        objReclamo.setC_enviado(sTipoGuardado.equals("Local")?"N":"S");
+        if (sOperacion.equals("NEW")){
+            rowid = db.InsertReclamoGarantia(objReclamo);
+        }else if (sOperacion.equals("MOD")){
+            rowid = db.UpdateReclamoGarantia(objReclamo);
+        }
+
         if (rowid>0){
+            if (docsAdapdater!=null) {
+                docsAdapdater.SetNumero((int) rowid);
+                ActualizarTablaLocalFotos(docsAdapdater.AllItems());
+            }
             Log.i("row id reclamog ", String.valueOf(rowid));
             if (sTipoGuardado.equals("Local")) {
+                if (docsAdapdater!=null && docsAdapdater.getCount()>0){
+                    //GuardarFotoEnServer(docsAdapdater.AllItems());
+
+                }
                 FabToast.makeText(DatosGenRG.this, "Se guardo correctamente la informacion", FabToast.LENGTH_LONG, FabToast.SUCCESS, FabToast.POSITION_DEFAULT).show();
                 super.onBackPressed();
             }
@@ -682,6 +942,10 @@ public class DatosGenRG extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (InserRG.equals("OK")){
+                if (docsAdapdater!=null) {
+                    docsAdapdater.SetNumero(Integer.valueOf(sCorrelativoRG));
+                    ActualizarTablaServerFotos(docsAdapdater.AllItems());
+                }
                 String sResultTrasnf="";
                 TransferirReclamoGarantiaTask transferirReclamoGarantiaTask = new TransferirReclamoGarantiaTask();
                 AsyncTask<String,String,String> asyncTaskTransRG ;
@@ -693,7 +957,11 @@ public class DatosGenRG extends AppCompatActivity {
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
+
                 if (sResultTrasnf.equals("OK")){
+                    if (docsAdapdater!=null && docsAdapdater.getCount()>0){
+                        GuardarFotoEnServer(docsAdapdater.AllItems());
+                    }
                     FabToast.makeText(DatosGenRG.this, "Se guardo y sincronizo correctamente la informacion en el servidor.", FabToast.LENGTH_LONG, FabToast.SUCCESS,  FabToast.POSITION_DEFAULT).show();
                     super.onBackPressed();
                 }
@@ -770,16 +1038,16 @@ public class DatosGenRG extends AppCompatActivity {
         String sCantidad1  =  txtCantLote1.getText().toString();
         String sCantidad2  =  txtCantLote2.getText().toString();
         String sCantidad3  =  txtCantLote3.getText().toString();
-        int cant1 =0 , cant2 =0,cant3 =0 , cantGen;
+        Double cant1 =0.0 , cant2 =0.0,cant3 =0.0 , cantGen;
 
         if (!sCantidad1.isEmpty()){
-            cant1 = Integer.valueOf(sCantidad1);
+            cant1 = Double.valueOf(sCantidad1);
         }
         if (!sCantidad2.isEmpty()){
-            cant2 = Integer.valueOf(sCantidad2);
+            cant2 = Double.valueOf(sCantidad2);
         }
         if (!sCantidad3.isEmpty()){
-            cant3 = Integer.valueOf(sCantidad3);
+            cant3 = Double.valueOf(sCantidad3);
         }
         cantGen = cant1+cant2+cant3;
 
@@ -857,7 +1125,7 @@ public class DatosGenRG extends AppCompatActivity {
         ProdMantDataBase db = new ProdMantDataBase(DatosGenRG.this);
         ArrayList<TMAPruebaLab> listPruebas  = db.GetSelectPruebasLab();
         ArrayList<String> spdata = new ArrayList<>();
-        spdata.add("Seleccione Prueba...");
+        spdata.add("Seleccione Prueba....|");
         if (listPruebas.size()>0){
             for (int i = 0; i <  listPruebas.size(); i++) {
                 spdata.add(listPruebas.get(i).getC_codigo() + " | " + listPruebas.get(i).getC_descripcion());
@@ -899,7 +1167,7 @@ public class DatosGenRG extends AppCompatActivity {
         ProdMantDataBase db = new ProdMantDataBase(DatosGenRG.this);
         ArrayList<TMAVendedor> listVend  = db.GetSelectVendedor();
         ArrayList<String> spdata = new ArrayList<>();
-        spdata.add("Seleccione Vendedor...");
+        spdata.add("Seleccione Vendedor.....|");
         if (listVend.size()>0){
             for (int i = 0; i <  listVend.size(); i++) {
                 spdata.add(listVend.get(i).getC_vendedor() + " | " + listVend.get(i).getC_nombres());
@@ -917,7 +1185,7 @@ public class DatosGenRG extends AppCompatActivity {
         ProdMantDataBase db = new ProdMantDataBase(DatosGenRG.this);
         ArrayList<TMAFalla> listFallas  = db.GetSelectFallas();
         ArrayList<String> spdata = new ArrayList<>();
-        spdata.add("Seleccione Falla...");
+        spdata.add("Seleccione Falla.......|");
         if (listFallas.size()>0){
             for (int i = 0; i <  listFallas.size(); i++) {
                 spdata.add(listFallas.get(i).getC_codigo() + " | " + listFallas.get(i).getC_descripcion());
@@ -955,7 +1223,7 @@ public class DatosGenRG extends AppCompatActivity {
         ProdMantDataBase db = new ProdMantDataBase(DatosGenRG.this);
         ArrayList<TMAMarca> listMarca =  db.GetSelectMarca();
         ArrayList<String> spdata = new ArrayList<>();
-        spdata.add("Seleccione Marca...");
+        spdata.add("Seleccione Marca....|");
         if (listMarca.size()>0){
             for (int i = 0; i <  listMarca.size(); i++) {
                 spdata.add(listMarca.get(i).getC_marca()+ " | " +listMarca.get(i).getC_descripcion());
@@ -971,7 +1239,7 @@ public class DatosGenRG extends AppCompatActivity {
         ProdMantDataBase db = new ProdMantDataBase(DatosGenRG.this);
         ArrayList<TMAModelo> listModelo =  db.GetSelectModelo(sMarca);
         ArrayList<String> spdata = new ArrayList<>();
-        spdata.add("Seleccione Modelo...");
+        spdata.add("Seleccione Modelo....|");
         if (listModelo.size()>0){
             for (int i = 0; i <  listModelo.size(); i++) {
                 spdata.add(listModelo.get(i).getC_modelo()+ " | " +listModelo.get(i).getC_descripcion());
@@ -1019,6 +1287,70 @@ public class DatosGenRG extends AppCompatActivity {
         dialog.show();
     }
 
+    public void AlertAgregarFotos(){
+        final Dialog dialog  = new Dialog(DatosGenRG.this);
+        dialog.setContentView(R.layout.dialog_list_fotos_rg);
+        dialog.setTitle("Buscar Cliente");
+        Window window = dialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Button btnAddFoto = dialog.findViewById(R.id.btnAddFotoRG);
+        Button btnEliminar = dialog.findViewById(R.id.btnEliminarFotoRG);
+        Button btnAceptarFotos = dialog.findViewById(R.id.btnAceptarFotoRG);
+        frameViewFotos = dialog.findViewById(R.id.lyFramViewFoto);
+        Button btnCerrarFoto = dialog.findViewById(R.id.btnCloseViewFoto);
+         imgviewFoto = dialog.findViewById(R.id.ImageViewFoto);
+        lvFotosRG  = dialog.findViewById(R.id.lvFotosGuardadasRG);
+        lvFotosRG.setItemsCanFocus(true);
+        if (docsAdapdater  != null && docsAdapdater.getCount()>0){
+            lvFotosRG.setAdapter(docsAdapdater);
+        }
+
+        //lvBuscarClientes.setAdapter(getAdapterBuscarCliente("%"));
+        btnAddFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+                //openBackCamera();
+            }
+        });
+
+        btnEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (docsAdapdater!=null && docsAdapdater.getCount()>0){
+                    docsAdapdater.data.remove(docsAdapdater.data.size()-1);
+                    docsAdapdater.notifyDataSetChanged();
+                }
+            }
+        });
+
+        btnAceptarFotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
+    }
+
+    private void openBackCamera() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = timeStamp + ".jpg";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        pictureImagePath = storageDir.getAbsolutePath() + "/" + imageFileName;
+        File file = new File(pictureImagePath);
+        Uri outputFileUri = Uri.fromFile(file);
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        startActivityForResult(cameraIntent, 1);
+    }
+
     public ArrayAdapter<String> getAdapterBuscarCliente(String sFilterText){
         ProdMantDataBase db = new ProdMantDataBase(DatosGenRG.this);
         ArrayList<TMACliente> clientes = db.GetSelectClientes(sFilterText);
@@ -1063,6 +1395,67 @@ public class DatosGenRG extends AppCompatActivity {
                 }).show();
     }
 
+    public  void  SetControlsValues(ReclamoGarantia objR){
+        ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+        txtNroFormato.setText(String.valueOf(objR.getN_formato()));
+        txtFechaRegistro.setText(FormatearFecha(objR.getD_fechaformato().substring(0,10),"yyyy-MM-dd","dd/MM/yyyy"));
+        sFechaSelec = objR.getD_fechaformato().substring(0,10);
+        txtClienteCodNom.setText(String.valueOf(objR.getN_cliente())+ " | " + db.GetNombreClienteXCod(String.valueOf(objR.getN_cliente())));
+        spTipoRG.setSelection(getIndexSpiner(spTipoRG,objR.getC_tiporeclamo()));
+        txtFiltroBuscar.setText(objR.getC_codproducto());
+        txtLoteF.setText(objR.getC_lote());
+        txtSerieF.setText(objR.getC_procedencia());
+        txtFacturaRG.setText(objR.getC_facturaRef());
+        txtCantGen.setText(String.valueOf(objR.getN_qtyingreso()));
+        txtLote1.setText(objR.getC_lote1());
+        txtLote2.setText(objR.getC_lote2());
+        txtLote3.setText(objR.getC_lote3());
+        txtCantLote1.setText(String.valueOf(objR.getN_cantlote1()));
+        txtCantLote2.setText(String.valueOf(objR.getN_cantlote2()));
+        txtCantLote3.setText(String.valueOf(objR.getN_cantlote3()));
+        spMarca.setSelection(getIndexSpiner(spMarca,objR.getC_codmarca()),false);
+        LoadSpinerModeo(objR.getC_codmarca());
+        spModelo.setSelection(getIndexSpiner(spModelo,objR.getC_codmodelo()));
+        txtAnio.setText(String.valueOf(objR.getN_pyear()));
+        txtPlaca.setText(objR.getC_placavehic());
+        txtTiempoUso.setText(objR.getC_tiempouso());
+        txtObsCliente.setText(objR.getC_obscliente());
+        spPrueba1.setSelection(getIndexSpiner(spPrueba1,objR.getC_pruebalab1()));
+        spPrueba2.setSelection(getIndexSpiner(spPrueba2,objR.getC_pruebalab2()));
+        spPrueba3.setSelection(getIndexSpiner(spPrueba3,objR.getC_pruebalab3()));
+        spFalla1.setSelection(getIndexSpiner(spFalla1,objR.getC_ensayo01().trim()));
+        spFalla2.setSelection(getIndexSpiner(spFalla2,objR.getC_ensayo02().trim()));
+        spFalla3.setSelection(getIndexSpiner(spFalla3,objR.getC_ensayo03().trim()));
+        spFalla4.setSelection(getIndexSpiner(spFalla4,objR.getC_ensayo04().trim()));
+        spFalla5.setSelection(getIndexSpiner(spFalla5,objR.getC_ensayo05().trim()));
+        spVendedorDiag.setSelection(getIndexSpiner(spVendedorDiag,objR.getC_vendedor()));
+        txtObsVendedor.setText(objR.getC_prediagnostico());
+        spReembolso.setSelection(objR.getC_reembcliente().equals("S")?1:0);
+        if (objR.getC_reembcliente().equals("S")){
+            spMonedaRemb.setSelection(objR.getC_monedareembcli().equals("L")?1:2);
+            txtMontoRemb.setText(String.valueOf(objR.getN_montoreembcli()));
+        }
+        chkNecVisita.setChecked(objR.getC_reembcliente().equals("S")?true:false);
+        switch (objR.getC_estado()){
+
+            case "C":
+                txtEstado.setText("Ingresado");
+                break;
+            case  "P":
+                txtEstado.setText("Pendiente");
+                break;
+            case  "R":
+                txtEstado.setText("En Proceso");
+                break;
+            case  "T":
+                txtEstado.setText("Terminado");
+                break;
+            case  "A":
+                txtEstado.setText("Anulado");
+                break;
+        }
+    }
+
     public void   ShowMessageWindow (String sMessage){
         new PrettyDialog(this)
                 .setTitle("Aviso")
@@ -1070,6 +1463,197 @@ public class DatosGenRG extends AppCompatActivity {
                 .setIconTint( R.color.WarningColor)
                 .show();
     }
+
+    public  String FormatearFecha(String sFecha , String FormatoEntrada , String FomarmatoSalida){
+        String result = "" ;
+        SimpleDateFormat parseador = new SimpleDateFormat(FormatoEntrada);
+        SimpleDateFormat formateador = new SimpleDateFormat(FomarmatoSalida);
+        Date date = null;
+        try {
+            date = parseador.parse(sFecha);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+          result =(formateador.format(date));
+        return result;
+    }
+
+    private int getIndexSpiner(Spinner spinner, String Cod)
+    {
+        Log.i("Cod Titpo RG" , Cod);
+        int index = 0;
+
+        for (int i=0;i<spinner.getCount();i++){
+            String val = spinner.getItemAtPosition(i).toString() ;
+            val = val.substring(0,val.indexOf("|")-1);
+            Log.i("val sp " , val );
+            if (val.equals(Cod)){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    public  DocsReclamoGarantiaAdapter  FillAdaptadorDocs(String sTipoOperacion,String sComp,String sCorrelativo){
+        Log.i("operaciones  >>" , sTipoOperacion +" | " + sComp + " | "+ sCorrelativo );
+        ArrayList<DocsReclamoGarantia> listaFotos =  new ArrayList<>();
+        if (sTipoOperacion.equals("VER")){
+            AsyncTask<String,String,ArrayList<DocsReclamoGarantia>> asyncTaskListaFotos;
+            GetListaDatosFotosRG  getListaDatosFotosRG = new GetListaDatosFotosRG();
+            try {
+                asyncTaskListaFotos = getListaDatosFotosRG.execute(sComp,sCorrelativo);
+                listaFotos  = asyncTaskListaFotos.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            if (listaFotos!=null && listaFotos.size()>0){
+                for (int i = 0; i <  listaFotos.size(); i++) {
+                    RecuperandoImagen(listaFotos.get(i).getC_ruta_archivo());
+                }
+            }
+
+        }else  if (sTipoOperacion.equals("MOD")){
+
+            ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+            listaFotos = db.GetListDocsRG(sCorrelativo);
+
+        }
+
+
+        docsAdapdater = new DocsReclamoGarantiaAdapter(DatosGenRG.this, R.layout.item_fotos_reclamogar, listaFotos);
+//
+        return  docsAdapdater;
+
+    }
+
+    public class DocsReclamoGarantiaAdapter extends ArrayAdapter<DocsReclamoGarantia> {
+        private Context context ;
+        private ArrayList<DocsReclamoGarantia> data ;
+        private int layoutResourceId;
+        HashMap<Integer,String> hashDescrip;
+
+
+        public DocsReclamoGarantiaAdapter(@NonNull Context context, int resource, ArrayList<DocsReclamoGarantia> data) {
+            super(context,resource,data);
+            this.context = context;
+            this.data = data;
+            this.layoutResourceId = resource;
+            hashDescrip = new HashMap<>();
+        }
+
+
+        @NonNull
+        @Override
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+            ViewHolder viewHolder ;
+            DocsReclamoGarantia doc = data.get(position);
+            if (convertView == null){
+                LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+                convertView = inflater.inflate(layoutResourceId,parent,false);
+                viewHolder = new ViewHolder();
+                viewHolder.txtDescripcion = convertView.findViewById(R.id.txtDescripFotoRG);
+                viewHolder.lblNombreFoto = convertView.findViewById(R.id.lblNombrFotoRG);
+                viewHolder.btnVer = convertView.findViewById(R.id.btnVerFotoItemRG);
+                convertView.setTag(viewHolder);
+            }
+            else {
+                viewHolder = (ViewHolder)convertView.getTag();
+            }
+
+//            Log.i("get descripcion foto", data.get(position).getC_nombre_archivo());
+            viewHolder.lblNombreFoto.setText(doc.getC_nombre_archivo());
+            viewHolder.txtDescripcion.setText(data.get(position).getC_descripcion());
+
+            viewHolder.txtDescripcion.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        EditText  edt = (EditText)v;
+                        hashDescrip.put(position,((EditText) v).getText().toString());
+                        data.get(position).setC_descripcion(((EditText) v).getText().toString());
+                    }
+                }
+            });
+
+            viewHolder.txtDescripcion.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // data.get(position).setC_descripcion(s.toString());
+                    hashDescrip.put(position,s.toString());
+                }
+            });
+
+            viewHolder.btnVer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    VisorImagen(data.get(position).getC_ruta_archivo());
+                    // lvFotosRG.setVisibility(View.GONE);
+                }
+            });
+
+            return  convertView;
+
+        }
+
+        public ArrayList<DocsReclamoGarantia> AllItems () {
+            return data ;
+        }
+
+        public  void SetNumero(int n){
+            for (int i = 0; i < data.size() ; i++) {
+                data.get(i).setN_numero(n);
+            }
+        }
+    }
+
+    public static class ViewHolder{
+        TextView lblNombreFoto;
+        EditText txtDescripcion;
+        Button btnVer ;
+    }
+
+    public  void  VisorImagen (String path){
+
+        String filePath2 = Environment.getExternalStorageDirectory() + File.separator + Constans.Carpeta_foto_RG+ path;
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath2);
+        // frameViewFotos.setVisibility(View.VISIBLE);
+        //imgviewFoto.setImageBitmap(bitmap);
+        Dialog builder = new Dialog(this);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+
+            }
+        });
+        ImageView imageView = new ImageView(this);
+        //LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(400,400);
+        // imageView.setLayoutParams(parms);
+        imageView.setImageBitmap(bitmap);
+        builder.addContentView(imageView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
+    }
+
+
 
 
 

@@ -1,0 +1,518 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:mask="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_silver_2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Layout General !-->
+        <LinearLayout
+            android:id="@+id/layOtrosCP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Revisado.Por" />
+
+                <EditText
+                    android:id="@+id/txtRevisadoPorCP"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
+                    android:text="F.Investig" />
+
+                <EditText
+                    android:id="@+id/txtFechaRevisadoCP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:clickable="true"
+                    android:ems="5"
+                    android:focusableInTouchMode="false"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Observ. Rev.             " />
+
+                    <CheckBox
+                        android:id="@+id/chkFinRevisionCP"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fin.Revision:" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/txtObservacionRevCP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_span="2"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="3" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:text="Accion Rev" />
+
+                <EditText
+                    android:id="@+id/txtAccionRevisionCP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_span="2"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cerrado.Por" />
+
+                <EditText
+                    android:id="@+id/txtCerradoPorCP"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
+                    android:text="F.Cierre" />
+
+                <EditText
+                    android:id="@+id/txtFechaCierreCP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:clickable="true"
+                    android:ems="5"
+                    android:focusableInTouchMode="false"
+                    android:inputType="textPersonName" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:text="Obs.Cierre" />
+
+                <EditText
+                    android:id="@+id/txtObservacionCierreCP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_span="2"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="3" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layGeneralCP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nº Capac:" />
+
+                <EditText
+                    android:id="@+id/txtNroCapacitacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:hint="N° Capac"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="  F.Registro " />
+
+                <EditText
+                    android:id="@+id/txtFechaRegCP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:clickable="true"
+                    android:ems="5"
+                    android:enabled="true"
+                    android:focusableInTouchMode="false"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cliente" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75sp">
+
+                    <EditText
+                        android:id="@+id/txtBSClienteCP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_border"
+                        android:ellipsize="end"
+                        android:ems="14"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColorHint="@android:color/black"
+                        android:textSize="18sp"></EditText>
+
+                    <ImageView
+                        android:id="@+id/btnBuscarClienteCP"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/txtBSClienteCP"
+                        android:layout_alignRight="@+id/txtBSClienteCP"
+                        android:layout_alignTop="@+id/txtBSClienteCP"
+                        app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+                </RelativeLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tema Gen" />
+
+                <Spinner
+                    android:id="@+id/spTemaGeneralCP"
+                    android:layout_width="match_parent"
+                    android:layout_height="33sp"
+                    android:layout_marginLeft="75sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Det. Tema" />
+
+                <EditText
+                    android:id="@+id/txtDetalleTema"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75sp"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="1"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lugar" />
+
+                <Spinner
+                    android:id="@+id/spLugarCP"
+                    android:layout_width="match_parent"
+                    android:layout_height="33sp"
+                    android:layout_marginLeft="75sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Direcc" />
+
+                <Spinner
+                    android:id="@+id/spDireccionCli"
+                    android:layout_width="match_parent"
+                    android:layout_height="33sp"
+                    android:layout_marginLeft="75sp"
+                    android:background="@drawable/spiner_style"
+                    android:spinnerMode="dialog" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Observac" />
+
+                <EditText
+                    android:id="@+id/txtObservacionCP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75sp"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="1"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fec.Prob     " />
+
+                <EditText
+                    android:id="@+id/txtFechaProbCP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:focusableInTouchMode="false"
+                    android:clickable="true"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4sp"
+                    android:layout_weight="1"
+                    android:text="HR:" />
+
+                <EditText
+                    android:id="@+id/txtHoraProbCP"
+                    android:layout_width="70sp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:focusableInTouchMode="false"
+                    android:clickable="true"
+                    android:inputType="textPersonName" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="N°Person" />
+
+                <EditText
+                    android:id="@+id/txtNumeroPersonaCP"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75sp"
+                    android:background="@drawable/edittext_round_border"
+                    android:ems="5"
+                    android:inputType="number" />
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <!-- Layout Otros !-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="8sp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/lblAvance1CP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:background="@color/colorAccent" />
+
+            <TextView
+                android:id="@+id/lblAvance2CP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:background="#b59e9e9e" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.01"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancelRegCP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/shape_silver"
+                android:text="Cancelar" />
+
+            <Button
+                android:id="@+id/btnSigDatosCP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/boton_shape_green"
+                android:text="Siguiente" />
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
+
+
+

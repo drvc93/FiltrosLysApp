@@ -40,6 +40,8 @@ public class Constans {
     public static  int layout_success = R.drawable.lienar_layout_border;
     public static  int icon_succes = R.drawable.ic_done_24dp;
     public static  String Carpeta_foto= "LysConfig/Fotos/";
+    public static  String Carpeta_foto_RG= "LysConfig/FotosRG/";
+    public static  String Carpeta_foto_QJ= "LysConfig/FotosQJ/";
     public static final String NroConpania = "00100000";
     public static  final  String FolderConfig ="appConfig";
     public static  final  String IPDefault  = "100.100.100.57:8080" ;//"190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";

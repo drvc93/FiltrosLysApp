@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_yellow"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView138"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Descripcion"
+                android:textColor="@color/pdlg_color_black" />
+
+            <EditText
+                android:id="@+id/txtDescripFotoRG"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75sp"
+                android:layout_marginRight="55sp"
+                android:background="@drawable/edittext_round_border"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp" />
+
+            <Button
+                android:id="@+id/btnVerFotoItemRG"
+                android:layout_width="50sp"
+                android:layout_height="35sp"
+                android:layout_gravity="right"
+                android:background="@drawable/boton_rojo"
+                android:drawableLeft="@android:drawable/ic_menu_gallery" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView136"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre "
+                android:textColor="@color/pdlg_color_black" />
+
+            <TextView
+                android:id="@+id/lblNombrFotoRG"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75sp"
+                android:text="TextView"
+                android:textColor="@color/pdlg_color_black" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

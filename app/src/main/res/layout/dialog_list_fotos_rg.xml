@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAddFotoRG"
+                android:layout_width="20dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/botones_items_detalle"
+                android:drawableStart="@drawable/icn_add_foto32"
+                android:text="Agregar foto" />
+
+            <Button
+                android:id="@+id/btnEliminarFotoRG"
+                android:layout_width="20dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/botones_items_detalle"
+                android:drawableStart="@drawable/ic_delete_32"
+                android:text="Eliminar" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/lyFramViewFoto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/btnCloseViewFoto"
+                android:layout_width="60sp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@drawable/boton_blanco"
+                android:drawableLeft="?android:attr/homeAsUpIndicator" />
+
+            <ImageView
+                android:id="@+id/ImageViewFoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/bg_silver" />
+        </FrameLayout>
+
+        <ListView
+            android:id="@+id/lvFotosGuardadasRG"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:divider="@color/pdlg_color_gray"
+            android:descendantFocusability="beforeDescendants"
+            android:windowSoftInputMode="adjustPan"
+            android:dividerHeight="1dp"
+            android:visibility="visible">
+
+        </ListView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.01"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAceptarFotoRG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:background="@drawable/boton_shape_green"
+                android:text="Aceptar" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
