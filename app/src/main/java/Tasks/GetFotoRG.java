@@ -49,7 +49,7 @@ public class GetFotoRG extends AsyncTask<String,String,byte[]> {
 
 
         } catch (Exception e) {
-            Log.i("error get foto", e.getMessage());
+            Log.i("error get foto  rg", e.getMessage());
             //result = e.getMessage();
         }
 

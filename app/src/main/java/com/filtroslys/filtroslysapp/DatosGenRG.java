@@ -29,6 +29,7 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -669,12 +670,12 @@ public class DatosGenRG extends AppCompatActivity {
                 Log.i("tipo reclamo" , sTipoReclamo);
                 Log.i("cliente" , sCliente);
                 Log.i("perido lote1"  ,sLoteProd1);
-                    if (nroFormato.isEmpty()) {
+                    if (TextUtils.isEmpty(nroFormato)) {
                         ShowMessageWindow("Debe ingresar número  de formato.");
                         nIndicadorLayout = nIndicadorLayout -1;
                         return;
                     }
-                    else if (sFechaIngreso.isEmpty()){
+                    else if (TextUtils.isEmpty(sFechaIngreso)){
                         ShowMessageWindow("Debe registrar la fecha de ingreso.");
                         nIndicadorLayout = nIndicadorLayout -1;
                         return;
@@ -1521,6 +1522,10 @@ public class DatosGenRG extends AppCompatActivity {
             ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
             listaFotos = db.GetListDocsRG(sCorrelativo);
 
+        }
+
+        if (listaFotos == null){
+            listaFotos =  new ArrayList<>();
         }
 
 

@@ -613,6 +613,18 @@ public class ConstasDB {
                     "c_ultimousuario TEXT, "+
                     "d_ultimafechamodificacion TEXT); ";
 
+    public static final String MCO_DOCS_SUGERENCIA_NAME = "MCO_DOCS_SUEGERENCIA";
+    public static final String MCO_DOCS_SUGERENCIA_SQL =
+            "CREATE TABLE "+ MCO_DOCS_SUGERENCIA_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT, "+
+                    "n_sugerencia BIGINT, " +
+                    "n_linea BIGINT, " +
+                    "c_descripcion TEXT, "+
+                    "c_nombre_archivo TEXT, "+
+                    "c_ruta_archivo TEXT, "+
+                    "c_ultimousuario TEXT, "+
+                    "d_ultimafechamodificacion TEXT); ";
 
 }
 

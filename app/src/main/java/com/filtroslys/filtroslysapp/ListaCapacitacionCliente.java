@@ -99,9 +99,11 @@ public class ListaCapacitacionCliente extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (chkOnline.isChecked()){
+                    sFlagOnOff="ON";
                     LoadOnLineLvXCapacitacion();
                 }
                 else {
+                    sFlagOnOff="OFF";
                     LoadOffLineLvCapacitacion();
                 }
             }

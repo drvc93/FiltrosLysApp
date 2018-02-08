@@ -69,6 +69,7 @@ public class GetListCapacitacion extends AsyncTask<String,String,ArrayList<Capac
                 oEnt.setD_fechaCE(ic.getPrimitivePropertyAsString("d_fechaCE"));
                 oEnt.setC_observacionCE(ic.getPrimitivePropertyAsString("c_observacionCE"));
                 oEnt.setC_observacion(ic.getPrimitivePropertyAsString("c_observacion"));
+                oEnt.setC_enviado("S");
                 LstData.add(oEnt);
             }
             if (resSoap.getPropertyCount() > 0) {

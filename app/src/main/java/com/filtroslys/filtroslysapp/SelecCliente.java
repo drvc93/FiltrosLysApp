@@ -70,7 +70,8 @@ public class SelecCliente extends AppCompatActivity {
     }
 
     public void SelecioanrOpcion(final String sCliente) {
-        final CharSequence[] items = { "Generar Reclamo Garanria", "Generar Queja", "Generar Sugerencia", "Generar Sol. Capacitacion" };
+        final CharSequence[] items = { "Generar Reclamo Garanria", "Generar Queja", "Generar Sugerencia", "Generar Sol. Capacitacion",
+                                        "Generar Sol. Compra Especial","Generar Sol. Mat.Public","Generar Consulta Tecnica"};
         AlertDialog.Builder builder = new AlertDialog.Builder(SelecCliente.this);
         builder.setTitle("Seleccione una opción");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -93,6 +94,7 @@ public class SelecCliente extends AppCompatActivity {
                         intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
                         intent.putExtra("Operacion","NEW");
                         intent.putExtra("Cliente",sCliente);
+                        intent.putExtra("TipoInfo","SU");
                         startActivity(intent);
                         break;
                     case 3:
@@ -101,7 +103,24 @@ public class SelecCliente extends AppCompatActivity {
                         intent.putExtra("Cliente",sCliente);
                         startActivity(intent);
                         break;
-
+                    case 4:
+                        intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
+                        intent.putExtra("Operacion","NEW");
+                        intent.putExtra("Cliente",sCliente);
+                        intent.putExtra("TipoInfo","SE");
+                        startActivity(intent);
+                    case 5:
+                        intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
+                        intent.putExtra("Operacion","NEW");
+                        intent.putExtra("Cliente",sCliente);
+                        intent.putExtra("TipoInfo","MP");
+                        startActivity(intent);
+                    case 6:
+                        intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
+                        intent.putExtra("Operacion","NEW");
+                        intent.putExtra("Cliente",sCliente);
+                        intent.putExtra("TipoInfo","CT");
+                        startActivity(intent);
 
                 }
                 dialog.dismiss();

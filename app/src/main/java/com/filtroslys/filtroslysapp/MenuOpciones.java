@@ -462,7 +462,7 @@ public class MenuOpciones extends AppCompatActivity {
         AsyncTask<String,String,ArrayList<MenuDB>> asyncTask;
         ArrayList<MenuDB> menuDBs= new ArrayList<>();
         ProdMantDataBase db =  new ProdMantDataBase(MenuOpciones.this);
-        db.deleteTables();
+        //db.deleteTables();
 
         try {
             asyncTask = getMenuDataTask.execute();

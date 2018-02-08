@@ -1,21 +1,17 @@
 package Tasks;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
-
 import java.util.ArrayList;
-
 import DataBase.AccesosDB;
 import DataBase.ConstasDB;
 import DataBase.DBHelper;
 import DataBase.MenuDB;
 import DataBase.ProdMantDataBase;
 import DataBase.UsuarioDB;
-import Util.Constans;
+import spencerstudios.com.fab_toast.FabToast;
 
 /**
  * Created by dvillanueva on 08/08/2016.
@@ -93,7 +89,8 @@ public class SincronizarAccesosTask  extends AsyncTask<Void,Void,Void>{
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        Toast.makeText(context, "Sincronización correcta.", Toast.LENGTH_SHORT).show();
-       progressDialog.dismiss();
+
+        FabToast.makeText(context, "Se sincronizo correctamente.", FabToast.LENGTH_LONG, FabToast.SUCCESS,  FabToast.POSITION_DEFAULT).show();
+        progressDialog.dismiss();
     }
 }

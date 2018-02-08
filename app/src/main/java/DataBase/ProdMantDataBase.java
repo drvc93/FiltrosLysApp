@@ -271,11 +271,67 @@ public class ProdMantDataBase {
 
     }
     public  Long InsertTMACliente (TMACliente tmaCli){
+
+
         this.OpenWritableDB();
         long rowid = db.insert(ConstasDB.TMA_CLIENTES_NAME, null, TMAClientesContentValues(tmaCli));
         this.CloseDB();
         return rowid;
     }
+
+    public void InsertMasivoClientes(ArrayList<TMACliente> list) {
+        Log.i("INICIO INSERT MASIVO","  CLIENTES");
+        SQLiteDatabase db =dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            for (int i = 0; i <  list.size(); i++) {
+                values = TMAClientesContentValues(list.get(i));
+                db.insert(ConstasDB.TMA_CLIENTES_NAME , null , values);
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+            Log.i("FIN INSERT MASIVO","  CLIENTES");
+        }
+    }
+
+    public  void  InsertMasiviDireccionCliente (ArrayList<TMADireccionCli> list){
+        Log.i("INICIO INSERT MASIVO","  Direccion Cli");
+        SQLiteDatabase db =dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            for (int i = 0; i <  list.size(); i++) {
+                values = TMADireccionCliContentValues(list.get(i));
+                db.insert(ConstasDB.TMA_DIRECCIONCLI_NAME , null , values);
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+            Log.i("FIN INSERT MASIVO"," DIRECCION  CLIENTES");
+        }
+    }
+
+    public  void  InsertMasivoModelos(ArrayList<TMAModelo> list){
+        SQLiteDatabase db =dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            for (int i = 0; i <  list.size(); i++) {
+                values = TMAModeloContentValues(list.get(i));
+                db.insert(ConstasDB.TMA_MODELO_NAME , null , values);
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+
 
     public  ContentValues TMAFallasContentValues(TMAFalla f){
         ContentValues contentValues = new ContentValues();
@@ -2073,7 +2129,7 @@ public class ProdMantDataBase {
         return res;
     }
 
-    public void deleteTables() {
+    /* public void deleteTables() {
 
         this.OpenWritableDB();
         db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MENUS_NAME);
@@ -2091,6 +2147,6 @@ public class ProdMantDataBase {
         db.execSQL("DELETE FROM " + ConstasDB.TMA_VENDEDOR_NAME);
         db.execSQL("DELETE FROM " + ConstasDB.MCO_RECLAMO_GARANTIA_NAME);
         this.CloseDB();
-    }
+    }*/
 
 }

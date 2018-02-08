@@ -32,6 +32,7 @@ import Model.TMATipoCalificacionQueja;
 import Model.TMATipoReclamo;
 import Model.TMATipoSugerencia;
 import Model.TMAVendedor;
+import spencerstudios.com.fab_toast.FabToast;
 
 /**
  * Created by dvillanueva on 08/08/2016.
@@ -165,9 +166,10 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         }
 
         if (listClientes!= null && listClientes.size()>0){
-            for (int i = 0; i < listClientes.size() ; i++) {
+            /* for (int i = 0; i < listClientes.size() ; i++) {
                 prodMantDataBase.InsertTMACliente(listClientes.get(i));
-            }
+            }*/
+            prodMantDataBase.InsertMasivoClientes(listClientes);
 
         }
 
@@ -184,10 +186,7 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         }
 
         if (listModelo != null && listModelo.size()>0){
-            for (int i = 0; i  < listModelo.size() ; i++) {
-                prodMantDataBase.InsertTMAModelo(listModelo.get(i));
-            }
-
+             prodMantDataBase.InsertMasivoModelos(listModelo);
         }
 
         if ( listPruebaLab != null && listPruebaLab.size()>0){
@@ -248,9 +247,7 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         }
 
         if (listDirecCli!=null && listDirecCli.size()>0){
-            for (int i = 0; i < listDirecCli.size() ; i++) {
-                prodMantDataBase.InsertTMADireccionCli(listDirecCli.get(i));
-            }
+            prodMantDataBase.InsertMasiviDireccionCliente(listDirecCli);
         }
         return null;
     }
@@ -259,7 +256,7 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         progressDialog.dismiss();
-        Toast.makeText(context, "Sincronizacioón terminada", Toast.LENGTH_SHORT).show();
+        FabToast.makeText(context, "Se sincronizo correctamente.", FabToast.LENGTH_LONG, FabToast.SUCCESS,  FabToast.POSITION_DEFAULT).show();
     }
 
     @Override

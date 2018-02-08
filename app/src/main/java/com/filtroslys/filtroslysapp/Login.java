@@ -80,13 +80,14 @@ public class Login extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setTitle("Login");
-
-       /// isStoragePermissionGranted();
+        CrearCarpetasFotos();
+       isStoragePermissionGranted();
 
          preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
 
@@ -116,7 +117,7 @@ public class Login extends AppCompatActivity {
         } else{
 
         }
-        copyFile();
+       copyFile();
       //  ShowDialogAlert();
 
         // instanciando controles
@@ -338,7 +339,7 @@ public class Login extends AppCompatActivity {
         AsyncTask<String,String,ArrayList<MenuDB>> asyncTask;
         ArrayList<MenuDB> menuDBs= new ArrayList<MenuDB>();
         ProdMantDataBase db =  new ProdMantDataBase(Login.this);
-        db.deleteTables();
+        //db.deleteTables();
 
         try {
             asyncTask = getMenuDataTask.execute();
@@ -557,6 +558,18 @@ public class Login extends AppCompatActivity {
             //Log.v(TAG,"Permission is granted");
 
             return true;
+        }
+    }
+
+    public  void  CrearCarpetasFotos (){
+        File folderRG = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_RG );
+        if (!folderRG.exists()) {
+            folderRG.mkdirs();
+        }
+
+        File folderQJ = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_QJ );
+        if (!folderQJ.exists()) {
+            folderQJ.mkdirs();
         }
     }
 
