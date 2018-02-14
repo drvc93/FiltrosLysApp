@@ -78,6 +78,7 @@ public class GetListQueja extends AsyncTask<String,String,ArrayList<QuejaCliente
                 oEnt.setC_notificacion(ic.getPrimitivePropertyAsString("c_notificacion"));
                 oEnt.setD_fechareg(ic.getPrimitivePropertyAsString("d_fechareg"));
                 oEnt.setC_observacionescierre(ic.getPrimitivePropertyAsString("c_observacionescierre"));
+                oEnt.setC_estadofin(ic.getPrimitivePropertyAsString("c_estadofin"));
                 oEnt.setC_enviado("S");
                 LstData.add(oEnt);
             }

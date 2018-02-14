@@ -16,8 +16,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import Model.CapacitacionCliente;
+import Model.DocsCapacitacion;
 import Model.DocsQuejaCliente;
 import Model.DocsReclamoGarantia;
+import Model.DocsSugerencia;
 import Model.InspeccionGenCabecera;
 import Model.InspeccionGenDetalle;
 import Model.InspeccionMaqCabecera;
@@ -1511,6 +1513,7 @@ public class ProdMantDataBase {
             oEnt.setC_estado(cursor.getString(cursor.getColumnIndex("c_estado")));
             oEnt.setC_usuario(cursor.getString(cursor.getColumnIndex("c_usuario")));
             oEnt.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+            oEnt.setC_estadofin("PI");
             result.add(oEnt);
         }
         return result;
@@ -2088,15 +2091,59 @@ public class ProdMantDataBase {
         return oData;
     }
 
-    /*public String GetNroQuejaXCorrelativo( String correlativo){
-        String result = "";
-        String query = "select * from MCO_DOCS_QUEJACLIENTE WHERE _id = "+correlativo;
+    ////*** DOCS SUGERENCIA
+    public  ContentValues DocsSugerenciaContentValues (DocsSugerencia doc){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania",doc.getC_compania());
+        contentValues.put("n_sugerencia",doc.getN_sugerencia());
+        contentValues.put("n_linea",doc.getN_linea());
+        contentValues.put("c_descripcion" ,  doc.getC_descripcion());
+        contentValues.put("c_nombre_archivo", doc.getC_nombre_archivo());
+        contentValues.put("c_ruta_archivo",doc.getC_ruta_archivo());
+        contentValues.put("c_ultimousuario",doc.getC_ultimousuario());
+        contentValues.put("d_ultimafechamodificacion",doc.getD_ultimafechamodificacion());
+        return  contentValues ;
+    }
+
+    public  long InsertDocsSuegerencia (DocsSugerencia doc){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MCO_DOCS_SUGERENCIA_NAME, null, DocsSugerenciaContentValues(doc));
+        this.CloseDB();
+        return rowid;
+    }
+
+    //  docs capacitacion
+    public  ContentValues DocsCapacitacionContentValues (DocsCapacitacion doc){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania",doc.getC_compania());
+        contentValues.put("n_solicitud",doc.getN_solicitud());
+        contentValues.put("n_linea",doc.getN_linea());
+        contentValues.put("c_descripcion" ,  doc.getC_descripcion());
+        contentValues.put("c_nombre_archivo", doc.getC_nombre_archivo());
+        contentValues.put("c_ruta_archivo",doc.getC_ruta_archivo());
+        contentValues.put("c_ultimousuario",doc.getC_ultimousuario());
+        contentValues.put("d_ultimafechamodificacion",doc.getD_ultimafechamodificacion());
+        return  contentValues ;
+    }
+
+    public  long InsertDocsCapacitacion (DocsCapacitacion doc){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MCO_DOCS_CAPACITACION_NAME, null, DocsCapacitacionContentValues(doc));
+        this.CloseDB();
+        return rowid;
+    }
+
+
+    public  ArrayList<DocsCapacitacion> GetListDocsCapacitacion (String correlativo ){
+        ArrayList<DocsCapacitacion> oData = new ArrayList<>();
+        String query = "select * from " + ConstasDB.MCO_DOCS_CAPACITACION_NAME+ " WHERE  n_solicitud = "+correlativo;
+      Log.i("string quiery " , query);
         this.OpenWritableDB();
         Cursor cursor  =db.rawQuery(query,null);
         while (cursor.moveToNext()) {
-            DocsQuejaCliente oEnt = new DocsQuejaCliente();
+            DocsCapacitacion oEnt = new DocsCapacitacion();
             oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
-             result = String.valueOf( cursor.getInt(cursor.getColumnIndex("n_queja")));
+            oEnt.setN_solicitud(cursor.getInt(cursor.getColumnIndex("n_solicitud")));
             oEnt.setN_linea(cursor.getInt(cursor.getColumnIndex("n_linea")));
             oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
             oEnt.setC_nombre_archivo(cursor.getString(cursor.getColumnIndex("c_nombre_archivo")));
@@ -2107,7 +2154,28 @@ public class ProdMantDataBase {
             oData.add(oEnt);
         }
         return oData;
-    }*/
+    }
+
+    public  ArrayList<DocsSugerencia> GetListDocsSugerencia (String correlativo ){
+        ArrayList<DocsSugerencia> oData = new ArrayList<>();
+        String query = "select * from MCO_SUGERENCIA WHERE     n_correlativo = "+correlativo;
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            DocsSugerencia oEnt = new DocsSugerencia();
+            oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
+            oEnt.setN_sugerencia(cursor.getInt(cursor.getColumnIndex("n_correlativo")));
+            oEnt.setN_linea(cursor.getInt(cursor.getColumnIndex("n_linea")));
+            oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
+            oEnt.setC_nombre_archivo(cursor.getString(cursor.getColumnIndex("c_nombre_archivo")));
+            oEnt.setC_ruta_archivo(cursor.getString(cursor.getColumnIndex("c_ruta_archivo")));
+            oEnt.setC_ultimousuario(cursor.getString(cursor.getColumnIndex("c_ultimousuario")));
+            oEnt.setD_ultimafechamodificacion(cursor.getString(cursor.getColumnIndex("d_ultimafechamodificacion")));
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
 
 
     public boolean deleteInspMaq(String correlativo) {

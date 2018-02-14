@@ -626,6 +626,19 @@ public class ConstasDB {
                     "c_ultimousuario TEXT, "+
                     "d_ultimafechamodificacion TEXT); ";
 
+    public static final String MCO_DOCS_CAPACITACION_NAME = "MCO_DOCS_CAPACITACION";
+    public static final String MCO_DOCS_CAPACITACION_SQL =
+            "CREATE TABLE "+ MCO_DOCS_CAPACITACION_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT, "+
+                    "n_solicitud BIGINT, " +
+                    "n_linea BIGINT, " +
+                    "c_descripcion TEXT, "+
+                    "c_nombre_archivo TEXT, "+
+                    "c_ruta_archivo TEXT, "+
+                    "c_ultimousuario TEXT, "+
+                    "d_ultimafechamodificacion TEXT); ";
+
 }
 
 

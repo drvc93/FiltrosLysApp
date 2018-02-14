@@ -29,6 +29,8 @@
                 android:background="@drawable/edittext_round_border"
                 android:ems="10"
                 android:inputType="textPersonName"
+                android:focusableInTouchMode="false"
+                android:clickable="true"
                 android:paddingBottom="3dp"
                 android:paddingTop="3dp" />
 

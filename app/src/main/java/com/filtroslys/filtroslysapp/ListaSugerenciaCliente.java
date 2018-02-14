@@ -130,6 +130,7 @@ public class ListaSugerenciaCliente extends AppCompatActivity {
                 Gson gson = new Gson();
                 String ObjectSG = gson.toJson(sg);
                 Log.i("suegerencia gson > ", ObjectSG);
+                Log.i("operacion flagenviado " , sOpe +"///" + sg.getC_enviado());
                 Intent intent = new Intent(ListaSugerenciaCliente.this, DatosGenSugerencia.class);
                 intent.putExtra("ObjectSG", ObjectSG);
                 intent.putExtra("Operacion", sOpe);

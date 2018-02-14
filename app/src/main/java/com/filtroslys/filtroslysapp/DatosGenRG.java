@@ -39,6 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -1574,34 +1575,14 @@ public class DatosGenRG extends AppCompatActivity {
             viewHolder.lblNombreFoto.setText(doc.getC_nombre_archivo());
             viewHolder.txtDescripcion.setText(data.get(position).getC_descripcion());
 
-            viewHolder.txtDescripcion.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            viewHolder.txtDescripcion.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        EditText  edt = (EditText)v;
-                        hashDescrip.put(position,((EditText) v).getText().toString());
-                        data.get(position).setC_descripcion(((EditText) v).getText().toString());
-                    }
+                public void onClick(View v) {
+                    AlertEdittextListView(position,(EditText)v);
                 }
             });
 
-            viewHolder.txtDescripcion.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    // data.get(position).setC_descripcion(s.toString());
-                    hashDescrip.put(position,s.toString());
-                }
-            });
 
             viewHolder.btnVer.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1656,6 +1637,49 @@ public class DatosGenRG extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         builder.show();
+    }
+
+    public void AlertEdittextListView(final int positionObj, final EditText txtDescp){
+
+        // creating the EditText widget programatically
+        final EditText editText = new EditText(DatosGenRG.this);
+
+        // create the AlertDialog as final
+        final AlertDialog dialog = new AlertDialog.Builder(DatosGenRG.this)
+                .setMessage("Descripcion de foto")
+                .setTitle("Escribir texto")
+                .setView(editText)
+
+                // Set the action buttons
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        docsAdapdater.data.get(positionObj).setC_descripcion(editText.getText().toString());
+                        txtDescp.setText(editText.getText().toString());
+                    }
+                })
+
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // removes the AlertDialog in the screen
+                    }
+                })
+                .create();
+
+        // set the focus change listener of the EditText
+        // this part will make the soft keyboard automaticall visible
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+            }
+        });
+
+        dialog.show();
+
     }
 
 

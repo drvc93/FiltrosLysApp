@@ -50,6 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(ConstasDB.MCO_DOCS_RECLAMOGARANTIA_SQL);
         sqLiteDatabase.execSQL(ConstasDB.MCO_DOCS_QUEJACLIENTE_SQL);
         sqLiteDatabase.execSQL(ConstasDB.MCO_DOCS_SUGERENCIA_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.MCO_DOCS_CAPACITACION_SQL);
         sqLiteDatabase.execSQL(ConstasDB.TMA_NOTIFICAQUEJA_SQL);
 
     }

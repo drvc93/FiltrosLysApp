@@ -87,7 +87,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setTitle("Login");
         CrearCarpetasFotos();
-       isStoragePermissionGranted();
+        //isStoragePermissionGranted();
 
          preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
 
@@ -117,7 +117,7 @@ public class Login extends AppCompatActivity {
         } else{
 
         }
-       copyFile();
+       // copyFile();
       //  ShowDialogAlert();
 
         // instanciando controles
@@ -570,6 +570,11 @@ public class Login extends AppCompatActivity {
         File folderQJ = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_QJ );
         if (!folderQJ.exists()) {
             folderQJ.mkdirs();
+        }
+
+        File folderSG = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_SG );
+        if (!folderSG.exists()) {
+            folderSG.mkdirs();
         }
     }
 

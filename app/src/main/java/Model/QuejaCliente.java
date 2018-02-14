@@ -43,11 +43,12 @@ public class QuejaCliente {
     private String c_usuariocerrado;
     private String d_fechacerrado;
     private String c_enviado;
+    private String c_estadofin;
 
     public QuejaCliente() {
     }
 
-    public QuejaCliente(String c_compania, long n_correlativo, String c_queja, String c_nroformato, int n_cliente, String d_fechareg, String c_documentoref, String c_mediorecepcion, String c_centrocosto, String c_calificacion, String c_usuarioderiv, String c_tipocalificacion, String c_item, String c_lote, double n_cantidad, String c_desqueja, String c_observaciones, String c_usuarioinvestigacion, String d_fechaderivacion, String c_unidadneg, String c_razonsocial, String c_estado, String c_usuario, String c_flaginvestigando, String c_descripcioninvestigacion, String c_procede, String d_fecharespuesta, String c_usuarioinvestigadopor, String d_fechainvestigadopor, String c_tipocalificacioncierre, String c_descripcioncierre, String c_codaccion1, String c_codaccion2, String c_codaccion3, String c_codaccion4, String c_notificacion, String c_cerrado, String c_accioncorrectiva, String c_observacionescierre, String c_usuariocerrado, String d_fechacerrado, String c_enviado) {
+    public QuejaCliente(String c_compania, long n_correlativo, String c_queja, String c_nroformato, int n_cliente, String d_fechareg, String c_documentoref, String c_mediorecepcion, String c_centrocosto, String c_calificacion, String c_usuarioderiv, String c_tipocalificacion, String c_item, String c_lote, double n_cantidad, String c_desqueja, String c_observaciones, String c_usuarioinvestigacion, String d_fechaderivacion, String c_unidadneg, String c_razonsocial, String c_estado, String c_usuario, String c_flaginvestigando, String c_descripcioninvestigacion, String c_procede, String d_fecharespuesta, String c_usuarioinvestigadopor, String d_fechainvestigadopor, String c_tipocalificacioncierre, String c_descripcioncierre, String c_codaccion1, String c_codaccion2, String c_codaccion3, String c_codaccion4, String c_notificacion, String c_cerrado, String c_accioncorrectiva, String c_observacionescierre, String c_usuariocerrado, String d_fechacerrado, String c_enviado,String c_estadofin) {
         this.c_compania = c_compania;
         this.n_correlativo = n_correlativo;
         this.c_queja = c_queja;
@@ -90,6 +91,7 @@ public class QuejaCliente {
         this.c_usuariocerrado = c_usuariocerrado;
         this.d_fechacerrado = d_fechacerrado;
         this.c_enviado = c_enviado;
+        this.c_estadofin = c_estadofin;
     }
 
     public String getC_compania() {
@@ -426,5 +428,13 @@ public class QuejaCliente {
 
     public void setC_enviado(String c_enviado) {
         this.c_enviado = c_enviado;
+    }
+
+    public String getC_estadofin() {
+        return c_estadofin;
+    }
+
+    public void setC_estadofin(String c_estadofin) {
+        this.c_estadofin = c_estadofin;
     }
 }

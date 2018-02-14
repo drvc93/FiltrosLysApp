@@ -3,6 +3,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
 import java.util.ArrayList;
 import DataBase.ProdMantDataBase;
 import Model.Menu;
@@ -33,7 +36,7 @@ public class MenuPrincipal extends AppCompatActivity {
         setContentView(R.layout.activity_menu_principal);
 
         String var = Constans.UrlServer;
-
+        CrearCarpetasFotos();
         Log.i("test aplicaction context", var);
         final ActionBar actionBar;
         int currentapiVersion;
@@ -78,6 +81,27 @@ public class MenuPrincipal extends AppCompatActivity {
 
 
 
+    }
+    public  void  CrearCarpetasFotos (){
+        File folderRG = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_RG );
+        if (!folderRG.exists()) {
+            folderRG.mkdirs();
+        }
+
+        File folderQJ = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_QJ );
+        if (!folderQJ.exists()) {
+            folderQJ.mkdirs();
+        }
+
+        File folderSG = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_SG );
+        if (!folderSG.exists()) {
+            folderSG.mkdirs();
+        }
+
+        File folderCP = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_CP );
+        if (!folderCP.exists()) {
+            folderCP.mkdirs();
+        }
     }
 
     public  void  LoadMenu (){

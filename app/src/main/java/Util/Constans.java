@@ -41,10 +41,12 @@ public class Constans {
     public static  int icon_succes = R.drawable.ic_done_24dp;
     public static  String Carpeta_foto= "LysConfig/Fotos/";
     public static  String Carpeta_foto_RG= "LysConfig/FotosRG/";
+    public static  String Carpeta_foto_SG= "LysConfig/FotosSG/";
     public static  String Carpeta_foto_QJ= "LysConfig/FotosQJ/";
+    public static  String Carpeta_foto_CP= "LysConfig/FotosCP/";
     public static final String NroConpania = "00100000";
     public static  final  String FolderConfig ="appConfig";
-    public static  final  String IPDefault  = "190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
+    public static  final  String IPDefault  ="190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
     public static  final  String FolderWs = "LysWsRest" ;
 
     public static void SetConexion(String LocalOExt, String con) {

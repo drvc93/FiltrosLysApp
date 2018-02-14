@@ -1,21 +1,36 @@
 package com.filtroslys.filtroslysapp;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -26,6 +41,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -34,18 +50,31 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.gson.Gson;
+
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.IllegalFormatCodePointException;
 import java.util.concurrent.ExecutionException;
 import DataBase.ProdMantDataBase;
 import Model.CapacitacionCliente;
+import Model.DocsCapacitacion;
 import Model.TMACliente;
 import Model.TMADireccionCli;
 import Model.TMATemaCapacitacion;
 import Tasks.GetCorrelativoCapacitacionTask;
+import Tasks.GetFotoRG;
+import Tasks.GetListaDatosFotosCPTask;
+import Tasks.GuardaLocalFotoCPTask;
+import Tasks.GuardarFotoRGTask;
 import Tasks.InsertCapacitacionClienteTask;
+import Tasks.InsertDocsCapacitacionTask;
 import Tasks.TransferirCapacitacionClienteTask;
 import Util.Constans;
 import libs.mjn.prettydialog.PrettyDialog;
@@ -68,6 +97,10 @@ public class DatosGenCapacitacion extends AppCompatActivity {
     String codUser,sSelFechaProb,sSelHoraProb,sFechaSelec,sOperacion="VER";
     SharedPreferences preferences;
     String sDireccionReg="";
+    ListView lvFotosSG;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    DocsCapacitacionAdapter docsAdapdater = null ;
+    ArrayList<DocsCapacitacion> listaDocsFotos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +157,7 @@ public class DatosGenCapacitacion extends AppCompatActivity {
             Gson gson = new Gson();
             String rgAsString = getIntent().getStringExtra("ObjectCP");
             objCapacitacion  = gson.fromJson(rgAsString,CapacitacionCliente.class);
+            docsAdapdater = FillAdaptadorDocs(sOperacion,objCapacitacion.getC_compania(), String.valueOf( objCapacitacion.getN_correlativo()));
             SetControlsValues(objCapacitacion);
         }
 
@@ -223,6 +257,222 @@ public class DatosGenCapacitacion extends AppCompatActivity {
         else {
             return;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_add_fotos, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.AddFotos) {
+            AlertAgregarFotos();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public  DocsCapacitacionAdapter  FillAdaptadorDocs(String sTipoOperacion,String sComp,String sCorrelativo){
+        Log.i("operaciones  >>" , sTipoOperacion +" | " + sComp + " | "+ sCorrelativo );
+        ArrayList<DocsCapacitacion> listaFotos =  new ArrayList<>();
+        if (sTipoOperacion.equals("VER")){
+            AsyncTask<String,String,ArrayList<DocsCapacitacion>> asyncTaskListaFotosCP;
+            GetListaDatosFotosCPTask getListaDatosFotosQJTask = new GetListaDatosFotosCPTask();
+            try {
+                asyncTaskListaFotosCP = getListaDatosFotosQJTask.execute(sComp,sCorrelativo);
+                listaFotos  = asyncTaskListaFotosCP.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            if (listaFotos!=null && listaFotos.size()>0){
+                for (int i = 0; i <  listaFotos.size(); i++) {
+                    RecuperandoImagen(listaFotos.get(i).getC_ruta_archivo());
+                }
+            }
+            //Log.i("valor adaptador" , String.valueOf( listaFotos.size()));
+        }else  if (sTipoOperacion.equals("MOD")){
+
+            ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+            listaFotos = db.GetListDocsCapacitacion(sCorrelativo);
+
+        }
+
+        if (listaFotos == null){
+            listaFotos =  new ArrayList<>();
+        }
+
+
+        docsAdapdater = new DocsCapacitacionAdapter(DatosGenCapacitacion.this, R.layout.item_fotos_reclamogar, listaFotos);
+//
+        return  docsAdapdater;
+
+    }
+
+    public void RecuperandoImagen(String filename) {
+        //File filefoto = null;
+        Bitmap bitmap = null;
+
+        File fileexist = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_CP + filename);
+        if (fileexist.exists()){
+            return;
+        }
+
+        AsyncTask<String, String, byte[]> asynckGetFoto;
+        GetFotoRG getFotoTask = new GetFotoRG();
+        byte[] bytes = null;
+        try {
+            asynckGetFoto = getFotoTask.execute(filename, "CP");
+            bytes = (byte[]) asynckGetFoto.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        AsyncTask<byte[], String, String> asyncSaveImglocal;
+        GuardaLocalFotoCPTask guardarImgLocalTask = new GuardaLocalFotoCPTask(filename, bytes);
+
+        try {
+            asyncSaveImglocal = guardarImgLocalTask.execute(bytes);
+            String resSaveImg = (String) asyncSaveImglocal.get();
+            Log.i("result save imag local SG => ", resSaveImg);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        String filePath2 = Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_CP + filename;
+        bitmap = BitmapFactory.decodeFile(filePath2);
+
+
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            String codigo = CodigoFoto();
+            GuardarFoto(imageBitmap, codigo, "Local");
+            SetAdapterDocsFoto(codigo);
+            Log.i("paso ", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        }
+    }
+
+    public void AlertAgregarFotos(){
+        final Dialog dialog  = new Dialog(DatosGenCapacitacion.this);
+        dialog.setContentView(R.layout.dialog_list_fotos_rg);
+        dialog.setTitle("Buscar Cliente");
+        Window window = dialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Button btnAddFoto = dialog.findViewById(R.id.btnAddFotoRG);
+        Button btnEliminar = dialog.findViewById(R.id.btnEliminarFotoRG);
+        Button btnAceptarFotos = dialog.findViewById(R.id.btnAceptarFotoRG);
+        FrameLayout frameLayout = dialog.findViewById(R.id.lyFramViewFoto);
+        Button btnCerrarFoto = dialog.findViewById(R.id.btnCloseViewFoto);
+        ImageView imageView = dialog.findViewById(R.id.ImageViewFoto);
+        lvFotosSG  = dialog.findViewById(R.id.lvFotosGuardadasRG);
+        lvFotosSG.setItemsCanFocus(true);
+        if (docsAdapdater != null){
+            if (docsAdapdater.getCount()>0) {
+                lvFotosSG.setAdapter(docsAdapdater);
+            }
+        }
+
+        btnEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (docsAdapdater!=null && docsAdapdater.getCount()>0){
+                    docsAdapdater.data.remove(docsAdapdater.data.size()-1);
+                    docsAdapdater.notifyDataSetChanged();
+                }
+            }
+        });
+
+        //lvBuscarClientes.setAdapter(getAdapterBuscarCliente("%"));
+        btnAddFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+                //openBackCamera();
+            }
+        });
+
+        btnAceptarFotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
+    }
+
+    public String CodigoFoto() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return "";
+        }
+        String idImei = telephonyManager.getDeviceId();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String sCodigoFoto =   idImei +"_"+  sdf.format(new Date());
+        return sCodigoFoto ;
+    }
+
+    public  void SetAdapterDocsFoto(String sCodFoto) {
+        DocsCapacitacion d = new DocsCapacitacion();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String sUltFecha = sdf.format(new Date());
+        d.setD_ultimafechamodificacion(sUltFecha);
+        d.setC_ultimousuario(codUser);
+        d.setC_nombre_archivo(sCodFoto);
+        d.setC_ruta_archivo(sCodFoto + ".jpg");
+        d.setC_compania(Constans.NroConpania);
+        listaDocsFotos.add(d);
+        if (docsAdapdater == null) {
+
+            docsAdapdater = new DocsCapacitacionAdapter(DatosGenCapacitacion.this, R.layout.item_fotos_reclamogar, listaDocsFotos);
+            lvFotosSG.setAdapter(docsAdapdater);
+        } else {
+
+            lvFotosSG.setAdapter(docsAdapdater);
+        }
+    }
+
+    public  void GuardarFoto(Bitmap bmp , String sCodFoto, String sTipoSincron){
+
+        File DirExist =  new File(Environment.getExternalStorageDirectory(),  Constans.Carpeta_foto_CP);
+        if (!DirExist.exists()){
+            DirExist.mkdir();
+        }
+
+
+        String filename =   Constans.Carpeta_foto_CP+sCodFoto+".jpg";
+        File sd = Environment.getExternalStorageDirectory();
+
+        File dest = new File(sd, filename);
+        Log.i("Destino",dest.getPath());
+        Bitmap bitmap = bmp ;
+        try {
+            FileOutputStream out = new FileOutputStream(dest);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void VaLidacionFinal(){
@@ -371,6 +621,17 @@ public class DatosGenCapacitacion extends AppCompatActivity {
                 break;
         }
     }
+    public  void ActualizarTablaLocalFotos(ArrayList<DocsCapacitacion> listFotos){
+
+        ProdMantDataBase  db = new ProdMantDataBase(getApplicationContext());
+        for (int i = 0; i < listFotos.size() ; i++) {
+            DocsCapacitacion dc = listFotos.get(i);
+            dc.setN_linea(i+1);
+            long rowdoc =  db.InsertDocsCapacitacion(dc);
+            Log.i("id row doc sg" ,String.valueOf(rowdoc));
+        }
+
+    }
 
     public void GuardarCapacitacion(String sTipoGuardado){
         ProdMantDataBase db = new ProdMantDataBase(DatosGenCapacitacion.this);
@@ -385,6 +646,10 @@ public class DatosGenCapacitacion extends AppCompatActivity {
         }
         if (rowid>0){
             Log.i("row id capacitacion ", String.valueOf(rowid));
+            if (docsAdapdater!=null) {
+                docsAdapdater.SetNumero((int) rowid);
+                ActualizarTablaLocalFotos(docsAdapdater.AllItems());
+            }
             if (sTipoGuardado.equals("Local")) {
                 FabToast.makeText(DatosGenCapacitacion.this, "Se guardo correctamente la informacion", FabToast.LENGTH_LONG, FabToast.SUCCESS, FabToast.POSITION_DEFAULT).show();
                 super.onBackPressed();
@@ -428,6 +693,10 @@ public class DatosGenCapacitacion extends AppCompatActivity {
             }
 
             if (InserCP.equals("OK")){
+                if (docsAdapdater!=null) {
+                    docsAdapdater.SetNumero(Integer.valueOf(sCorrelativoCP));
+                    ActualizarTablaServerFotos(docsAdapdater.AllItems());
+                }
                 String sResultTrasnf="";
                 TransferirCapacitacionClienteTask transferirCapacitacionClienteTask = new TransferirCapacitacionClienteTask();
                 AsyncTask<String,String,String> asyncTaskTransCP;
@@ -440,6 +709,9 @@ public class DatosGenCapacitacion extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (sResultTrasnf.equals("OK")){
+                    if (docsAdapdater!=null && docsAdapdater.getCount()>0){
+                        GuardarFotoEnServer(docsAdapdater.AllItems());
+                    }
                     FabToast.makeText(DatosGenCapacitacion.this, "Se guardo y sincronizo correctamente la informacion en el servidor.", FabToast.LENGTH_LONG, FabToast.SUCCESS,  FabToast.POSITION_DEFAULT).show();
                     super.onBackPressed();
                 }
@@ -451,6 +723,54 @@ public class DatosGenCapacitacion extends AppCompatActivity {
                 FabToast.makeText(DatosGenCapacitacion.this, "Error : " + InserCP, FabToast.LENGTH_LONG, FabToast.ERROR,  FabToast.POSITION_DEFAULT).show();
             }
         }
+    }
+
+    public  void  ActualizarTablaServerFotos(ArrayList<DocsCapacitacion> listDocFotos) {
+        String ressultDocInsert = "";
+        for (int i = 0; i < listDocFotos.size(); i++) {
+            DocsCapacitacion d = listDocFotos.get(i);
+            AsyncTask<String, String, String> asyncTaskDocFotoSG;
+            InsertDocsCapacitacionTask insertDocsQuejaClienteTask = new InsertDocsCapacitacionTask();
+            try {
+                asyncTaskDocFotoSG = insertDocsQuejaClienteTask.execute(d.getC_compania(), String.valueOf(d.getN_solicitud()), String.valueOf(i + 1), d.getC_descripcion(), d.getC_nombre_archivo(), d.getC_ruta_archivo(), codUser);
+                ressultDocInsert = asyncTaskDocFotoSG.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public  void  GuardarFotoEnServer(ArrayList<DocsCapacitacion> listDocsF)
+    {
+        String fileCarp = Environment.getExternalStorageDirectory() +File.separator +Constans.Carpeta_foto_CP;
+        if (listDocsF!=null && listDocsF.size()>0) {
+            for (int i = 0; i < listDocsF.size(); i++) {
+                Log.i("ruta foto rg  save server " , listDocsF.get(i).getC_ruta_archivo());
+                String fileName = listDocsF.get(i).getC_ruta_archivo();
+                String filePath = fileCarp + fileName;
+                File file = new File(filePath);
+
+                byte[] bytes = new byte[(int) file.length()];
+                try {
+                    bytes = FileUtils.readFileToByteArray(file);
+                    AsyncTask asyncTask = null;
+                    GuardarFotoRGTask guardarImagenTask = new GuardarFotoRGTask(bytes, listDocsF.get(i).getC_ruta_archivo(),"CP");
+                    asyncTask = guardarImagenTask.execute();
+                    String resp = (String) asyncTask.get();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
     public String CodEstado(String descrpEstado){
@@ -791,5 +1111,135 @@ public class DatosGenCapacitacion extends AppCompatActivity {
 
         dialog.show();
 
+    }
+
+    public class DocsCapacitacionAdapter extends ArrayAdapter<DocsCapacitacion> {
+        private Context context ;
+        private ArrayList<DocsCapacitacion> data ;
+        private int layoutResourceId;
+        HashMap<Integer,String> hashDescrip;
+
+
+        public DocsCapacitacionAdapter(@NonNull Context context, int resource, ArrayList<DocsCapacitacion> data) {
+            super(context,resource,data);
+            this.context = context;
+            this.data = data;
+            this.layoutResourceId = resource;
+            hashDescrip = new HashMap<>();
+        }
+
+
+        @NonNull
+        @Override
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+            ViewHolder viewHolder ;
+            DocsCapacitacion doc = data.get(position);
+            if (convertView == null){
+                LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+                convertView = inflater.inflate(layoutResourceId,parent,false);
+                viewHolder = new ViewHolder();
+                viewHolder.txtDescripcion = convertView.findViewById(R.id.txtDescripFotoRG);
+                viewHolder.lblNombreFoto = convertView.findViewById(R.id.lblNombrFotoRG);
+                viewHolder.btnVer = convertView.findViewById(R.id.btnVerFotoItemRG);
+                convertView.setTag(viewHolder);
+            }
+            else {
+                viewHolder = (ViewHolder)convertView.getTag();
+            }
+
+            viewHolder.lblNombreFoto.setText(doc.getC_nombre_archivo());
+            viewHolder.txtDescripcion.setText(data.get(position).getC_descripcion());
+            viewHolder.txtDescripcion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertEdittextListView(position,(EditText)v);
+                }
+            });
+
+
+
+            viewHolder.btnVer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    VisorImagen(data.get(position).getC_ruta_archivo());
+                    // lvFotosRG.setVisibility(View.GONE);
+                }
+            });
+
+            return  convertView;
+
+        }
+
+        public ArrayList<DocsCapacitacion> AllItems () {
+            return data ;
+        }
+
+        public  void SetNumero(int n){
+            for (int i = 0; i < data.size() ; i++) {
+                data.get(i).setN_solicitud(n);
+            }
+        }
+    }
+
+    public static class ViewHolder{
+        TextView lblNombreFoto;
+        EditText txtDescripcion;
+        Button btnVer ;
+    }
+
+    public void AlertEdittextListView(final int positionObj, final EditText txtDescp){
+        final EditText editText = new EditText(DatosGenCapacitacion.this);
+        final AlertDialog dialog = new AlertDialog.Builder(DatosGenCapacitacion.this)
+                .setMessage("Descripcion de foto")
+                .setTitle("Escribir texto")
+                .setView(editText)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        docsAdapdater.data.get(positionObj).setC_descripcion(editText.getText().toString());
+                        txtDescp.setText(editText.getText().toString());
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .create();
+
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+            }
+        });
+
+        dialog.show();
+
+    }
+
+    public  void  VisorImagen (String path ){
+
+        String filePath2 = Environment.getExternalStorageDirectory() + File.separator + Constans.Carpeta_foto_CP+ path;
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath2);
+        Dialog builder = new Dialog(this);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+
+            }
+        });
+        ImageView imageView = new ImageView(this);
+        imageView.setImageBitmap(bitmap);
+        builder.addContentView(imageView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
     }
 }

@@ -38,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -1051,34 +1052,16 @@ public class DatosGenQueja extends AppCompatActivity {
             viewHolder.lblNombreFoto.setText(doc.getC_nombre_archivo());
             viewHolder.txtDescripcion.setText(data.get(position).getC_descripcion());
 
-            viewHolder.txtDescripcion.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+
+            viewHolder.txtDescripcion.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        EditText  edt = (EditText)v;
-                        hashDescrip.put(position,((EditText) v).getText().toString());
-                        data.get(position).setC_descripcion(((EditText) v).getText().toString());
-                    }
+                public void onClick(View v) {
+                    AlertEdittextListView(position,(EditText)v);
                 }
             });
 
-            viewHolder.txtDescripcion.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    // data.get(position).setC_descripcion(s.toString());
-                    hashDescrip.put(position,s.toString());
-                }
-            });
 
             viewHolder.btnVer.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1110,12 +1093,10 @@ public class DatosGenQueja extends AppCompatActivity {
     }
 
 
-    public  void  VisorImagen (String path){
+    public  void  VisorImagen (String path ){
 
         String filePath2 = Environment.getExternalStorageDirectory() + File.separator + Constans.Carpeta_foto_QJ+ path;
         Bitmap bitmap = BitmapFactory.decodeFile(filePath2);
-        // frameViewFotos.setVisibility(View.VISIBLE);
-        //imgviewFoto.setImageBitmap(bitmap);
         Dialog builder = new Dialog(this);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.getWindow().setBackgroundDrawable(
@@ -1127,12 +1108,43 @@ public class DatosGenQueja extends AppCompatActivity {
             }
         });
         ImageView imageView = new ImageView(this);
-        //LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(400,400);
-        // imageView.setLayoutParams(parms);
         imageView.setImageBitmap(bitmap);
         builder.addContentView(imageView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         builder.show();
+    }
+
+    public void AlertEdittextListView(final int positionObj, final EditText txtDescp){
+        final EditText editText = new EditText(DatosGenQueja.this);
+        final AlertDialog dialog = new AlertDialog.Builder(DatosGenQueja.this)
+                .setMessage("Descripcion de foto")
+                .setTitle("Escribir texto")
+                .setView(editText)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        docsAdapdater.data.get(positionObj).setC_descripcion(editText.getText().toString());
+                        txtDescp.setText(editText.getText().toString());
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .create();
+
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+            }
+        });
+
+        dialog.show();
+
     }
 }

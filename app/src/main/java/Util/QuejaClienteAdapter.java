@@ -41,12 +41,13 @@ public class QuejaClienteAdapter extends ArrayAdapter<QuejaCliente>{
         TextView lblMedioRecQJ;
         TextView lblEstadoQJ;
         TextView lblDescripcionQJ;
+        TextView lblEstadoFinQJ;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        String sEstadoDescrip="",sFormatFecha="";
+        String sEstadoDescrip="",sFormatFecha="" ,sEstadoFinDescrip = "";
         ViewHolder viewHolder;
         QuejaCliente oEnt = data.get(position);
         if (convertView==null){
@@ -59,6 +60,7 @@ public class QuejaClienteAdapter extends ArrayAdapter<QuejaCliente>{
             viewHolder.lblMedioRecQJ = convertView.findViewById(R.id.lblMedioRecQJ);
             viewHolder.lblEstadoQJ = convertView.findViewById(R.id.lblEstadoQJ);
             viewHolder.lblDescripcionQJ = convertView.findViewById(R.id.lblDescripcionQJ);
+            viewHolder.lblEstadoFinQJ = convertView.findViewById(R.id.lblEstadoQJInvFin);
             convertView.setTag(viewHolder);
         }
         else{
@@ -73,6 +75,19 @@ public class QuejaClienteAdapter extends ArrayAdapter<QuejaCliente>{
                 sEstadoDescrip ="Anuladas";
                 break;
         }
+
+        switch (oEnt.getC_estadofin()){
+            case "PI":
+                sEstadoFinDescrip = "Por Investigar";
+                break;
+            case  "PC":
+                sEstadoFinDescrip = "Por Cerrar";
+                break;
+            case "CE":
+                sEstadoFinDescrip = "Cerrada" ;
+                break;
+        }
+
 
         SimpleDateFormat parseador = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
@@ -90,6 +105,7 @@ public class QuejaClienteAdapter extends ArrayAdapter<QuejaCliente>{
         viewHolder.lblClienteQJ.setText(String.valueOf(oEnt.getN_cliente()) + " | " + db.GetNombreClienteXCod(String.valueOf(oEnt.getN_cliente())) );
         viewHolder.lblMedioRecQJ.setText( db.MedioRecepcionDesc(oEnt.getC_mediorecepcion()));
         viewHolder.lblDescripcionQJ.setText(oEnt.getC_desqueja());
+        viewHolder.lblEstadoFinQJ.setText(sEstadoFinDescrip);
         return convertView;
     }
 

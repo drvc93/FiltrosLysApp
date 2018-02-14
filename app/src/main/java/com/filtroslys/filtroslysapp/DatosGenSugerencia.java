@@ -1,25 +1,42 @@
 package com.filtroslys.filtroslysapp;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,16 +50,30 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.google.gson.Gson;
+
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import DataBase.ProdMantDataBase;
+import Model.DocsQuejaCliente;
+import Model.DocsSugerencia;
 import Model.EFacSerLot;
 import Model.SugerenciaCliente;
 import Model.TMACliente;
 import Model.TMATipoSugerencia;
 import Tasks.GetCorrelativoSugerenciaTask;
+import Tasks.GetFotoRG;
+import Tasks.GetListaDatosFotosSGTask;
+import Tasks.GuardaLocalFotoSGTask;
+import Tasks.GuardarFotoRGTask;
+import Tasks.InsertDocsSugerenciaTask;
 import Tasks.InsertSugerenciaClienteTask;
 import Tasks.TransferirSugerenciaClienteTask;
 import Util.Constans;
@@ -66,6 +97,10 @@ public class DatosGenSugerencia extends AppCompatActivity {
     int nIndicadorLayout ;
     String codUser,sFechaSelec,sOperacion="VER",sTipoInfo="";
     SharedPreferences preferences;
+    ListView lvFotosSG;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    DocsSugerenciaAdapter docsAdapdater = null ;
+    ArrayList<DocsSugerencia> listaDocsFotos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +141,7 @@ public class DatosGenSugerencia extends AppCompatActivity {
         sTipoInfo = getIntent().getStringExtra("TipoInfo");
 
         LoadSpinerTipoSug();
-
+        Log.i("operacion y tipo info" , sTipoInfo + " // " + sOperacion);
         if(!sTipoInfo.equalsIgnoreCase("SU")){
             layTipoSug.setVisibility(View.GONE);
         }
@@ -120,6 +155,7 @@ public class DatosGenSugerencia extends AppCompatActivity {
             Gson gson = new Gson();
             String sgAsString = getIntent().getStringExtra("ObjectSG");
             objSugerencia  = gson.fromJson(sgAsString, SugerenciaCliente.class);
+            docsAdapdater = FillAdaptadorDocs(sOperacion,objSugerencia.getC_compania(), String.valueOf( objSugerencia.getN_correlativo()));
             SetControlsValues(objSugerencia);
         }
 
@@ -168,6 +204,35 @@ public class DatosGenSugerencia extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_add_fotos, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.AddFotos) {
+            AlertAgregarFotos();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            String codigo = CodigoFoto();
+            GuardarFoto(imageBitmap, codigo, "Local");
+            SetAdapterDocsFoto(codigo);
+            Log.i("paso ", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (nIndicadorLayout>1) {
             nIndicadorLayout = nIndicadorLayout-1;
@@ -176,6 +241,116 @@ public class DatosGenSugerencia extends AppCompatActivity {
         else {
             return;
         }
+    }
+
+    public String CodigoFoto() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return "";
+        }
+        String idImei = telephonyManager.getDeviceId();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String sCodigoFoto =   idImei +"_"+  sdf.format(new Date());
+        return sCodigoFoto ;
+    }
+
+    public  void GuardarFoto(Bitmap bmp , String sCodFoto, String sTipoSincron){
+
+        File DirExist =  new File(Environment.getExternalStorageDirectory(),  Constans.Carpeta_foto_SG);
+        if (!DirExist.exists()){
+            DirExist.mkdir();
+        }
+
+
+        String filename =   Constans.Carpeta_foto_SG+sCodFoto+".jpg";
+        File sd = Environment.getExternalStorageDirectory();
+
+        File dest = new File(sd, filename);
+        Log.i("Destino",dest.getPath());
+        Bitmap bitmap = bmp ;
+        try {
+            FileOutputStream out = new FileOutputStream(dest);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public  void SetAdapterDocsFoto(String sCodFoto) {
+        DocsSugerencia d = new DocsSugerencia();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String sUltFecha = sdf.format(new Date());
+        d.setD_ultimafechamodificacion(sUltFecha);
+        d.setC_ultimousuario(codUser);
+        d.setC_nombre_archivo(sCodFoto);
+        d.setC_ruta_archivo(sCodFoto + ".jpg");
+        d.setC_compania(Constans.NroConpania);
+        listaDocsFotos.add(d);
+        if (docsAdapdater == null) {
+
+            docsAdapdater = new DocsSugerenciaAdapter(DatosGenSugerencia.this, R.layout.item_fotos_reclamogar, listaDocsFotos);
+            lvFotosSG.setAdapter(docsAdapdater);
+        } else {
+
+            lvFotosSG.setAdapter(docsAdapdater);
+        }
+    }
+
+    public void AlertAgregarFotos(){
+        final Dialog dialog  = new Dialog(DatosGenSugerencia.this);
+        dialog.setContentView(R.layout.dialog_list_fotos_rg);
+        dialog.setTitle("Buscar Cliente");
+        Window window = dialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Button btnAddFoto = dialog.findViewById(R.id.btnAddFotoRG);
+        Button btnEliminar = dialog.findViewById(R.id.btnEliminarFotoRG);
+        Button btnAceptarFotos = dialog.findViewById(R.id.btnAceptarFotoRG);
+        FrameLayout frameLayout = dialog.findViewById(R.id.lyFramViewFoto);
+        Button btnCerrarFoto = dialog.findViewById(R.id.btnCloseViewFoto);
+        ImageView imageView = dialog.findViewById(R.id.ImageViewFoto);
+        lvFotosSG  = dialog.findViewById(R.id.lvFotosGuardadasRG);
+        lvFotosSG.setItemsCanFocus(true);
+        if (docsAdapdater != null){
+            if (docsAdapdater.getCount()>0) {
+                lvFotosSG.setAdapter(docsAdapdater);
+            }
+        }
+
+        btnEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (docsAdapdater!=null && docsAdapdater.getCount()>0){
+                    docsAdapdater.data.remove(docsAdapdater.data.size()-1);
+                    docsAdapdater.notifyDataSetChanged();
+                }
+            }
+        });
+
+        //lvBuscarClientes.setAdapter(getAdapterBuscarCliente("%"));
+        btnAddFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+                //openBackCamera();
+            }
+        });
+
+        btnAceptarFotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
     }
 
     public void VaLidacionFinal(){
@@ -225,6 +400,83 @@ public class DatosGenSugerencia extends AppCompatActivity {
     }
 
     public void CerrarVisor(){
+
+    }
+
+    public  DocsSugerenciaAdapter  FillAdaptadorDocs(String sTipoOperacion,String sComp,String sCorrelativo){
+        Log.i("operaciones  >>" , sTipoOperacion +" | " + sComp + " | "+ sCorrelativo );
+        ArrayList<DocsSugerencia> listaFotos =  new ArrayList<>();
+        if (sTipoOperacion.equals("VER")){
+            AsyncTask<String,String,ArrayList<DocsSugerencia>> asyncTaskListaFotosQJ;
+            GetListaDatosFotosSGTask getListaDatosFotosQJTask = new GetListaDatosFotosSGTask();
+            try {
+                asyncTaskListaFotosQJ = getListaDatosFotosQJTask.execute(sComp,sCorrelativo);
+                listaFotos  = asyncTaskListaFotosQJ.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            if (listaFotos!=null && listaFotos.size()>0){
+                for (int i = 0; i <  listaFotos.size(); i++) {
+                    RecuperandoImagen(listaFotos.get(i).getC_ruta_archivo());
+                }
+            }
+            //Log.i("valor adaptador" , String.valueOf( listaFotos.size()));
+        }else  if (sTipoOperacion.equals("MOD")){
+
+            ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+            listaFotos = db.GetListDocsSugerencia(sCorrelativo);
+
+        }
+
+        if (listaFotos == null){
+            listaFotos =  new ArrayList<>();
+        }
+
+
+        docsAdapdater = new DocsSugerenciaAdapter(DatosGenSugerencia.this, R.layout.item_fotos_reclamogar, listaFotos);
+//
+        return  docsAdapdater;
+
+    }
+
+    public void RecuperandoImagen(String filename) {
+        //File filefoto = null;
+        Bitmap bitmap = null;
+
+        File fileexist = new File(Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_SG + filename);
+        if (fileexist.exists()){
+            return;
+        }
+
+        AsyncTask<String, String, byte[]> asynckGetFoto;
+        GetFotoRG getFotoTask = new GetFotoRG();
+        byte[] bytes = null;
+        try {
+            asynckGetFoto = getFotoTask.execute(filename, sTipoInfo);
+            bytes = (byte[]) asynckGetFoto.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        AsyncTask<byte[], String, String> asyncSaveImglocal;
+        GuardaLocalFotoSGTask guardarImgLocalTask = new GuardaLocalFotoSGTask(filename, bytes);
+
+        try {
+            asyncSaveImglocal = guardarImgLocalTask.execute(bytes);
+            String resSaveImg = (String) asyncSaveImglocal.get();
+            Log.i("result save imag local SG => ", resSaveImg);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        String filePath2 = Environment.getExternalStorageDirectory() +File.separator+Constans.Carpeta_foto_SG + filename;
+        bitmap = BitmapFactory.decodeFile(filePath2);
+
 
     }
 
@@ -283,6 +535,10 @@ public class DatosGenSugerencia extends AppCompatActivity {
 
         if (rowid>0){
             Log.i("row id sugerencia ", String.valueOf(rowid));
+            if (docsAdapdater!=null) {
+                docsAdapdater.SetNumero((int) rowid);
+                ActualizarTablaLocalFotos(docsAdapdater.AllItems());
+            }
             if (sTipoGuardado.equals("Local")) {
                 FabToast.makeText(DatosGenSugerencia.this, "Se guardo correctamente la informacion", FabToast.LENGTH_LONG, FabToast.SUCCESS, FabToast.POSITION_DEFAULT).show();
                 super.onBackPressed();
@@ -320,6 +576,10 @@ public class DatosGenSugerencia extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (InserSG.equals("OK")){
+                if (docsAdapdater!=null) {
+                    docsAdapdater.SetNumero(Integer.valueOf(sCorrelativoSG));
+                    ActualizarTablaServerFotos(docsAdapdater.AllItems());
+                }
                 String sResultTrasnf="";
                 TransferirSugerenciaClienteTask transferirSugerenciaClienteTask = new TransferirSugerenciaClienteTask();
                 AsyncTask<String,String,String> asyncTaskTransSG ;
@@ -332,6 +592,9 @@ public class DatosGenSugerencia extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (sResultTrasnf.equals("OK")){
+                    if (docsAdapdater!=null && docsAdapdater.getCount()>0){
+                        GuardarFotoEnServer(docsAdapdater.AllItems());
+                    }
                     FabToast.makeText(DatosGenSugerencia.this, "Se guardo y sincronizo correctamente la informacion en el servidor.", FabToast.LENGTH_LONG, FabToast.SUCCESS,  FabToast.POSITION_DEFAULT).show();
                     super.onBackPressed();
                 }
@@ -343,6 +606,67 @@ public class DatosGenSugerencia extends AppCompatActivity {
                 FabToast.makeText(DatosGenSugerencia.this, "Error : " + InserSG, FabToast.LENGTH_LONG, FabToast.ERROR,  FabToast.POSITION_DEFAULT).show();
             }
         }
+    }
+
+    public  void  GuardarFotoEnServer(ArrayList<DocsSugerencia> listDocsF)
+    {
+        String fileCarp = Environment.getExternalStorageDirectory() +File.separator +Constans.Carpeta_foto_SG;
+        if (listDocsF!=null && listDocsF.size()>0) {
+            for (int i = 0; i < listDocsF.size(); i++) {
+                Log.i("ruta foto rg  save server " , listDocsF.get(i).getC_ruta_archivo());
+                String fileName = listDocsF.get(i).getC_ruta_archivo();
+                String filePath = fileCarp + fileName;
+                File file = new File(filePath);
+
+                byte[] bytes = new byte[(int) file.length()];
+                try {
+                    bytes = FileUtils.readFileToByteArray(file);
+                    AsyncTask asyncTask = null;
+                    GuardarFotoRGTask guardarImagenTask = new GuardarFotoRGTask(bytes, listDocsF.get(i).getC_ruta_archivo(),sTipoInfo);
+                    //Log.i("Parmaetro exex GuardarTask ===>", listDet.get(i).getRutaFoto());
+                    asyncTask = guardarImagenTask.execute();
+                    String resp = (String) asyncTask.get();
+                    Log.i("foto server guardada sugerencia "+sTipoInfo+" ===>", resp);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public  void  ActualizarTablaServerFotos(ArrayList<DocsSugerencia> listDocFotos) {
+        String ressultDocInsert = "";
+        for (int i = 0; i < listDocFotos.size(); i++) {
+            DocsSugerencia d = listDocFotos.get(i);
+            AsyncTask<String, String, String> asyncTaskDocFotoSG;
+            InsertDocsSugerenciaTask insertDocsQuejaClienteTask = new InsertDocsSugerenciaTask();
+            try {
+                asyncTaskDocFotoSG = insertDocsQuejaClienteTask.execute(d.getC_compania(), String.valueOf(d.getN_sugerencia()), String.valueOf(i + 1), d.getC_descripcion(), d.getC_nombre_archivo(), d.getC_ruta_archivo(), codUser);
+                ressultDocInsert = asyncTaskDocFotoSG.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public  void ActualizarTablaLocalFotos(ArrayList<DocsSugerencia> listFotos){
+
+        ProdMantDataBase  db = new ProdMantDataBase(getApplicationContext());
+        for (int i = 0; i < listFotos.size() ; i++) {
+            DocsSugerencia dc = listFotos.get(i);
+            dc.setN_linea(i+1);
+            long rowdoc =  db.InsertDocsSuegerencia(dc);
+            Log.i("id row doc sg" ,String.valueOf(rowdoc));
+        }
+
     }
 
     public String CodEstado(String descrpEstado){
@@ -533,5 +857,135 @@ public class DatosGenSugerencia extends AppCompatActivity {
                     }
 
                 }).show();
+    }
+
+    public class DocsSugerenciaAdapter extends ArrayAdapter<DocsSugerencia> {
+        private Context context ;
+        private ArrayList<DocsSugerencia> data ;
+        private int layoutResourceId;
+        HashMap<Integer,String> hashDescrip;
+
+
+        public DocsSugerenciaAdapter(@NonNull Context context, int resource, ArrayList<DocsSugerencia> data) {
+            super(context,resource,data);
+            this.context = context;
+            this.data = data;
+            this.layoutResourceId = resource;
+            hashDescrip = new HashMap<>();
+        }
+
+
+        @NonNull
+        @Override
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+            ViewHolder viewHolder ;
+            DocsSugerencia doc = data.get(position);
+            if (convertView == null){
+                LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+                convertView = inflater.inflate(layoutResourceId,parent,false);
+                viewHolder = new ViewHolder();
+                viewHolder.txtDescripcion = convertView.findViewById(R.id.txtDescripFotoRG);
+                viewHolder.lblNombreFoto = convertView.findViewById(R.id.lblNombrFotoRG);
+                viewHolder.btnVer = convertView.findViewById(R.id.btnVerFotoItemRG);
+                convertView.setTag(viewHolder);
+            }
+            else {
+                viewHolder = (ViewHolder)convertView.getTag();
+            }
+
+            viewHolder.lblNombreFoto.setText(doc.getC_nombre_archivo());
+            viewHolder.txtDescripcion.setText(data.get(position).getC_descripcion());
+            viewHolder.txtDescripcion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertEdittextListView(position,(EditText)v);
+                }
+            });
+
+
+
+            viewHolder.btnVer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    VisorImagen(data.get(position).getC_ruta_archivo());
+                    // lvFotosRG.setVisibility(View.GONE);
+                }
+            });
+
+            return  convertView;
+
+        }
+
+        public ArrayList<DocsSugerencia> AllItems () {
+            return data ;
+        }
+
+        public  void SetNumero(int n){
+            for (int i = 0; i < data.size() ; i++) {
+                data.get(i).setN_sugerencia(n);
+            }
+        }
+    }
+
+    public static class ViewHolder{
+        TextView lblNombreFoto;
+        EditText txtDescripcion;
+        Button btnVer ;
+    }
+
+    public  void  VisorImagen (String path ){
+
+        String filePath2 = Environment.getExternalStorageDirectory() + File.separator + Constans.Carpeta_foto_SG+ path;
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath2);
+        Dialog builder = new Dialog(this);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+
+            }
+        });
+        ImageView imageView = new ImageView(this);
+        imageView.setImageBitmap(bitmap);
+        builder.addContentView(imageView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
+    }
+
+    public void AlertEdittextListView(final int positionObj, final EditText txtDescp){
+        final EditText editText = new EditText(DatosGenSugerencia.this);
+        final AlertDialog dialog = new AlertDialog.Builder(DatosGenSugerencia.this)
+                .setMessage("Descripcion de foto")
+                .setTitle("Escribir texto")
+                .setView(editText)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        docsAdapdater.data.get(positionObj).setC_descripcion(editText.getText().toString());
+                        txtDescp.setText(editText.getText().toString());
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .create();
+
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+            }
+        });
+
+        dialog.show();
+
     }
 }
