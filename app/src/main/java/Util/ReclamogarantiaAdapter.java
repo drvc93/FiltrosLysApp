@@ -19,6 +19,7 @@ import java.util.Date;
 
 import DataBase.ProdMantDataBase;
 import Model.ReclamoGarantia;
+import spencerstudios.com.fab_toast.FabToast;
 
 /**
  * Creado por dvillanueva el  29/01/2018 (FiltrosLysApp).
@@ -114,6 +115,14 @@ public class ReclamogarantiaAdapter  extends ArrayAdapter<ReclamoGarantia>{
     public  ReclamoGarantia getObject (int pos){
         return   data.get(pos);
     }
-
+    public void RemoveItem (int pos) {
+        long nResult = 0;
+        nResult = db.DeleteReclamoGarantia(data.get(pos));
+        if (nResult>0)
+        {
+            data.remove(pos);
+            FabToast.makeText(context, "Se eliminó correctamente el registro.", FabToast.LENGTH_LONG, FabToast.SUCCESS, FabToast.POSITION_DEFAULT).show();
+        }
+    }
 
 }

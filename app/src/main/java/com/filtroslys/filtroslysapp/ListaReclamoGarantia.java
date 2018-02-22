@@ -118,23 +118,11 @@ public class ListaReclamoGarantia extends AppCompatActivity {
         lvReclamoG.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String sOpe = "";
-                ReclamoGarantia r =  new ReclamoGarantia();
-                if (sFlagOffOnline.equals("ON")) {
-                    r = adapter.getObject(position);
-                }else  if (sFlagOffOnline.equals("OFF")){
-                    ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
-                    r = db.GetReclamoGarantiaItem(String.valueOf( adapter.getObject(position).getN_correlativo()));
-                }
-                sOpe = r.getC_enviado().equals("S") ? "VER":"MOD";
-                Gson gson = new Gson();
-                String ObjectRG = gson.toJson(r);
-                Intent intent = new Intent(ListaReclamoGarantia.this, DatosGenRG.class);
-                intent.putExtra("ObjectRG", ObjectRG);
-                intent.putExtra("Operacion", sOpe);
-                startActivity(intent);
+          AlertSeleccionarOpcion(position);
             }
         });
+
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -406,5 +394,55 @@ public class ListaReclamoGarantia extends AppCompatActivity {
         txtFehcaIni.setText("01/"+mes+"/"+String.valueOf(year));
         txtFechaFin.setText( dia+ "/"+mes+"/"+String.valueOf(year));
 
+    }
+
+    public void AlertSeleccionarOpcion(final int positem) {
+
+        String sItemOpcion = adapter.getObject(positem).getC_enviado().equals("S") ? "VER":"MODIFICAR";
+        final CharSequence[] items = { sItemOpcion,"ELIMINAR" };
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ListaReclamoGarantia.this);
+        builder.setTitle("Selecciona opcion");
+        builder.setPositiveButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+            }
+        });
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+            switch (item){
+                case 0:
+                    String sOpe = "";
+                    ReclamoGarantia r =  new ReclamoGarantia();
+                    if (sFlagOffOnline.equals("ON")) {
+                        r = adapter.getObject(positem);
+                    }else  if (sFlagOffOnline.equals("OFF")){
+                        ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+                        r = db.GetReclamoGarantiaItem(String.valueOf( adapter.getObject(positem).getN_correlativo()));
+                    }
+                    sOpe = r.getC_enviado().equals("S") ? "VER":"MOD";
+                    Gson gson = new Gson();
+                    String ObjectRG = gson.toJson(r);
+                    Intent intent = new Intent(ListaReclamoGarantia.this, DatosGenRG.class);
+                    intent.putExtra("ObjectRG", ObjectRG);
+                    intent.putExtra("Operacion", sOpe);
+                    startActivity(intent);
+                    break;
+                case 1:
+                    if (adapter.getObject(positem).getC_enviado().equals("S")){
+                        FabToast.makeText(ListaReclamoGarantia.this, "No se puede eliminar el registro.", FabToast.LENGTH_LONG, FabToast.WARNING,  FabToast.POSITION_DEFAULT).show();
+                        return;
+                    }
+                    else {
+                        adapter.RemoveItem(positem);
+                        adapter.notifyDataSetChanged();
+                    }
+                    break;
+            }
+              //  dialog.dismiss();
+            }
+        }).show();
     }
 }

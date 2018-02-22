@@ -117,44 +117,7 @@ public class ListaSugerenciaCliente extends AppCompatActivity {
         lvSugerencia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String sOpe = "";
-                SugerenciaCliente sg =  new SugerenciaCliente();
-                if (sFlagOnOf.equals("ON")) {
-                    sg = adapter.getObject(position);
-                }else  if (sFlagOnOf.equals("OFF")){
-                    ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
-                    sg = db.GetSugerenciaItem(String.valueOf( adapter.getObject(position).getN_correlativo()));
-                }
-
-                sOpe = sg.getC_enviado().equals("S") ? "VER":"MOD";
-                Gson gson = new Gson();
-                String ObjectSG = gson.toJson(sg);
-                Log.i("suegerencia gson > ", ObjectSG);
-                Log.i("operacion flagenviado " , sOpe +"///" + sg.getC_enviado());
-                Intent intent = new Intent(ListaSugerenciaCliente.this, DatosGenSugerencia.class);
-                intent.putExtra("ObjectSG", ObjectSG);
-                intent.putExtra("Operacion", sOpe);
-                intent.putExtra("TipoInfo", sTipoInfo);
-
-                startActivity(intent);
-
-                /*
-                 String sOpe = "";
-                ReclamoGarantia r =  new ReclamoGarantia();
-                if (sFlagOffOnline.equals("ON")) {
-                    r = adapter.getObject(position);
-                }else  if (sFlagOffOnline.equals("OFF")){
-                    ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
-                    r = db.GetReclamoGarantiaItem(String.valueOf( adapter.getObject(position).getN_correlativo()));
-                }
-                sOpe = r.getC_enviado().equals("S") ? "VER":"MOD";
-                Gson gson = new Gson();
-                String ObjectRG = gson.toJson(r);
-                Intent intent = new Intent(ListaReclamoGarantia.this, DatosGenRG.class);
-                intent.putExtra("ObjectRG", ObjectRG);
-                intent.putExtra("Operacion", sOpe);
-                startActivity(intent);
-                 */
+                AlertSeleccionarOpcion(position);
             }
         });
 
@@ -430,5 +393,60 @@ public class ListaSugerenciaCliente extends AppCompatActivity {
 
         txtFehcaIni.setText("01/"+mes+"/"+String.valueOf(year));
         txtFechaFin.setText( dia+ "/"+mes+"/"+String.valueOf(year));
+    }
+
+    public void AlertSeleccionarOpcion(final int positem) {
+
+        String sItemOpcion = adapter.getObject(positem).getC_enviado().equals("S") ? "VER":"MODIFICAR";
+        final CharSequence[] items = { sItemOpcion,"ELIMINAR" };
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ListaSugerenciaCliente.this);
+        builder.setTitle("Selecciona opcion");
+        builder.setPositiveButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                switch (item){
+                    case 0:
+                        String sOpe = "";
+                        SugerenciaCliente sg =  new SugerenciaCliente();
+                        if (sFlagOnOf.equals("ON")) {
+                            sg = adapter.getObject(positem);
+                        }else  if (sFlagOnOf.equals("OFF")){
+                            ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+                            sg = db.GetSugerenciaItem(String.valueOf( adapter.getObject(positem).getN_correlativo()));
+                        }
+
+                        sOpe = sg.getC_enviado().equals("S") ? "VER":"MOD";
+                        Gson gson = new Gson();
+                        String ObjectSG = gson.toJson(sg);
+                        Log.i("suegerencia gson > ", ObjectSG);
+                        Log.i("operacion flagenviado " , sOpe +"///" + sg.getC_enviado());
+                        Intent intent = new Intent(ListaSugerenciaCliente.this, DatosGenSugerencia.class);
+                        intent.putExtra("ObjectSG", ObjectSG);
+                        intent.putExtra("Operacion", sOpe);
+                        intent.putExtra("TipoInfo", sTipoInfo);
+
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        if (adapter.getObject(positem).getC_enviado().equals("S")){
+                            FabToast.makeText(ListaSugerenciaCliente.this, "No se puede eliminar el registro.", FabToast.LENGTH_LONG, FabToast.WARNING,  FabToast.POSITION_DEFAULT).show();
+                            return;
+                        }
+                        else {
+                            adapter.RemoveItem(positem);
+                            adapter.notifyDataSetChanged();
+                        }
+                        break;
+                }
+                //  dialog.dismiss();
+            }
+        }).show();
     }
 }

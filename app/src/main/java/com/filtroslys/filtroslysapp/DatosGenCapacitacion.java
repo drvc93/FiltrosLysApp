@@ -438,15 +438,16 @@ public class DatosGenCapacitacion extends AppCompatActivity {
         d.setC_nombre_archivo(sCodFoto);
         d.setC_ruta_archivo(sCodFoto + ".jpg");
         d.setC_compania(Constans.NroConpania);
-        listaDocsFotos.add(d);
+
         if (docsAdapdater == null) {
 
             docsAdapdater = new DocsCapacitacionAdapter(DatosGenCapacitacion.this, R.layout.item_fotos_reclamogar, listaDocsFotos);
             lvFotosSG.setAdapter(docsAdapdater);
-        } else {
 
-            lvFotosSG.setAdapter(docsAdapdater);
         }
+
+        docsAdapdater.add(d);
+        docsAdapdater.notifyDataSetChanged();
     }
 
     public  void GuardarFoto(Bitmap bmp , String sCodFoto, String sTipoSincron){
@@ -643,11 +644,14 @@ public class DatosGenCapacitacion extends AppCompatActivity {
             rowid  =   db.InsertCapacitacionCliente(objCapacitacion);
         }else if (sOperacion.equals("MOD")){
             rowid   = db.UpdateCapacitacion(objCapacitacion);
+            rowid  = objCapacitacion.getN_correlativo();
         }
         if (rowid>0){
             Log.i("row id capacitacion ", String.valueOf(rowid));
             if (docsAdapdater!=null) {
                 docsAdapdater.SetNumero((int) rowid);
+                db.DeleteDocsCapacitacion(String.valueOf(objCapacitacion.getN_correlativo()));
+                Log.i("metodo delete cap  correlativo >" , String.valueOf(objCapacitacion.getN_correlativo()) );
                 ActualizarTablaLocalFotos(docsAdapdater.AllItems());
             }
             if (sTipoGuardado.equals("Local")) {

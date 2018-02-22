@@ -117,7 +117,7 @@ public class Login extends AppCompatActivity {
         } else{
 
         }
-       // copyFile();
+       copyFile();
       //  ShowDialogAlert();
 
         // instanciando controles

@@ -8,24 +8,24 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <Button
+                android:id="@+id/btnListOpciones"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Texto"
-                android:id="@+id/btnListOpciones"
-                android:background="@drawable/boton_rojo"
-                android:textColor="#FFF"
-                android:textStyle="bold"
-                android:textSize="18dp"
-                android:layout_marginLeft="5dp"
                 android:layout_margin="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
+                android:background="@drawable/sha_red_new"
                 android:gravity="left|center_vertical"
-                android:layout_marginRight="5dp" />
+                android:text="Texto"
+                android:textColor="#FFF"
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </RelativeLayout>

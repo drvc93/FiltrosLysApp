@@ -319,7 +319,8 @@ public class DatosGenQueja extends AppCompatActivity {
         }
         else {
 
-            lvFotosQJ.setAdapter(docsAdapdater);
+            docsAdapdater.add(d);
+            docsAdapdater.notifyDataSetChanged();
         }
 
 
@@ -699,11 +700,13 @@ public class DatosGenQueja extends AppCompatActivity {
         }
         else if (AccionQJ.equals("MOD")){
             rowid = db.UpdareQuejaCliente(objQueja);
+            rowid  = objQueja.getN_correlativo();
         }
 
         if (rowid>0){
             if (docsAdapdater!=null) {
                 docsAdapdater.SetNumero((int) rowid);
+                db.DeleteDocsQuejaCliente(String.valueOf(objQueja.getN_correlativo()));
                 ActualizarTablaLocalFotos(docsAdapdater.AllItems());
             }
             if (sTipoGuardado.equals("Local"))

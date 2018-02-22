@@ -494,6 +494,23 @@ public class ProdMantDataBase {
         return rowid;
     }
 
+    public  long DeleteReclamoGarantia( ReclamoGarantia  rg){
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MCO_RECLAMO_GARANTIA_NAME, "_id="+rg.getN_correlativo(),null);
+        this.CloseDB();
+        return rowid;
+    }
+
+    public long DeleteDocsReclamoGarantia (String sCorrlativo)  {
+        Log.i("delete docs rg" , sCorrlativo);
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MCO_DOCS_RECLAMOGARANTIA_NAME, "n_numero ="+sCorrlativo,null);
+        this.CloseDB();
+        return rowid;
+    }
+
+
+
 
     public long InsertInspGenDet(InspeccionGenDetalle det) {
         this.OpenWritableDB();
@@ -1476,9 +1493,23 @@ public class ProdMantDataBase {
         return rowid;
     }
 
+    public  long DeleteQuejaCliente (QuejaCliente qj){
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MCO_QUEJA_CLIENTE_NAME, "_id="+qj.getN_correlativo(),null);
+        this.CloseDB();
+        return rowid;
+    }
+
     public long InsertQuejaCliente(QuejaCliente qu) {
         this.OpenWritableDB();
         long rowid = db.insert(ConstasDB.MCO_QUEJA_CLIENTE_NAME, null, QuejaClienteContentValues(qu));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public long DeleteDocsQuejaCliente (String sCorrlativo){
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MCO_DOCS_QUEJACLIENTE_NAME, "n_queja ="+sCorrlativo,null);
         this.CloseDB();
         return rowid;
     }
@@ -1775,6 +1806,22 @@ public class ProdMantDataBase {
         return rowid;
     }
 
+    public  long DeleteSugerenciaCliente (SugerenciaCliente oEnt){
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MCO_SUGERENCIA_NAME, "_id="+oEnt.getN_correlativo(),null);
+        this.CloseDB();
+        return rowid;
+    }
+
+    public long DeleteDocsSugerenciaCliente(String sCorrlativo){
+        Log.i("delete doc sugerencia corrleativo" , sCorrlativo);
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MCO_DOCS_SUGERENCIA_NAME, "n_sugerencia="+sCorrlativo,null);
+        this.CloseDB();
+        Log.i("delete   doc sugerencia  row id" , String.valueOf(rowid));
+        return rowid;
+    }
+
     public ArrayList<SugerenciaCliente> GetListSugerenciaCliente (String sComp,String sCliente,String sEstado,String sFechaIni,String sFechaFin, String sTipoInfo){
         ArrayList<SugerenciaCliente> result = new ArrayList<>();
         String query = "SELECT * FROM MCO_SUGERENCIA " +
@@ -1915,6 +1962,13 @@ public class ProdMantDataBase {
         return rowid;
     }
 
+    public long DeleteCapacitacionCliente( CapacitacionCliente oEnt){
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MCO_SOLCAPACITACION_NAME, "_id="+oEnt.getN_correlativo(),null);
+        this.CloseDB();
+        return rowid;
+    }
+
     public  long UpdateCapacitacion (CapacitacionCliente oEnt){
         this.OpenWritableDB();
         long rowid = db.update(ConstasDB.MCO_SOLCAPACITACION_NAME, CapacitacionClienteContentValues(oEnt),"_id="+oEnt.getN_correlativo(),null);
@@ -2031,6 +2085,7 @@ public class ProdMantDataBase {
     public ArrayList<DocsReclamoGarantia> GetListDocsRG( String correlativo){
         ArrayList<DocsReclamoGarantia> oData = new ArrayList<>();
         String query = "select * from MCO_DOCS_RECLAMOGARANTIA WHERE n_numero = "+correlativo;
+        Log.i("docs reclamo g" , query);
         this.OpenWritableDB();
         Cursor cursor  =db.rawQuery(query,null);
         while (cursor.moveToNext()) {
@@ -2073,6 +2128,7 @@ public class ProdMantDataBase {
     public ArrayList<DocsQuejaCliente> GetListDocsQuejaCliente( String correlativo){
         ArrayList<DocsQuejaCliente> oData = new ArrayList<>();
         String query = "select * from MCO_DOCS_QUEJACLIENTE WHERE     n_queja = "+correlativo;
+        Log.i("docs qeuja cliente" , query);
         this.OpenWritableDB();
         Cursor cursor  =db.rawQuery(query,null);
         while (cursor.moveToNext()) {
@@ -2133,6 +2189,14 @@ public class ProdMantDataBase {
         return rowid;
     }
 
+    public  long DeleteDocsCapacitacion (String sCorrlativo){
+        Log.i("delete docs capa" , sCorrlativo);
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MCO_DOCS_CAPACITACION_NAME, "n_solicitud="+sCorrlativo,null);
+        this.CloseDB();
+        return rowid;
+    }
+
 
     public  ArrayList<DocsCapacitacion> GetListDocsCapacitacion (String correlativo ){
         ArrayList<DocsCapacitacion> oData = new ArrayList<>();
@@ -2158,13 +2222,14 @@ public class ProdMantDataBase {
 
     public  ArrayList<DocsSugerencia> GetListDocsSugerencia (String correlativo ){
         ArrayList<DocsSugerencia> oData = new ArrayList<>();
-        String query = "select * from MCO_SUGERENCIA WHERE     n_correlativo = "+correlativo;
+        String query = "select * from MCO_DOCS_SUGERENCIA WHERE     n_sugerencia = "+correlativo;
+        Log.i("DOCS SUGENRENCIA" , query);
         this.OpenWritableDB();
         Cursor cursor  =db.rawQuery(query,null);
         while (cursor.moveToNext()) {
             DocsSugerencia oEnt = new DocsSugerencia();
             oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
-            oEnt.setN_sugerencia(cursor.getInt(cursor.getColumnIndex("n_correlativo")));
+            oEnt.setN_sugerencia(cursor.getInt(cursor.getColumnIndex("n_sugerencia")));
             oEnt.setN_linea(cursor.getInt(cursor.getColumnIndex("n_linea")));
             oEnt.setC_descripcion(cursor.getString(cursor.getColumnIndex("c_descripcion")));
             oEnt.setC_nombre_archivo(cursor.getString(cursor.getColumnIndex("c_nombre_archivo")));

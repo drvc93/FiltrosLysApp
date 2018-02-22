@@ -109,18 +109,21 @@ public class SelecCliente extends AppCompatActivity {
                         intent.putExtra("Cliente",sCliente);
                         intent.putExtra("TipoInfo","SE");
                         startActivity(intent);
+                        break;
                     case 5:
                         intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
                         intent.putExtra("Operacion","NEW");
                         intent.putExtra("Cliente",sCliente);
                         intent.putExtra("TipoInfo","MP");
                         startActivity(intent);
+                        break;
                     case 6:
                         intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
                         intent.putExtra("Operacion","NEW");
                         intent.putExtra("Cliente",sCliente);
                         intent.putExtra("TipoInfo","CT");
                         startActivity(intent);
+                        break;
 
                 }
                 dialog.dismiss();

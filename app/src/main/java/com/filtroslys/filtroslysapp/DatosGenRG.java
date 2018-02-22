@@ -409,8 +409,10 @@ public class DatosGenRG extends AppCompatActivity {
             lvFotosRG.setAdapter(docsAdapdater);
         }
         else {
+            docsAdapdater.add(d);
+            docsAdapdater.notifyDataSetChanged();
+            //lvFotosRG.setAdapter(docsAdapdater);
 
-            lvFotosRG.setAdapter(docsAdapdater);
         }
 
 
@@ -791,11 +793,11 @@ public class DatosGenRG extends AppCompatActivity {
                 sFalla1="";sFalla2="";sFalla3="";
                 sFalla4="";sFalla5="";sPrueba1="";sPrueba2="";sPrueba3="";
 
-                if (spFalla1.getSelectedItemPosition()==0 && spFalla2.getSelectedItemPosition()==0 && spFalla3.getSelectedItemPosition()==0  && spFalla4.getSelectedItemPosition()==0  && spFalla5.getSelectedItemPosition()==0    ){
+               /* if (spFalla1.getSelectedItemPosition()==0 && spFalla2.getSelectedItemPosition()==0 && spFalla3.getSelectedItemPosition()==0  && spFalla4.getSelectedItemPosition()==0  && spFalla5.getSelectedItemPosition()==0    ){
                  ShowMessageWindow("Debe seleccioanr al menos un tipo de falla.");
                  nIndicadorLayout = nIndicadorLayout -1;
                  return;
-                }
+                }*/
                 if (spFalla1.getSelectedItemPosition()>0) {
                     sFalla1 = spFalla1.getSelectedItem().toString();
                     sFalla1 = sFalla1.substring(0, sFalla1.indexOf("|") - 1).trim();
@@ -891,11 +893,13 @@ public class DatosGenRG extends AppCompatActivity {
             rowid = db.InsertReclamoGarantia(objReclamo);
         }else if (sOperacion.equals("MOD")){
             rowid = db.UpdateReclamoGarantia(objReclamo);
+            rowid  = objReclamo.getN_correlativo();
         }
 
         if (rowid>0){
             if (docsAdapdater!=null) {
                 docsAdapdater.SetNumero((int) rowid);
+                db.DeleteDocsReclamoGarantia(String.valueOf(objReclamo.getN_correlativo()));
                 ActualizarTablaLocalFotos(docsAdapdater.AllItems());
             }
             Log.i("row id reclamog ", String.valueOf(rowid));
@@ -1525,7 +1529,7 @@ public class DatosGenRG extends AppCompatActivity {
 
         }
 
-        if (listaFotos == null){
+        if (listaFotos == null || listaFotos.size()==0){
             listaFotos =  new ArrayList<>();
         }
 

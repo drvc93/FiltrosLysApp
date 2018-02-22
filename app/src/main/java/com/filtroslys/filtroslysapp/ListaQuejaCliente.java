@@ -117,21 +117,7 @@ public class ListaQuejaCliente extends AppCompatActivity {
         lvQueja.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String sAccion = "";
-                QuejaCliente qj = new QuejaCliente();
-                if (sFlagOffOn.equals("ON")){
-                    qj = adapter.getObject(position);
-                }else if (sFlagOffOn.equals("OFF")){
-                    ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
-                    qj = db.GetQuejaClienteItem(String.valueOf( adapter.getObject(position).getN_correlativo()));
-                }
-                sAccion = qj.getC_enviado().equals("S") ? "VER" :"MOD" ;
-                Gson gson = new Gson();
-                String ObjectRG = gson.toJson(qj);
-                Intent intent = new Intent(ListaQuejaCliente.this, DatosGenQueja.class);
-                intent.putExtra("ObjectQJ", ObjectRG);
-                intent.putExtra("AccionQJ", sAccion);
-                startActivity(intent);
+                AlertSeleccionarOpcion(position);
             }
         });
     }
@@ -376,5 +362,53 @@ public class ListaQuejaCliente extends AppCompatActivity {
 
         txtFechaIni.setText("01/"+mes+"/"+String.valueOf(year));
         txtFechaFin.setText( dia+ "/"+mes+"/"+String.valueOf(year));
+    }
+    public void AlertSeleccionarOpcion(final int positem) {
+        String sItemOpcion = adapter.getObject(positem).getC_enviado().equals("S") ? "VER":"MODIFICAR";
+        final CharSequence[] items = { sItemOpcion,"ELIMINAR" };
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ListaQuejaCliente.this);
+        builder.setTitle("Selecciona opcion");
+        builder.setPositiveButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                switch (item){
+                    case 0:
+                        String sAccion = "";
+                        QuejaCliente qj = new QuejaCliente();
+                        if (sFlagOffOn.equals("ON")){
+                            qj = adapter.getObject(positem);
+                        }else if (sFlagOffOn.equals("OFF")){
+                            ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+                            qj = db.GetQuejaClienteItem(String.valueOf( adapter.getObject(positem).getN_correlativo()));
+                        }
+                        sAccion = qj.getC_enviado().equals("S") ? "VER" :"MOD" ;
+                        Gson gson = new Gson();
+                        String ObjectRG = gson.toJson(qj);
+                        Intent intent = new Intent(ListaQuejaCliente.this, DatosGenQueja.class);
+                        intent.putExtra("ObjectQJ", ObjectRG);
+                        intent.putExtra("AccionQJ", sAccion);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        if (adapter.getObject(positem).getC_enviado().equals("S")){
+                            FabToast.makeText(ListaQuejaCliente.this, "No se puede eliminar el registro.", FabToast.LENGTH_LONG, FabToast.WARNING,  FabToast.POSITION_DEFAULT).show();
+                            return;
+                        }
+                        else {
+                            adapter.RemoveItem(positem);
+                            adapter.notifyDataSetChanged();
+                        }
+                        break;
+                }
+                //  dialog.dismiss();
+            }
+        }).show();
     }
 }

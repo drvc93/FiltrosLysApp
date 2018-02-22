@@ -296,7 +296,8 @@ public class DatosGenSugerencia extends AppCompatActivity {
             lvFotosSG.setAdapter(docsAdapdater);
         } else {
 
-            lvFotosSG.setAdapter(docsAdapdater);
+            docsAdapdater.add(d);
+            docsAdapdater.notifyDataSetChanged();
         }
     }
 
@@ -530,6 +531,7 @@ public class DatosGenSugerencia extends AppCompatActivity {
              rowid  =   db.InsertSugerenciaCliente(objSugerencia);
         }else if (sOperacion.equals("MOD")){
              rowid   = db.UpdateSugerenciaCliente(objSugerencia);
+            rowid  = objSugerencia.getN_correlativo();
         }
 
 
@@ -537,6 +539,7 @@ public class DatosGenSugerencia extends AppCompatActivity {
             Log.i("row id sugerencia ", String.valueOf(rowid));
             if (docsAdapdater!=null) {
                 docsAdapdater.SetNumero((int) rowid);
+                db.DeleteDocsSugerenciaCliente(String.valueOf(objSugerencia.getN_correlativo()));
                 ActualizarTablaLocalFotos(docsAdapdater.AllItems());
             }
             if (sTipoGuardado.equals("Local")) {

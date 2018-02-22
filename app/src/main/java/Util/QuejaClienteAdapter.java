@@ -18,6 +18,7 @@ import java.util.Date;
 
 import DataBase.ProdMantDataBase;
 import Model.QuejaCliente;
+import spencerstudios.com.fab_toast.FabToast;
 
 public class QuejaClienteAdapter extends ArrayAdapter<QuejaCliente>{
 
@@ -111,5 +112,15 @@ public class QuejaClienteAdapter extends ArrayAdapter<QuejaCliente>{
 
     public QuejaCliente getObject (int pos){
         return  data.get(pos);
+    }
+
+    public void RemoveItem (int pos) {
+        long nResult = 0;
+        nResult = db.DeleteQuejaCliente(data.get(pos));
+        if (nResult>0)
+        {
+            data.remove(pos);
+            FabToast.makeText(context, "Se eliminó correctamente el registro.", FabToast.LENGTH_LONG, FabToast.SUCCESS, FabToast.POSITION_DEFAULT).show();
+        }
     }
 }

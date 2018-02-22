@@ -613,7 +613,7 @@ public class ConstasDB {
                     "c_ultimousuario TEXT, "+
                     "d_ultimafechamodificacion TEXT); ";
 
-    public static final String MCO_DOCS_SUGERENCIA_NAME = "MCO_DOCS_SUEGERENCIA";
+    public static final String MCO_DOCS_SUGERENCIA_NAME = "MCO_DOCS_SUGERENCIA";
     public static final String MCO_DOCS_SUGERENCIA_SQL =
             "CREATE TABLE "+ MCO_DOCS_SUGERENCIA_NAME +
                     " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+

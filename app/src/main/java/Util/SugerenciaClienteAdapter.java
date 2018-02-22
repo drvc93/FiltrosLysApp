@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import DataBase.ProdMantDataBase;
 import Model.SugerenciaCliente;
+import spencerstudios.com.fab_toast.FabToast;
 
 public class SugerenciaClienteAdapter extends ArrayAdapter<SugerenciaCliente>{
 
@@ -108,5 +109,14 @@ public class SugerenciaClienteAdapter extends ArrayAdapter<SugerenciaCliente>{
 
     public  SugerenciaCliente getObject (int pos){
         return  data.get(pos);
+    }
+    public void RemoveItem (int pos) {
+        long nResult = 0;
+        nResult = db.DeleteSugerenciaCliente(data.get(pos));
+        if (nResult>0)
+        {
+            data.remove(pos);
+            FabToast.makeText(context, "Se eliminó correctamente el registro.", FabToast.LENGTH_LONG, FabToast.SUCCESS, FabToast.POSITION_DEFAULT).show();
+        }
     }
 }

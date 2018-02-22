@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import DataBase.ProdMantDataBase;
 import Model.CapacitacionCliente;
+import spencerstudios.com.fab_toast.FabToast;
 
 public class CapacitacionClienteAdapter extends ArrayAdapter<CapacitacionCliente>{
 
@@ -153,6 +154,14 @@ public class CapacitacionClienteAdapter extends ArrayAdapter<CapacitacionCliente
     public  CapacitacionCliente getObject (int pos){
         return  data.get(pos);
     }
-
+    public void RemoveItem (int pos) {
+        long nResult = 0;
+        nResult = db.DeleteCapacitacionCliente(data.get(pos));
+        if (nResult>0)
+        {
+            data.remove(pos);
+            FabToast.makeText(context, "Se eliminó correctamente el registro.", FabToast.LENGTH_LONG, FabToast.SUCCESS, FabToast.POSITION_DEFAULT).show();
+        }
+    }
 
 }
