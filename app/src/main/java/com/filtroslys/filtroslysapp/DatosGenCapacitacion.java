@@ -440,10 +440,8 @@ public class DatosGenCapacitacion extends AppCompatActivity {
         d.setC_compania(Constans.NroConpania);
 
         if (docsAdapdater == null) {
-
             docsAdapdater = new DocsCapacitacionAdapter(DatosGenCapacitacion.this, R.layout.item_fotos_reclamogar, listaDocsFotos);
             lvFotosSG.setAdapter(docsAdapdater);
-
         }
 
         docsAdapdater.add(d);

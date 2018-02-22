@@ -289,16 +289,12 @@ public class DatosGenSugerencia extends AppCompatActivity {
         d.setC_nombre_archivo(sCodFoto);
         d.setC_ruta_archivo(sCodFoto + ".jpg");
         d.setC_compania(Constans.NroConpania);
-        listaDocsFotos.add(d);
         if (docsAdapdater == null) {
-
             docsAdapdater = new DocsSugerenciaAdapter(DatosGenSugerencia.this, R.layout.item_fotos_reclamogar, listaDocsFotos);
             lvFotosSG.setAdapter(docsAdapdater);
-        } else {
-
-            docsAdapdater.add(d);
-            docsAdapdater.notifyDataSetChanged();
         }
+        docsAdapdater.add(d);
+        docsAdapdater.notifyDataSetChanged();
     }
 
     public void AlertAgregarFotos(){

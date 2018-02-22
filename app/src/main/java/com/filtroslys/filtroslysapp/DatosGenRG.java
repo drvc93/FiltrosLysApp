@@ -402,20 +402,15 @@ public class DatosGenRG extends AppCompatActivity {
         d.setC_nombre_archivo(sCodFoto);
         d.setC_ruta_archivo(sCodFoto+".jpg");
         d.setC_compania(Constans.NroConpania);
-        listaDocsFotos.add(d);
         if (docsAdapdater==null) {
 
             docsAdapdater = new DocsReclamoGarantiaAdapter(DatosGenRG.this, R.layout.item_fotos_reclamogar, listaDocsFotos);
             lvFotosRG.setAdapter(docsAdapdater);
         }
-        else {
-            docsAdapdater.add(d);
-            docsAdapdater.notifyDataSetChanged();
-            //lvFotosRG.setAdapter(docsAdapdater);
-
-        }
 
 
+        docsAdapdater.add(d);
+        docsAdapdater.notifyDataSetChanged();
         //.setAdapter(adapter);
     }
     public  void GuardarFoto(Bitmap bmp , String sCodFoto, String sTipoSincron){

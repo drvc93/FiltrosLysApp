@@ -311,19 +311,16 @@ public class DatosGenQueja extends AppCompatActivity {
         d.setC_nombre_archivo(sCodFoto);
         d.setC_ruta_archivo(sCodFoto+".jpg");
         d.setC_compania(Constans.NroConpania);
-        listaDocsFotos.add(d);
+
         if (docsAdapdater==null) {
 
             docsAdapdater = new DocsQuejaClienteAdapater(DatosGenQueja.this, R.layout.item_fotos_reclamogar, listaDocsFotos);
             lvFotosQJ.setAdapter(docsAdapdater);
         }
-        else {
-
-            docsAdapdater.add(d);
-            docsAdapdater.notifyDataSetChanged();
-        }
 
 
+        docsAdapdater.add(d);
+        docsAdapdater.notifyDataSetChanged();
         //.setAdapter(adapter);
     }
 
