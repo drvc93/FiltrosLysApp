@@ -293,6 +293,12 @@ public class MenuOpciones extends AppCompatActivity {
 
             AlertSyncro("ACCESOS");
         }
+
+        if (var_concatenado.equals("030201")){
+
+           Intent intent = new Intent(this,VisorWebDescargas.class);
+           startActivity(intent);
+        }
         if (var_concatenado.equals("040101")) {
 
             Intent intent = new Intent(MenuOpciones.this, Configuracion.class);

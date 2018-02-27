@@ -117,6 +117,7 @@ public class InspeccionGen extends AppCompatActivity {
         txtProblemadetect.setEnabled(false);
         preferences = PreferenceManager.getDefaultSharedPreferences(InspeccionGen.this);
         codUser = preferences.getString("UserCod", null);
+        lblInspector.setText(codUser);
 
 
         txtFechaInsp.setText(FechaActual());

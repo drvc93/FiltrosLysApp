@@ -454,24 +454,18 @@ public class DatosGenCapacitacion extends AppCompatActivity {
         if (!DirExist.exists()){
             DirExist.mkdir();
         }
-
-
         String filename =   Constans.Carpeta_foto_CP+sCodFoto+".jpg";
         File sd = Environment.getExternalStorageDirectory();
-
         File dest = new File(sd, filename);
         Log.i("Destino",dest.getPath());
-        Bitmap bitmap = bmp ;
         try {
             FileOutputStream out = new FileOutputStream(dest);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void VaLidacionFinal(){
@@ -538,10 +532,8 @@ public class DatosGenCapacitacion extends AppCompatActivity {
             ShowMessageWindow("Debe Ingresar Numero de Personas.");
             return;
         }
-
         DateFormat DateFrm = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         sFechaReg = DateFrm.format(Calendar.getInstance().getTime());
-
         sLug = spLugarCP.getSelectedItem().toString();
         sLug = sLug.substring(0,sLug.indexOf("|")-1).trim();
         objCapacitacion.setC_compania(Constans.NroConpania);

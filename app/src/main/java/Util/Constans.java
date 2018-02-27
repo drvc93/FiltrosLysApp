@@ -46,8 +46,9 @@ public class Constans {
     public static  String Carpeta_foto_CP= "LysConfig/FotosCP/";
     public static final String NroConpania = "00100000";
     public static  final  String FolderConfig ="appConfig";
-    public static  final  String IPDefault  ="100.100.100.57:8080" ;//"190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
+    public static  final  String IPDefault  ="190.187.181.56:80" ;//"190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
     public static  final  String FolderWs = "LysWsRest" ;
+    public static  final  String IpDescarga = "190.187.181.56";//"190.187.181.56";// "100.100.100.186:8080";
 
     public static void SetConexion(String LocalOExt, String con) {
 

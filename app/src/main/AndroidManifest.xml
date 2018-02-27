@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SEND_RESPOND_VIA_MESSAGE" />
     <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.BROADCAST_SMS"
         tools:ignore="ProtectedPermissions" />
@@ -50,7 +50,9 @@
         <activity android:name=".ListaSugerenciaCliente" />
         <activity android:name=".DatosGenCapacitacion" />
         <activity android:name=".ListaCapacitacionCliente" />
-        <activity android:name=".SelecCliente"></activity>
+        <activity android:name=".SelecCliente" />
+        <activity android:name=".Descargas" />
+        <activity android:name=".VisorWebDescargas"></activity>
     </application>
 
 </manifest>

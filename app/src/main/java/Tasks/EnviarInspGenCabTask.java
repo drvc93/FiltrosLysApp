@@ -38,7 +38,7 @@ public class EnviarInspGenCabTask extends AsyncTask<String, String, String> {
         request.addProperty("UltUsuario", strings[10]);
 
 
-        Log.i ("compani", strings[0]);
+        Log.i ("compania", strings[0]);
         Log.i("correlativo", strings[1]);
         Log.i("tipoInsp", strings[2]);
         Log.i("codMaq", strings[3]);
