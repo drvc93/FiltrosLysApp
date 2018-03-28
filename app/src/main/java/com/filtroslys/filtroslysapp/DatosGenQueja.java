@@ -88,6 +88,7 @@ import Tasks.TransferirQuejaClienteTask;
 import Tasks.TransferirReclamoGarantiaTask;
 import Tasks.VerificarItemExisteTask;
 import Util.Constans;
+import Util.Funciones;
 import br.com.sapereaude.maskedEditText.MaskedEditText;
 import libs.mjn.prettydialog.PrettyDialog;
 import spencerstudios.com.fab_toast.FabToast;
@@ -694,10 +695,12 @@ public class DatosGenQueja extends AppCompatActivity {
         objQueja.setC_enviado(sTipoGuardado.equals("Local")? "N":"S");
         if (AccionQJ.equals("NEW")) {
             rowid = db.InsertQuejaCliente(objQueja);
+            Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Guardó Queja Cliente Localmente | "+txtBSClienteQJ.getText().toString()+" ]");
         }
         else if (AccionQJ.equals("MOD")){
             rowid = db.UpdareQuejaCliente(objQueja);
             rowid  = objQueja.getN_correlativo();
+            Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Actulizó Queja Cliente Localmente | "+txtBSClienteQJ.getText().toString()+" ]");
         }
 
         if (rowid>0){
@@ -775,6 +778,7 @@ public class DatosGenQueja extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (sResultTrasnf.equals("OK")){
+                    Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Guardo Queja Cliente en el servidor | "+txtBSClienteQJ.getText().toString()+" ]");
                     if (docsAdapdater!=null && docsAdapdater.getCount()>0){
                         GuardarFotoEnServer(docsAdapdater.AllItems());
                     }

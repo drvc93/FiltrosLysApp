@@ -48,8 +48,7 @@ public class GetAccesosDataTask extends AsyncTask<String,String,ArrayList<Acceso
         final String METHOD_NAME = "GetDataAccesos";
         final String SOAP_ACTION = NAMESPACE + METHOD_NAME;
         SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
-
-        //request.addProperty("CodUsuario", strings[0]);
+        request.addProperty("usuario", strings[0]);
 
 
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);

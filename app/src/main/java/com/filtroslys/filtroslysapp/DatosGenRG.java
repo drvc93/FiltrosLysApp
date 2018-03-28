@@ -90,6 +90,7 @@ import Tasks.InsertReclamoGarantiaTask;
 import Tasks.TransferirReclamoGarantiaTask;
 import Tasks.VerificarItemExisteTask;
 import Util.Constans;
+import Util.Funciones;
 import br.com.sapereaude.maskedEditText.MaskedEditText;
 import libs.mjn.prettydialog.PrettyDialog;
 import spencerstudios.com.fab_toast.FabToast;
@@ -886,9 +887,11 @@ public class DatosGenRG extends AppCompatActivity {
         objReclamo.setC_enviado(sTipoGuardado.equals("Local")?"N":"S");
         if (sOperacion.equals("NEW")){
             rowid = db.InsertReclamoGarantia(objReclamo);
+            Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Guardó Reclamo Grantia Localmente | "+txtClienteCodNom.getText().toString()+" ]");
         }else if (sOperacion.equals("MOD")){
             rowid = db.UpdateReclamoGarantia(objReclamo);
             rowid  = objReclamo.getN_correlativo();
+            Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Guardó Reclamo Grantia Localmente | "+txtClienteCodNom.getText().toString()+" ]");
         }
 
         if (rowid>0){
@@ -943,6 +946,7 @@ public class DatosGenRG extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (InserRG.equals("OK")){
+                Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Guardó Reclamo Grantia en servidor | "+txtClienteCodNom.getText().toString()+" ]");
                 if (docsAdapdater!=null) {
                     docsAdapdater.SetNumero(Integer.valueOf(sCorrelativoRG));
                     ActualizarTablaServerFotos(docsAdapdater.AllItems());
@@ -1680,6 +1684,7 @@ public class DatosGenRG extends AppCompatActivity {
         dialog.show();
 
     }
+
 
 
 

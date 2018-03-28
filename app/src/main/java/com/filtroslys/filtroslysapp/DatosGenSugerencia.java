@@ -77,6 +77,7 @@ import Tasks.InsertDocsSugerenciaTask;
 import Tasks.InsertSugerenciaClienteTask;
 import Tasks.TransferirSugerenciaClienteTask;
 import Util.Constans;
+import Util.Funciones;
 import br.com.sapereaude.maskedEditText.MaskedEditText;
 import libs.mjn.prettydialog.PrettyDialog;
 import spencerstudios.com.fab_toast.FabToast;
@@ -525,9 +526,12 @@ public class DatosGenSugerencia extends AppCompatActivity {
         objSugerencia.setC_enviado(sTipoGuardado.equals("Local")?"N":"S");
         if (sOperacion.equals("NEW")) {
              rowid  =   db.InsertSugerenciaCliente(objSugerencia);
+            Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Guardó "+getDescripcionSug()+" Localmente | "+txtClienteCodNom.getText().toString()+" ]");
         }else if (sOperacion.equals("MOD")){
              rowid   = db.UpdateSugerenciaCliente(objSugerencia);
             rowid  = objSugerencia.getN_correlativo();
+            Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Actulizó "+getDescripcionSug()+" Localmente | "+txtClienteCodNom.getText().toString()+" ]");
+
         }
 
 
@@ -591,6 +595,7 @@ public class DatosGenSugerencia extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (sResultTrasnf.equals("OK")){
+                    Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Guardó "+getDescripcionSug()+" en servidor | "+txtClienteCodNom.getText().toString()+" ]");
                     if (docsAdapdater!=null && docsAdapdater.getCount()>0){
                         GuardarFotoEnServer(docsAdapdater.AllItems());
                     }
@@ -986,5 +991,24 @@ public class DatosGenSugerencia extends AppCompatActivity {
 
         dialog.show();
 
+    }
+
+    public  String getDescripcionSug (){
+        String result = "";
+        switch (sTipoInfo){
+            case "SU":
+                result = "Sugerencia";
+                break;
+            case "SE":
+                result = "Compra Especial";
+                break;
+            case "MP":
+                result ="Sol.Mat.Public.";
+                break;
+            case "CT":
+                result = " Consulta Tecnica";
+                break;
+        }
+        return  result;
     }
 }

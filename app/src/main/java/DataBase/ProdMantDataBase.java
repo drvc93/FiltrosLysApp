@@ -1,30 +1,25 @@
 package DataBase;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-
-import com.filtroslys.filtroslysapp.InspeccionGen;
-import com.filtroslys.filtroslysapp.ListaReclamoGarantia;
-import com.filtroslys.filtroslysapp.R;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import Model.CapacitacionCliente;
+import Model.DatosAuditoria;
 import Model.DocsCapacitacion;
 import Model.DocsQuejaCliente;
 import Model.DocsReclamoGarantia;
 import Model.DocsSugerencia;
+import Model.EventoAuditoriaAPP;
+import Model.IMEMovil;
 import Model.InspeccionGenCabecera;
 import Model.InspeccionGenDetalle;
 import Model.InspeccionMaqCabecera;
 import Model.InspeccionMaqDetalle;
 import Model.Menu;
+import Model.Parametros;
 import Model.Permisos;
 import Model.QuejaCliente;
 import Model.ReclamoGarantia;
@@ -47,9 +42,7 @@ import Model.TMATipoReclamo;
 import Model.TMATipoSugerencia;
 import Model.TMAVendedor;
 
-/**
- * Created by dvillanueva on 04/08/2016.
- */
+
 public class ProdMantDataBase {
 
     private SQLiteDatabase db;
@@ -272,14 +265,7 @@ public class ProdMantDataBase {
         return  contentValues;
 
     }
-    public  Long InsertTMACliente (TMACliente tmaCli){
 
-
-        this.OpenWritableDB();
-        long rowid = db.insert(ConstasDB.TMA_CLIENTES_NAME, null, TMAClientesContentValues(tmaCli));
-        this.CloseDB();
-        return rowid;
-    }
 
     public void InsertMasivoClientes(ArrayList<TMACliente> list) {
         Log.i("INICIO INSERT MASIVO","  CLIENTES");
@@ -508,26 +494,18 @@ public class ProdMantDataBase {
         this.CloseDB();
         return rowid;
     }
-
-
-
-
     public long InsertInspGenDet(InspeccionGenDetalle det) {
         this.OpenWritableDB();
         long rowid = db.insert(ConstasDB.TABLA_MTP_INSPECCIONGENERAL_DET_NAME, null, InspGenDetContentValues(det));
         this.CloseDB();
         return rowid;
-
     }
 
     public long InsertInspGenCab(InspeccionGenCabecera insp) {
         this.OpenWritableDB();
         long rowid = db.insert(ConstasDB.TABLA_MTP_INSPECCIONGENERAL_CAB_NAME, null, InspGenCabContentValues(insp));
-
         this.CloseDB();
         return rowid;
-
-
     }
 
     public long InsertTipoRevision(TipoRevisionGBD tp) {
@@ -539,7 +517,6 @@ public class ProdMantDataBase {
     }
 
     public  long InsertCentroCosto (CentroCostoDB c){
-
         this.OpenWritableDB();
         long rowid = db.insert(ConstasDB.TABLA_MTP_CENTROCOSTO_NAME, null,CentroCostoContentValues(c));
         this.CloseDB();
@@ -727,14 +704,14 @@ public class ProdMantDataBase {
 
     public ArrayList<HistorialInspMaqDB> GetHistorialInspList(String accion, String maq, String cenctroC, String FIni, String FFin) {
         String query = "";
-        ArrayList<HistorialInspMaqDB> listResul = new ArrayList<HistorialInspMaqDB>();
+        ArrayList<HistorialInspMaqDB> listResul = new ArrayList<>();
         this.OpenWritableDB();
         Cursor c;
         switch (accion) {
             case "1":
                 query = "select cab.n_correlativo , substr(cab.d_fechaInicioInspeccion,0,11 ) Fecha, cab.c_maquina, maq.c_centrocosto, per.c_descripcion,cab.c_ultimousuario,cab.c_comentario,cab.c_estado  from MTP_INSPECCIONMAQUINA_CAB cab " +
-                        "inner join  MTP_MAQUINAS maq on cab.c_maquina  = maq.c_maquina " +
-                        " inner join  MTP_PERIODOINSPECCION per on per.c_periodoinspeccion = cab.c_periodoinspeccion";
+                        "inner join  MTP_MAQUINAS maq on cab.c_maquina  = maq.c_maquina        " +
+                " inner join  MTP_PERIODOINSPECCION per on per.c_periodoinspeccion = cab.c_periodoinspeccion";
 
                 break;
             case "2":
@@ -850,7 +827,7 @@ public class ProdMantDataBase {
         String query = "SELECT  substr(ma.c_niveles, 1, 2)  as CodPadre, substr(ma.c_niveles, 3, 2)  as CosSubMenu,mn.c_descripcion,'1' estado, c_usuario FROM MTP_ACCESO ma  inner join MTP_MENUS mn on " +
                 " CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) = nivel1 and " +
                 "CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) = nivel2 and CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) = nivel3 and CAST(substr(ma.c_niveles, 7, 2) AS INTEGER) = nivel4  and CAST(substr(ma.c_niveles, 9, 2) AS INTEGER) = nivel5 " +
-                "where  CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) = 0  and  CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) >0 and  CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) >0 ";
+                "where  CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) = 0  and  CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) >0 and  CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) >0 and c_acceso='S' ";
         this.OpenWritableDB();
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
@@ -868,13 +845,13 @@ public class ProdMantDataBase {
     }
 
     public ArrayList<SubMenuBotones> getSubBotones(String codPadre, String codSubMenu, String codUser) {
-        ArrayList<SubMenuBotones> result = new ArrayList<SubMenuBotones>();
+        ArrayList<SubMenuBotones> result = new ArrayList<>();
         String query = "SELECT  substr(ma.c_niveles, 5, 2)  as CodBoton, substr(ma.c_niveles, 1, 2)  as CodPadre, substr(ma.c_niveles, 3, 2)  as CosSubMenu,mn.c_descripcion,'1' estado, c_usuario " +
                 "FROM MTP_ACCESO ma  inner join MTP_MENUS mn on  CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) = nivel1 and CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) = nivel2 and CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) = nivel3 and " +
                 "CAST(substr(ma.c_niveles, 7, 2) AS INTEGER) = nivel4  and " +
                 "CAST(substr(ma.c_niveles, 9, 2) AS INTEGER) = nivel5 " +
                 "where  CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) = " + codSubMenu + " and  CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) = " + codPadre + " and  CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) >0  \n" +
-                "and CAST(substr(ma.c_niveles, 7, 2) AS INTEGER) =0 ";
+                "and CAST(substr(ma.c_niveles, 7, 2) AS INTEGER) =0 and c_acceso = 'S' ";
         this.OpenWritableDB();
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
@@ -897,7 +874,7 @@ public class ProdMantDataBase {
         String sqlQuery = "SELECT  substr(ma.c_niveles, 1, 2)  as CodPadre, mn.c_descripcion,mn.AplicacionCodigo, c_usuario FROM MTP_ACCESO ma  inner join MTP_MENUS mn on " +
                 " CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) = nivel1 and CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) = nivel2 and " +
                 "CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) = nivel3 and CAST(substr(ma.c_niveles, 7, 2) AS INTEGER) = nivel4  and CAST(substr(ma.c_niveles, 9, 2) AS INTEGER) = nivel5  " +
-                "where  CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) =0";
+                "where  CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) =0 AND c_acceso= 'S'";
         this.OpenWritableDB();
         Cursor cursor = db.rawQuery(sqlQuery, null);
         while (cursor.moveToNext()) {
@@ -1032,7 +1009,8 @@ public class ProdMantDataBase {
         InspeccionGenCabecera cab = new InspeccionGenCabecera();
         String query = "SELECT * FROM MTP_INSPECCIONGENERAL_CAB where n_correlativo = '" + correlativo + "'";
         this.OpenWritableDB();
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor;
+        cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
 
             cab.setCompania(cursor.getString(1));
@@ -1298,7 +1276,7 @@ public class ProdMantDataBase {
     }
 
     //Insert Tipo Calificacion
-    public ContentValues TMATipoCalifQJContentValues(TMATipoCalificacionQueja oEnt){
+    private ContentValues TMATipoCalifQJContentValues(TMATipoCalificacionQueja oEnt){
         ContentValues contentValues = new ContentValues();
         contentValues.put("c_tipocalificacion", oEnt.getC_tipocalificacion());
         contentValues.put("c_calificacion", oEnt.getC_calificacion());
@@ -1331,7 +1309,7 @@ public class ProdMantDataBase {
     }
 
     //Insert Acciones Tomar
-    public ContentValues TMAAccionTomarQJContentValues(TMAAccionesTomar oEnt){
+    private ContentValues TMAAccionTomarQJContentValues(TMAAccionesTomar oEnt){
         ContentValues contentValues = new ContentValues();
         contentValues.put("c_codaccion", oEnt.getC_codaccion());
         contentValues.put("c_descripcion",oEnt.getC_descripcion());
@@ -1463,7 +1441,7 @@ public class ProdMantDataBase {
     }
 
     //Insert QUEJA CLIENTE
-    public ContentValues QuejaClienteContentValues (QuejaCliente qj){
+    private ContentValues QuejaClienteContentValues(QuejaCliente qj){
         ContentValues contentValues = new ContentValues();
         contentValues.put("c_compania",qj.getC_compania());
         contentValues.put("n_correlativo",qj.getN_correlativo());
@@ -1521,7 +1499,8 @@ public class ProdMantDataBase {
                 "and cast(n_cliente as text) like '"+sCliente+"' and c_estado like '"+sEstado+"' and c_compania  like '"+sComp+"' and c_enviado='N';";
         Log.i("query quejas " ,query);
         this.OpenWritableDB();
-        Cursor cursor  =db.rawQuery(query,null);
+        Cursor cursor;
+        cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()) {
             QuejaCliente oEnt = new QuejaCliente();
             oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
@@ -1555,7 +1534,8 @@ public class ProdMantDataBase {
         String query = "SELECT * FROM MCO_QUEJAS  where _id="+sCorrrelativo;
         Log.i("query quejas " ,query);
         this.OpenWritableDB();
-        Cursor cursor  =db.rawQuery(query,null);
+        Cursor cursor;
+        cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()) {
 
             oEnt.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
@@ -1649,7 +1629,8 @@ public class ProdMantDataBase {
         String query = "SELECT  * FROM MCO_RECLAMOGARANTIA where _id="+sId;
         Log.i("query reclamo garantia " ,query);
         this.OpenWritableDB();
-        Cursor cursor  =db.rawQuery(query,null);
+        Cursor cursor;
+        cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()) {
             r.setC_compania(cursor.getString(cursor.getColumnIndex("c_compania")));
             r.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
@@ -2241,7 +2222,343 @@ public class ProdMantDataBase {
         return oData;
     }
 
+    /*** DATOS AUDITORIA /****/
 
+    public  ContentValues ContentValuesDatosAudit(DatosAuditoria dat){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("n_correlativo",dat.getN_correlativo());
+        contentValues.put("d_fechaserv",dat.getD_fechaserv());
+        contentValues.put("c_origen",dat.getC_origen());
+        contentValues.put("c_usuario" ,  dat.getC_usuario());
+        contentValues.put("c_codIntApp", dat.getC_codIntApp());
+        contentValues.put("d_hora",dat.getD_hora());
+        contentValues.put("c_tipo",dat.getC_tipo());
+        contentValues.put("c_imei",dat.getC_imei());
+        contentValues.put("c_movil",dat.getC_movil());
+        contentValues.put("c_enviado",dat.getC_enviado());
+        contentValues.put("c_seriechip",dat.getC_seriechip());
+        return  contentValues ;
+    }
+
+
+    public long  InsertMaDatosAuditoria(DatosAuditoria oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MA_AUDITORIAAPP_NAME, null, ContentValuesDatosAudit(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  ArrayList<DatosAuditoria> ListaAuditoriasPorEnviar(){
+        ArrayList<DatosAuditoria> oData = new ArrayList<>();
+        String query = "select * from MA_AUDITORIAPP WHERE    c_enviado = 'N'";
+        Log.i("MA_AUDITORIAPP no enviados " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            DatosAuditoria oEnt = new DatosAuditoria();
+            oEnt.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            oEnt.setD_fechaserv(cursor.getString(cursor.getColumnIndex("d_fechaserv")));
+            oEnt.setC_origen(cursor.getString(cursor.getColumnIndex("c_origen")));
+            oEnt.setC_usuario(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            oEnt.setC_codIntApp(cursor.getString(cursor.getColumnIndex("c_codIntApp")));
+            oEnt.setD_hora(cursor.getString(cursor.getColumnIndex("d_hora")));
+            oEnt.setC_tipo(cursor.getString(cursor.getColumnIndex("c_tipo")));
+            oEnt.setC_imei(cursor.getString(cursor.getColumnIndex("c_imei")));
+            oEnt.setC_movil(cursor.getString(cursor.getColumnIndex("c_movil")));
+            oEnt.setC_seriechip(cursor.getString(cursor.getColumnIndex("c_seriechip")));
+            oEnt.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    public  long EliminarAudotiriaLocal (String sID){
+
+        Log.i("Auditoria ID " , sID);
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MA_AUDITORIAAPP_NAME, "_id="+sID,null);
+        this.CloseDB();
+        return rowid;
+    }
+
+    /**********************FIN****************************/
+
+    /************************TABLA IMEI CELULARES ****/
+
+    public  ContentValues IMEICelularContentValues(IMEMovil im){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_imei",im.getC_imei());
+        contentValues.put("c_tipo",im.getC_tipo());
+        contentValues.put("c_numero",im.getC_numero());
+        contentValues.put("c_seriechip" ,  im.getC_seriechip());
+        contentValues.put("d_fechareg", im.getD_fechareg());
+        contentValues.put("c_estado",im.getC_estado());
+        contentValues.put("c_ultimousuario",im.getC_ultimousuario());
+        contentValues.put("d_ultimafechamodificacion",im.getD_ultimafechamodificacion());
+        return  contentValues ;
+    }
+
+    public long  InsertIMEIMovil(IMEMovil oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MA_IMECELULAR_NAME, null, IMEICelularContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  long UpdateIMEIMovil (IMEMovil oEnt){
+        this.OpenWritableDB();
+        long rowid = db.update(ConstasDB.MA_IMECELULAR_NAME, IMEICelularContentValues(oEnt),"c_imei="+oEnt.getC_imei(),null);
+        this.CloseDB();
+        return rowid;
+    }
+
+
+    public  int ExiteIMEI(String imei){
+        int resultcont = 0 ;
+        String query = "select count (*) n_contador from  MA_IMEICELULAR WHERE c_imei = '"+imei+"'";
+        Log.i("existe imei query " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+             resultcont =  cursor.getInt(cursor.getColumnIndex("n_contador"));
+
+        }
+        return resultcont;
+    }
+    public boolean ValidarIMEINumeroMovil(String sImei , String sNumeroMovil){
+        boolean result = false ;
+
+        int resultcont = 0 ;
+        String query = "select count(*) n_contador from "+ConstasDB.MA_IMECELULAR_NAME+" where  trim(c_numero) = '"+sNumeroMovil+"' and trim(c_imei) ='"+sImei+"'";
+        Log.i("existe imei-numero movil query " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            resultcont =  cursor.getInt(cursor.getColumnIndex("n_contador"));
+
+        }
+
+        if (resultcont > 0){
+            result = true;
+        }
+        else if (resultcont<=0){
+            result =false;
+        }
+
+        return result;
+    }
+
+    public boolean ValidarIMEISerialChip(String sImei , String sSerialSim){
+        boolean result = false ;
+
+        int resultcont = 0 ;
+        String query = "select count(*) n_contador from "+ConstasDB.MA_IMECELULAR_NAME+" where  trim(c_seriechip) = '"+sSerialSim+"' and trim(c_imei) ='"+sImei+"'";
+        Log.i("existe imei-seriechip movil query " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            resultcont =  cursor.getInt(cursor.getColumnIndex("n_contador"));
+
+        }
+
+        if (resultcont > 0){
+            result = true;
+        }
+        else if (resultcont<=0){
+            result =false;
+        }
+
+        return result;
+    }
+
+    public boolean ValidarEstadoImei(String sImei ){
+        boolean result = false ;
+
+        int resultcont = 0 ;
+        String query = "select count(*) n_contador from "+ConstasDB.MA_IMECELULAR_NAME+" where   trim(c_imei) ='"+sImei+"' and c_estado = 'A'";
+        Log.i("existe validando estado imei query " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            resultcont =  cursor.getInt(cursor.getColumnIndex("n_contador"));
+
+        }
+
+        if (resultcont > 0){
+            result = true;
+        }
+        else if (resultcont<=0){
+            result =false;
+        }
+
+        return result;
+    }
+
+
+    /**********************FIN****************************/
+
+    /******************TABLA PARAMETROS *************************/
+
+    public  ContentValues ParametrosContentValues (Parametros p){
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("c_compania",p.getC_compania());
+        contentValues.put("c_aplicacion",p.getC_aplicacion());
+        contentValues.put("c_parametrocodigo",p.getC_parametrocodigo());
+        contentValues.put("c_descripcion",p.getC_descripcion());
+        contentValues.put("c_texto",p.getC_texto());
+        contentValues.put("c_ultusuario",p.getC_ultusuario());
+        contentValues.put("c_ultfechamodificacion",p.getC_ultfechamodificacion());
+        contentValues.put("n_numero",p.getN_numero());
+        contentValues.put("d_fecha",p.getD_fecha());
+        return  contentValues ;
+
+    }
+
+    public long  InsertParametro(Parametros oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MA_PARMAETROS_NAME, null, ParametrosContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  long UpdateParametro(Parametros oEnt){
+        this.OpenWritableDB();
+        long rowid = db.update(ConstasDB.MA_PARMAETROS_NAME, ParametrosContentValues(oEnt),"c_parametrocodigo='"+oEnt.getC_parametrocodigo() +"' and c_compania ='" + oEnt.getC_compania()+"'",null);
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  int ExiteParametro(String parametrocod, String sCompania){
+        int resultcont = 0 ;
+        String query = "select count (*) n_contador from  "+ConstasDB.MA_PARMAETROS_NAME+" WHERE c_parametrocodigo = '"+parametrocod+"' and c_compania = '"+sCompania+"'";
+        Log.i("existe parametro query " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            resultcont =  cursor.getInt(cursor.getColumnIndex("n_contador"));
+
+        }
+        return resultcont;
+    }
+
+    public  int ObtenerParametroNumero (String parametroCodigo ,String Compania){
+        int resultcont = 0 ;
+        String query = "select * from  "+ConstasDB.MA_PARMAETROS_NAME+" WHERE c_parametrocodigo = '"+parametroCodigo+"' and c_compania = '"+Compania+"'";
+        Log.i("Parmaetro ("+parametroCodigo+") " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            resultcont =  cursor.getInt(cursor.getColumnIndex("n_numero"));
+
+        }
+        return resultcont;
+    }
+
+    public  String ObtenerParametroFecha (String parametroCodigo ,String Compania){
+        String resultreturn = "" ;
+        String query = "select * from  "+ConstasDB.MA_PARMAETROS_NAME+" WHERE c_parametrocodigo = '"+parametroCodigo+"' and c_compania = '"+Compania+"'";
+        Log.i("Parmaetro ("+parametroCodigo+") " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            resultreturn =  cursor.getString(cursor.getColumnIndex("d_fecha"));
+
+        }
+        return resultreturn;
+    }
+    /*/*********************** FIN ********************************/
+
+    /******************TABLA EVENTO AUDITORIA *************************/
+
+    public  ContentValues EventoAuidtoriaAPPContentValues(EventoAuditoriaAPP ev){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("n_correlativo",ev.getN_correlativo());
+        contentValues.put("d_fechaserv",ev.getD_fechaserv());
+        contentValues.put("c_origen",ev.getC_origen());
+        contentValues.put("c_imei",ev.getC_imei());
+        contentValues.put("c_movil",ev.getC_movil());
+        contentValues.put("d_hora",ev.getD_hora());
+        contentValues.put("c_accion",ev.getC_accion());
+        contentValues.put("c_enviado",ev.getC_enviado());
+        contentValues.put("c_seriechip",ev.getC_seriechip());
+        contentValues.put("c_usuario",ev.getC_usuario());
+        contentValues.put("c_codIntApp",ev.getC_codIntApp());
+        return  contentValues;
+    }
+
+    public long  InsertEventoAuidtoriaAPP(EventoAuditoriaAPP oEnt){
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MA_EVENTO_AUDITORIAAPP_NAME, null, EventoAuidtoriaAPPContentValues(oEnt));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  long EliminarEventoAuidtoriaAPPLocal (String sID){
+
+        Log.i("EVENTO Auditoria ID " , sID);
+        this.OpenWritableDB();
+        long rowid = db.delete(ConstasDB.MA_EVENTO_AUDITORIAAPP_NAME, "_id="+sID,null);
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  ArrayList<EventoAuditoriaAPP> EventosAuditoriaPorEnviar(){
+        ArrayList<EventoAuditoriaAPP> oData = new ArrayList<>();
+        String query = "select * from "+ConstasDB.MA_EVENTO_AUDITORIAAPP_NAME+" WHERE    c_enviado = 'N'";
+        Log.i("EVENTOS AUDITORIA no enviados " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            EventoAuditoriaAPP oEnt = new EventoAuditoriaAPP();
+            oEnt.setN_correlativo(cursor.getInt(cursor.getColumnIndex("_id")));
+            oEnt.setD_fechaserv(cursor.getString(cursor.getColumnIndex("d_fechaserv")));
+            oEnt.setC_origen(cursor.getString(cursor.getColumnIndex("c_origen")));
+            oEnt.setC_imei(cursor.getString(cursor.getColumnIndex("c_imei")));
+            oEnt.setC_movil(cursor.getString(cursor.getColumnIndex("c_movil")));
+            oEnt.setC_seriechip(cursor.getString(cursor.getColumnIndex("c_seriechip")));
+            oEnt.setD_hora(cursor.getString(cursor.getColumnIndex("d_hora")));
+            oEnt.setC_accion(cursor.getString(cursor.getColumnIndex("c_accion")));
+            oEnt.setC_enviado(cursor.getString(cursor.getColumnIndex("c_enviado")));
+            oEnt.setC_usuario(cursor.getString(cursor.getColumnIndex("c_usuario")));
+            oEnt.setC_codIntApp(cursor.getString(cursor.getColumnIndex("c_codIntApp")));
+
+            oData.add(oEnt);
+        }
+        return oData;
+    }
+
+    /****************************** FIN ******************************/
+
+    /*********VERIFICAR SI TIENE ACCESOS SINCRONIZADOS*********/
+
+    public  boolean UsuarioTieneAccesos (String sUsuario){
+        int resultcont = 0 ;
+        String query = "select count (*) n_contador from  "+ConstasDB.TABLA_MTP_ACCESO_NAME+" WHERE trim(c_usuario) = '"+sUsuario+"' and  c_acceso = 'S'";
+        Log.i("existe accesos de usuario query " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            resultcont =  cursor.getInt(cursor.getColumnIndex("n_contador"));
+        }
+        Log.i("numero de acceos " , String.valueOf(resultcont));
+        if (resultcont>0){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /*********************************************/
 
     public boolean deleteInspMaq(String correlativo) {
         boolean res = false;
@@ -2262,24 +2579,6 @@ public class ProdMantDataBase {
         return res;
     }
 
-    /* public void deleteTables() {
 
-        this.OpenWritableDB();
-        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MENUS_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_ACCESO_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_USUARIO_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_MAQUINAS_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_PERIODO_INSPECCION_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TABLA_MTP_INSPECCION_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TMA_CLIENTES_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TMA_FALLA_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TMA_MODELO_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TMA_MARCA_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TMA_PRUEBALAB_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TMA_TIPORECLAMO_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.TMA_VENDEDOR_NAME);
-        db.execSQL("DELETE FROM " + ConstasDB.MCO_RECLAMO_GARANTIA_NAME);
-        this.CloseDB();
-    }*/
 
 }

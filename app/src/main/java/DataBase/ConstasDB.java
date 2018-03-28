@@ -639,6 +639,66 @@ public class ConstasDB {
                     "c_ultimousuario TEXT, "+
                     "d_ultimafechamodificacion TEXT); ";
 
+    public  static  final String MA_IMECELULAR_NAME = "MA_IMEICELULAR";
+    public  static  final String MA_IMECELULAR_SQL =
+            "CREATE TABLE "+ MA_IMECELULAR_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_imei TEXT, "+
+                    "c_tipo TEXT, "+
+                    "c_numero TEXT, "+
+                    "c_seriechip TEXT , "+
+                    "d_fechareg TEXT, "+
+                    "c_estado TEXT , "+
+                    "c_ultimousuario TEXT , "+
+                    "d_ultimafechamodificacion TEXT ); ";
+
+    public static final String  MA_AUDITORIAAPP_NAME = "MA_AUDITORIAPP";
+    public  static  final String MA_AUDITORIAAPP_SQL =
+            "CREATE TABLE "+ MA_AUDITORIAAPP_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "n_correlativo BIGINT, "+
+                    "d_fechaserv TEXT, "+
+                    "c_origen TEXT, "+
+                    "c_usuario TEXT, "+
+                    "c_codIntApp TEXT , "+
+                    "d_hora TEXT , "+
+                    "c_tipo TEXT , "+
+                    "c_imei TEXT , "+
+                    "c_movil TEXT , "+
+                    "c_seriechip TEXT , "+
+                    "c_enviado TEXT ); ";
+
+    public static final String  MA_PARMAETROS_NAME = "MA_PARAMETROS";
+    public  static  final String MA_PARMAETROS_SQL =
+            "CREATE TABLE "+ MA_PARMAETROS_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT , "+
+                    "c_aplicacion TEXT , "+
+                    "c_parametrocodigo TEXT , "+
+                    "c_descripcion TEXT , "+
+                    "c_texto TEXT , "+
+                    "n_numero numeric , "+
+                    "d_fecha TEXT , "+
+                    "c_ultusuario TEXT , "+
+                    "c_ultfechamodificacion TEXT ); ";
+
+    public static final String  MA_EVENTO_AUDITORIAAPP_NAME = "MA_AUDITORIAEVENTOAPP";
+    public  static  final String MA_EVENTO_AUDITORIAAPP_SQL =
+            "CREATE TABLE "+ MA_EVENTO_AUDITORIAAPP_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "n_correlativo BIGINT , "+
+                    "d_fechaserv TEXT , "+
+                    "c_origen TEXT , "+
+                    "c_imei TEXT , "+
+                    "c_movil TEXT , "+
+                    "c_seriechip TEXT , "+
+                    "d_hora TEXT , "+
+                    "c_accion TEXT , "+
+                    "c_usuario TEXT , "+
+                    "c_codIntApp TEXT , "+
+                    "c_enviado TEXT ); ";
+
+
 }
 
 

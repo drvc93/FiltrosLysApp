@@ -1,22 +1,12 @@
 package Util;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-
 import com.filtroslys.filtroslysapp.R;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,7 +22,6 @@ public class Constans {
     public static String UrlServerExterno = ReaderFileExterno();
     public static String UrlServerLocal = ReaderFileLocal();  //"http://10.0.2.2:8086/SOAPLYS?wsdl";
     public static String NameSpaceWS = "http://SOAP/";
-    // public  static  String usercod = ReaderFileLocal();
     public static int icon_error = R.drawable.ic_error_white_24dp;
     public static  int layout_error = R.drawable.toast_error_shape;
     public static  int icon_warning = R.drawable.ic_warning_black_24dp;
@@ -45,10 +34,11 @@ public class Constans {
     public static  String Carpeta_foto_QJ= "LysConfig/FotosQJ/";
     public static  String Carpeta_foto_CP= "LysConfig/FotosCP/";
     public static final String NroConpania = "00100000";
-    public static  final  String FolderConfig ="appConfig";
-    public static  final  String IPDefault  ="190.187.181.56:80" ;//"190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
-    public static  final  String FolderWs = "LysWsRest" ;
-    public static  final  String IpDescarga = "190.187.181.56";//"190.187.181.56";// "100.100.100.186:8080";
+    private static  final  String FolderConfig ="appConfig";
+    public static  final  String IPDefault  ="100.100.100.57:8080" ;//"190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
+    private static  final  String FolderWs =  GetNombreServicioWeb() ;// "LysWsRest" ;
+    public static  final  String IpDescarga = "100.100.100.186:8080";//"190.187.181.56";// "100.100.100.186:8080";
+    public static  final  String OrigenAPP_Auditoria = "APPMOVILYS";
 
     public static void SetConexion(String LocalOExt, String con) {
 
@@ -223,6 +213,47 @@ public class Constans {
         }
 
 
+    }
+
+
+    private static String GetNombreServicioWeb() {
+        String sRuta = Environment.getExternalStorageDirectory() + File.separator + FolderConfig;
+        String sFile =  sRuta + File.separator + "webNS.txt";
+        String sNameSWeb = "LysWsRest";
+
+        try {
+            File myFile = new File(sFile);
+            if (!myFile.exists()) {
+                myFile = new File(sRuta);
+                if (myFile.list() == null)
+                    myFile.mkdirs();
+
+                myFile = new File(sFile);
+                myFile.createNewFile();
+
+                FileOutputStream Fout = new FileOutputStream(myFile);
+                OutputStreamWriter Osw = new OutputStreamWriter(Fout);
+                sNameSWeb = "LysWsRest";
+                Osw.append(sNameSWeb);
+                Osw.flush();
+                Osw.close();
+                Fout.close();
+            }else{
+
+                FileInputStream Fin = new FileInputStream(myFile);
+                InputStreamReader archivo = new InputStreamReader(Fin);
+                BufferedReader br = new BufferedReader(archivo);
+                String sValor = br.readLine();
+                if (sValor != null){
+                    sNameSWeb = sValor;
+                }
+                br.close();
+                archivo.close();
+            }
+            myFile = null;
+        } catch (IOException e) {
+        }
+        return sNameSWeb;
     }
 
 

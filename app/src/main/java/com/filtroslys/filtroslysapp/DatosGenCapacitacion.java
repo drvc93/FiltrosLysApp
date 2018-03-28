@@ -77,6 +77,7 @@ import Tasks.InsertCapacitacionClienteTask;
 import Tasks.InsertDocsCapacitacionTask;
 import Tasks.TransferirCapacitacionClienteTask;
 import Util.Constans;
+import Util.Funciones;
 import libs.mjn.prettydialog.PrettyDialog;
 import spencerstudios.com.fab_toast.FabToast;
 
@@ -632,9 +633,11 @@ public class DatosGenCapacitacion extends AppCompatActivity {
 
         if (sOperacion.equals("NEW")) {
             rowid  =   db.InsertCapacitacionCliente(objCapacitacion);
+            Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Guardó Capacitacoón Cliente Localmente | "+txtClienteCodNom.getText().toString()+" ]");
         }else if (sOperacion.equals("MOD")){
             rowid   = db.UpdateCapacitacion(objCapacitacion);
             rowid  = objCapacitacion.getN_correlativo();
+            Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Actulizó Capacitacoón Cliente Localmente | "+txtClienteCodNom.getText().toString()+" ]");
         }
         if (rowid>0){
             Log.i("row id capacitacion ", String.valueOf(rowid));
@@ -703,6 +706,7 @@ public class DatosGenCapacitacion extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (sResultTrasnf.equals("OK")){
+                    Funciones.InsertarTablaEventoApp(getApplicationContext(),"[Guardó Capacitacoón Cliente en el servidor | "+txtClienteCodNom.getText().toString()+" ]");
                     if (docsAdapdater!=null && docsAdapdater.getCount()>0){
                         GuardarFotoEnServer(docsAdapdater.AllItems());
                     }

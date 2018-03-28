@@ -1,17 +1,21 @@
 package com.filtroslys.filtroslysapp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-
 import DataBase.AccesosDB;
 import DataBase.CentroCostoDB;
 import DataBase.InspeccionDB;
@@ -36,8 +38,8 @@ import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
 import DataBase.TipoRevisionGBD;
 import DataBase.UsuarioDB;
-import Model.Menu;
-import Model.Permisos;
+import Model.EventoAuditoriaAPP;
+import Model.IMEMovil;
 import Model.SubMenuBotones;
 import Model.TMAAccionesTomar;
 import Model.TMACalificacionQueja;
@@ -61,6 +63,7 @@ import Tasks.GetCentroCostoTask;
 import Tasks.GetClientesTask;
 import Tasks.GetDireccionCliTask;
 import Tasks.GetFallasTask;
+import Tasks.GetIMEIMovilesTask;
 import Tasks.GetInspeccionesTask;
 import Tasks.GetMaquinasTask;
 import Tasks.GetMarcasTask;
@@ -81,16 +84,20 @@ import Tasks.RefrescarBaseDeDatosTask;
 import Tasks.SincronizarAccesosTask;
 import Tasks.SincronizarMaestrosTask;
 import Util.Constans;
+import Util.Funciones;
+import Util.Internet;
+import spencerstudios.com.fab_toast.FabToast;
 
 public class MenuOpciones extends AppCompatActivity {
 
-    String codMaq ,NomMaq;
+    String codMaq, NomMaq;
     SharedPreferences preferences;
-    String  codPadre , codHijo;
-    String codUser,resultBarCode;
+    String codPadre, codHijo;
+    String codUser, resultBarCode;
     public static final int REQUEST_CODE = 0x0000c0de;
     ListView LVOpciones;
-    ArrayList<SubMenuBotones> listOpciones = new ArrayList<SubMenuBotones>();
+    ArrayList<SubMenuBotones> listOpciones = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,13 +107,15 @@ public class MenuOpciones extends AppCompatActivity {
 
         codHijo = getIntent().getExtras().getString("codHijo");
         codPadre = getIntent().getExtras().getString("codPadre");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MenuOpciones.this);
+        codUser = preferences.getString("UserCod", null);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-        if (codPadre != null && codHijo != null ){
+        if (codPadre != null && codHijo != null) {
 
             Log.i("cod Padre > ", codPadre);
             Log.i("cod  hijo >", codHijo);
-            listOpciones = GetOpciones(codPadre,codHijo);
+            listOpciones = GetOpciones(codPadre, codHijo);
             CreateButtons();
         }
     }
@@ -122,54 +131,50 @@ public class MenuOpciones extends AppCompatActivity {
         }
     }
 
-    public  ArrayList<SubMenuBotones> GetOpciones(String codPadre , String smenu){
+    public ArrayList<SubMenuBotones> GetOpciones(String codPadre, String smenu) {
         ProdMantDataBase db = new ProdMantDataBase(MenuOpciones.this);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MenuOpciones.this);
-        codUser = preferences.getString("UserCod",null);
 
-        ArrayList<SubMenuBotones> result = db.getSubBotones(codPadre,smenu,codUser);
+        ArrayList<SubMenuBotones> result = db.getSubBotones(codPadre, smenu, codUser);
 
 
-        return  result;
+        return result;
 
     }
 
 
-    public void GetMaquinaBarCode (String barcode){
+    public void GetMaquinaBarCode(String barcode) {
 
         ProdMantDataBase db = new ProdMantDataBase(MenuOpciones.this);
         MaquinaDB m = db.GetMAquinaPorCodigo(barcode);
-        if (m==null){
-            CreateCustomToast("No se encontro una maquina con el codigo de barra" ,Constans.icon_error,Constans.layout_error);
-        }
-        else {
+        if (m == null) {
+            CreateCustomToast("No se encontro una maquina con el codigo de barra", Constans.icon_error, Constans.layout_error);
+        } else {
             String msj = "Maquina encontrada : " + m.getC_descripcion();
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("CodMaquina", m.getC_maquina());
-            editor.putString("NomMaquina",m.getC_descripcion());
-            editor.putString("FamMaquina",m.getC_familiainspeccion());
+            editor.putString("NomMaquina", m.getC_descripcion());
+            editor.putString("FamMaquina", m.getC_familiainspeccion());
             editor.commit();
 
 
-            NomMaq= m.getC_descripcion();
+            NomMaq = m.getC_descripcion();
             codMaq = m.getC_maquina();
-            CreateCustomToast(msj,Constans.icon_succes,Constans.layout_success);
+            CreateCustomToast(msj, Constans.icon_succes, Constans.layout_success);
         }
 
 
     }
 
-    public void CreateButtons (){
+    public void CreateButtons() {
 
-        OpcionesAdapter  opcionesAdapter = new OpcionesAdapter(MenuOpciones.this,R.layout.layout_lista_opciones,listOpciones);
+        OpcionesAdapter opcionesAdapter = new OpcionesAdapter(MenuOpciones.this, R.layout.layout_lista_opciones, listOpciones);
         LVOpciones.setAdapter(opcionesAdapter);
     }
 
 
-
     // Adapter  listview
 
-    public class OpcionesAdapter  extends ArrayAdapter<SubMenuBotones> {
+    public class OpcionesAdapter extends ArrayAdapter<SubMenuBotones> {
 
 
         public OpcionesAdapter(Context context, int resource, ArrayList<SubMenuBotones> data) {
@@ -179,17 +184,17 @@ public class MenuOpciones extends AppCompatActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
 
-            View  view = convertView;
+            View view = convertView;
 
             if (view == null) {
                 LayoutInflater vi;
                 vi = LayoutInflater.from(getContext());
-                view= vi.inflate(R.layout.layout_lista_opciones, null);
+                view = vi.inflate(R.layout.layout_lista_opciones, null);
             }
 
             SubMenuBotones subMenuBotones = getItem(position);
             Button btnOpcList = view.findViewById(R.id.btnListOpciones);
-            if (btnOpcList!=null){
+            if (btnOpcList != null) {
 
                 btnOpcList.setText(subMenuBotones.getDescripcion());
             }
@@ -197,63 +202,61 @@ public class MenuOpciones extends AppCompatActivity {
             btnOpcList.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //  Toast.makeText(ListaOpciones.this,String.valueOf(position),Toast.LENGTH_SHORT).show();
-
-
-                    Log.i("Boton Seleciconado ====>codPadre : " , listOpciones.get(position).getCodPadre());
-                    Log.i("Boton Seleciconado ====>submenu : ",listOpciones.get(position).getCodSubmenu());
-                    Log.i("Boton Seleciconado ====>cod Boton : " , listOpciones.get(position).getCodMenuBoton());
-                    // Log.i("Boton Seleciconado ====>codPadre: " , listOpciones.get(position).getaClass().getPackageName() );
+                    Log.i("Boton Seleciconado ====>codPadre : ", listOpciones.get(position).getCodPadre());
+                    Log.i("Boton Seleciconado ====>submenu : ", listOpciones.get(position).getCodSubmenu());
+                    Log.i("Boton Seleciconado ====>cod Boton : ", listOpciones.get(position).getCodMenuBoton());
                     SubMenuBotones sbmenu = listOpciones.get(position);
-                     IrActivity(sbmenu);
+                    IrActivity(sbmenu);
                 }
             });
 
-            return  view;
+            return view;
         }
     }
 
-    public  void  IrActivity (SubMenuBotones sb){
-        String var_concatenado =  sb.getCodPadre()+sb.getCodSubmenu()+sb.getCodMenuBoton();
-        Log.i("Contaenado nivel ==> ",var_concatenado);
+    public void IrActivity(SubMenuBotones sb) {
+        ProdMantDataBase db = new ProdMantDataBase(getApplicationContext());
+        String var_concatenado = sb.getCodPadre() + sb.getCodSubmenu() + sb.getCodMenuBoton();
+        EventoAuditoriaAPP event = new EventoAuditoriaAPP();
+        event.setC_enviado("N");
+        event.setC_movil(Funciones.DatosTelefono("NUMERO",getApplicationContext()));
+        event.setC_imei((Funciones.DatosTelefono("IMEI",getApplicationContext())));
+        event.setC_seriechip((Funciones.DatosTelefono("SIM",getApplicationContext())));
+        event.setC_origen(Constans.OrigenAPP_Auditoria);
+        event.setD_hora(Funciones.GetFechaActual());
+        event.setC_usuario(codUser);
+        event.setC_codIntApp(codUser);
+        event.setC_accion("[CLICK BOTON : "+sb.getDescripcion().trim()+"]");
+        db.InsertEventoAuidtoriaAPP(event);
 
-        if (var_concatenado.equals("010101")){
+        Log.i("Contaenado nivel ==> ", var_concatenado);
+
+        if (var_concatenado.equals("010101")) {
 
             Intent intentScan = new Intent(Constans.BS_PACKAGE + ".SCAN");
             intentScan.putExtra("PROMPT_MESSAGE", "Enfoque entre 9 y 11 cm. apuntado el codigo de barras de la maquina");
             startActivityForResult(intentScan, REQUEST_CODE);
-
         }
-        if (var_concatenado.equals("010102")){
-
-           if (codMaq==null  && NomMaq== null){
-
-               CreateCustomToast("Primero de escanear el codigo de barras",Constans.icon_error,Constans.layout_error);
-           }
-            else {
-
-               Intent intent =  new Intent(getApplicationContext(),InspeccionMaq.class);
-               intent.putExtra("tipoMant", "NEW");
-               startActivity(intent);
-
-
-           }
-
+        if (var_concatenado.equals("010102")) {
+            if (codMaq == null && NomMaq == null) {
+                CreateCustomToast("Primero de escanear el codigo de barras", Constans.icon_error, Constans.layout_error);
+            } else {
+                Intent intent = new Intent(getApplicationContext(), InspeccionMaq.class);
+                intent.putExtra("tipoMant", "NEW");
+                startActivity(intent);
+            }
         }
-
-        if (var_concatenado.equals("010103")){
-            Intent intent = new Intent(MenuOpciones.this,InspeccionMaqListLinea.class);
+        if (var_concatenado.equals("010103")) {
+            Intent intent = new Intent(MenuOpciones.this, InspeccionMaqListLinea.class);
             intent.putExtra("TipoSync", "Online");
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
-
         }
         if (var_concatenado.equals("010104")) {
             Intent intent = new Intent(MenuOpciones.this, InspeccionMaqListLinea.class);
             intent.putExtra("TipoSync", "Offline");
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
-
         }
 
         if (var_concatenado.equals("010201")) {
@@ -264,16 +267,14 @@ public class MenuOpciones extends AppCompatActivity {
         if (var_concatenado.equals("010202")) {
             Intent intent = new Intent(MenuOpciones.this, InspeccionGenListLinea.class);
             intent.putExtra("tipoSincro", "Online");
-           // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
         if (var_concatenado.equals("010203")) {
             Intent intent = new Intent(MenuOpciones.this, InspeccionGenListLinea.class);
             intent.putExtra("tipoSincro", "Offline");
-           // intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
-
         /*Agregado el 10 de nov 2017 */
         if (var_concatenado.equals("010301")) {
             Intent intent = new Intent(MenuOpciones.this, ListaSolServicios.class);
@@ -284,20 +285,20 @@ public class MenuOpciones extends AppCompatActivity {
             startActivity(intent);
         }
 
-        if (var_concatenado.equals("030101")){
+        if (var_concatenado.equals("030101")) {
 
             AlertSyncro("MAESTROS");
         }
 
-        if (var_concatenado.equals("030102")){
+        if (var_concatenado.equals("030102")) {
 
             AlertSyncro("ACCESOS");
         }
 
-        if (var_concatenado.equals("030201")){
+        if (var_concatenado.equals("030201")) {
 
-           Intent intent = new Intent(this,VisorWebDescargas.class);
-           startActivity(intent);
+            Intent intent = new Intent(this, Descargas.class);
+            startActivity(intent);
         }
         if (var_concatenado.equals("040101")) {
 
@@ -305,106 +306,105 @@ public class MenuOpciones extends AppCompatActivity {
             startActivity(intent);
         }
 
-        if (var_concatenado.equals("050101")){
-            Intent intent = new Intent(getApplicationContext(),SelecCliente.class);
+        if (var_concatenado.equals("050101")) {
+            Intent intent = new Intent(getApplicationContext(), SelecCliente.class);
             //intent.putExtra("Operacion","NEW");
             startActivity(intent);
         }
 
-        if (var_concatenado.equals("050501")){
-            Intent intent = new Intent(getApplicationContext(),DatosGenRG.class);
-            intent.putExtra("Operacion","NEW");
+        if (var_concatenado.equals("050501")) {
+            Intent intent = new Intent(getApplicationContext(), DatosGenRG.class);
+            intent.putExtra("Operacion", "NEW");
             startActivity(intent);
         }
-        if (var_concatenado.equals("050502")){
-            Intent intent = new Intent(getApplicationContext(),ListaReclamoGarantia.class);
+        if (var_concatenado.equals("050502")) {
+            Intent intent = new Intent(getApplicationContext(), ListaReclamoGarantia.class);
             startActivity(intent);
         }
 
-        if (var_concatenado.equals("050201")){
-            Intent intent = new Intent(getApplicationContext(),DatosGenQueja.class);
-            intent.putExtra("AccionQJ","NEW");
+        if (var_concatenado.equals("050201")) {
+            Intent intent = new Intent(getApplicationContext(), DatosGenQueja.class);
+            intent.putExtra("AccionQJ", "NEW");
             startActivity(intent);
         }
-        if (var_concatenado.equals("050202")){
-            Intent intent = new Intent(getApplicationContext(),ListaQuejaCliente.class);
+        if (var_concatenado.equals("050202")) {
+            Intent intent = new Intent(getApplicationContext(), ListaQuejaCliente.class);
             startActivity(intent);
         }
 
         //Regisrtro Sugerencia
-        if (var_concatenado.equals("050301")){
-            Intent intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
-            intent.putExtra("Operacion", "NEW") ;
-            intent.putExtra("TipoInfo","SU");
+        if (var_concatenado.equals("050301")) {
+            Intent intent = new Intent(getApplicationContext(), DatosGenSugerencia.class);
+            intent.putExtra("Operacion", "NEW");
+            intent.putExtra("TipoInfo", "SU");
             startActivity(intent);
         }
-        if (var_concatenado.equals("050302")){
-            Intent intent = new Intent(getApplicationContext(),ListaSugerenciaCliente.class);
-            intent.putExtra("TipoInfo","SU");
+        if (var_concatenado.equals("050302")) {
+            Intent intent = new Intent(getApplicationContext(), ListaSugerenciaCliente.class);
+            intent.putExtra("TipoInfo", "SU");
             startActivity(intent);
         }
 
         //Capaccitacion
-        if (var_concatenado.equals("050401")){
-            Intent intent = new Intent(getApplicationContext(),DatosGenCapacitacion.class);
-            intent.putExtra("Operacion", "NEW") ;
+        if (var_concatenado.equals("050401")) {
+            Intent intent = new Intent(getApplicationContext(), DatosGenCapacitacion.class);
+            intent.putExtra("Operacion", "NEW");
             startActivity(intent);
         }
-        if (var_concatenado.equals("050402")){
-            Intent intent = new Intent(getApplicationContext(),ListaCapacitacionCliente.class);
+        if (var_concatenado.equals("050402")) {
+            Intent intent = new Intent(getApplicationContext(), ListaCapacitacionCliente.class);
             startActivity(intent);
         }
 
         //Solicitud Compra Especial
-        if (var_concatenado.equals("050601")){
-            Intent intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
-            intent.putExtra("Operacion", "NEW") ;
-            intent.putExtra("TipoInfo","SE");
+        if (var_concatenado.equals("050601")) {
+            Intent intent = new Intent(getApplicationContext(), DatosGenSugerencia.class);
+            intent.putExtra("Operacion", "NEW");
+            intent.putExtra("TipoInfo", "SE");
             startActivity(intent);
         }
 
-        if (var_concatenado.equals("050602")){
-            Intent intent = new Intent(getApplicationContext(),ListaSugerenciaCliente.class);
-            intent.putExtra("TipoInfo","SE");
+        if (var_concatenado.equals("050602")) {
+            Intent intent = new Intent(getApplicationContext(), ListaSugerenciaCliente.class);
+            intent.putExtra("TipoInfo", "SE");
             startActivity(intent);
         }
 
         //Solicitud Material Publicitario
-        if (var_concatenado.equals("050701")){
-            Intent intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
-            intent.putExtra("Operacion", "NEW") ;
-            intent.putExtra("TipoInfo","MP");
+        if (var_concatenado.equals("050701")) {
+            Intent intent = new Intent(getApplicationContext(), DatosGenSugerencia.class);
+            intent.putExtra("Operacion", "NEW");
+            intent.putExtra("TipoInfo", "MP");
             startActivity(intent);
         }
 
-        if (var_concatenado.equals("050702")){
-            Intent intent = new Intent(getApplicationContext(),ListaSugerenciaCliente.class);
-            intent.putExtra("TipoInfo","MP");
+        if (var_concatenado.equals("050702")) {
+            Intent intent = new Intent(getApplicationContext(), ListaSugerenciaCliente.class);
+            intent.putExtra("TipoInfo", "MP");
             startActivity(intent);
         }
 
         //Consutla Tecnica
-        if (var_concatenado.equals("050801")){
-            Intent intent = new Intent(getApplicationContext(),DatosGenSugerencia.class);
-            intent.putExtra("Operacion", "NEW") ;
-            intent.putExtra("TipoInfo","CT");
+        if (var_concatenado.equals("050801")) {
+            Intent intent = new Intent(getApplicationContext(), DatosGenSugerencia.class);
+            intent.putExtra("Operacion", "NEW");
+            intent.putExtra("TipoInfo", "CT");
             startActivity(intent);
         }
 
-        if (var_concatenado.equals("050802")){
-            Intent intent = new Intent(getApplicationContext(),ListaSugerenciaCliente.class);
-            intent.putExtra("TipoInfo","CT");
+        if (var_concatenado.equals("050802")) {
+            Intent intent = new Intent(getApplicationContext(), ListaSugerenciaCliente.class);
+            intent.putExtra("TipoInfo", "CT");
             startActivity(intent);
         }
     }
 
     public void AlertSyncro(final String tipoSincronizacion) {
         String mensaje;
-        if (tipoSincronizacion.equals("MAESTROS")){
+        if (tipoSincronizacion.equals("MAESTROS")) {
             mensaje = "¿Desea sincronizar las tablas maestros?";
 
-        }
-        else {
+        } else {
             mensaje = "¿Desea sincronizar los accesos?";
 
 
@@ -419,12 +419,12 @@ public class MenuOpciones extends AppCompatActivity {
 
                             public void onClick(DialogInterface dialog, int id) {
 
-                                 if (tipoSincronizacion.equals("MAESTROS")) {
-                                     SincronizacionMaestros();
-                                 }
-                                else {
-                                     SincMenuAcceso();
-                                 }
+                                if (tipoSincronizacion.equals("MAESTROS")) {
+                                    SincronizacionMaestros();
+                                } else {
+
+                                    SincMenuAcceso();
+                                }
                             }
                         })
                 .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -437,43 +437,47 @@ public class MenuOpciones extends AppCompatActivity {
     }
 
 
+    public  boolean  VerificarConexionInternet (){
 
-    public  void SincMenuAcceso()  {
+        return  Internet.ConexionInternet(this);
+    }
+
+    public void SincMenuAcceso() {
+
+        if (!VerificarConexionInternet()){
+            FabToast.makeText(this, "Para poder sincronizar debe tener conexión a internet.", FabToast.LENGTH_LONG, FabToast.ERROR,  FabToast.POSITION_DEFAULT).show();
+            return;
+        }
 
         ProgressDialog progressDialog;
-        int icn = (R.drawable.icn_sync_48);
 
         String resultRefresh = "";
-        RefrescarBaseDeDatosTask refrescarBaseDeDatosTask = new RefrescarBaseDeDatosTask() ;
-        AsyncTask<String,String,String >asyncTaskRefresh ;
+        RefrescarBaseDeDatosTask refrescarBaseDeDatosTask = new RefrescarBaseDeDatosTask();
+        AsyncTask<String, String, String> asyncTaskRefresh;
         try {
             asyncTaskRefresh = refrescarBaseDeDatosTask.execute();
-            resultRefresh = (String)asyncTaskRefresh.get();
+            resultRefresh =  asyncTaskRefresh.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
-        if (resultRefresh.equals("OK")){
+        if (resultRefresh.equals("OK")) {
 
-        }else {
-            CreateCustomToast("Error al actualizar información: "+ resultRefresh,Constans.icon_error,Constans.layout_error);
+        } else {
+            CreateCustomToast("Error al actualizar información: " + resultRefresh, Constans.icon_error, Constans.layout_error);
             return;
         }
-
         // INSERT MENUS IN SQLITE
-
         GetMenuDataTask getMenuDataTask = new GetMenuDataTask();
-        AsyncTask<String,String,ArrayList<MenuDB>> asyncTask;
-        ArrayList<MenuDB> menuDBs= new ArrayList<>();
-        ProdMantDataBase db =  new ProdMantDataBase(MenuOpciones.this);
-        //db.deleteTables();
+        AsyncTask<String, String, ArrayList<MenuDB>> asyncTask;
+        ArrayList<MenuDB> menuDBs = new ArrayList<>();
+        ProdMantDataBase db = new ProdMantDataBase(MenuOpciones.this);
 
         try {
             asyncTask = getMenuDataTask.execute();
-            menuDBs= (ArrayList<MenuDB>)asyncTask.get();
-
+            menuDBs = (ArrayList<MenuDB>) asyncTask.get();
 
 
         } catch (InterruptedException e) {
@@ -486,11 +490,11 @@ public class MenuOpciones extends AppCompatActivity {
 
         ArrayList<UsuarioDB> listaUsers = new ArrayList<UsuarioDB>();
         GetUsuariosTask getUsuariosTask = new GetUsuariosTask();
-        AsyncTask<String,String,ArrayList<UsuarioDB>> asyncTaskUsers ;
+        AsyncTask<String, String, ArrayList<UsuarioDB>> asyncTaskUsers;
 
         try {
-            asyncTaskUsers =  getUsuariosTask.execute();
-            listaUsers = (ArrayList<UsuarioDB>) asyncTaskUsers.get();
+            asyncTaskUsers = getUsuariosTask.execute();
+            listaUsers =  asyncTaskUsers.get();
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -499,13 +503,13 @@ public class MenuOpciones extends AppCompatActivity {
         }
 
         //INSERT ACCESOS IN SQLITE
-        ArrayList<AccesosDB> accesosDBs = new ArrayList<AccesosDB>();
+        ArrayList<AccesosDB> accesosDBs = new ArrayList<>();
         //
         GetAccesosDataTask getAccesosDataTask = new GetAccesosDataTask();
-        AsyncTask<String,String,ArrayList<AccesosDB>> asyncTaskAccesos;
+        AsyncTask<String, String, ArrayList<AccesosDB>> asyncTaskAccesos;
 
         try {
-            asyncTaskAccesos = getAccesosDataTask.execute();
+            asyncTaskAccesos = getAccesosDataTask.execute(codUser);
             accesosDBs = asyncTaskAccesos.get();
 
         } catch (InterruptedException e) {
@@ -514,26 +518,45 @@ public class MenuOpciones extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        assert telephonyManager != null;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        String imei_movil = telephonyManager.getDeviceId();
+        IMEMovil objResult = null;
+        ArrayList<IMEMovil> listImeis = new ArrayList<>();
+        AsyncTask  <String,String,ArrayList<IMEMovil>> asyncTaskListIMEIs;
+        GetIMEIMovilesTask getIMEIMovilesTask = new GetIMEIMovilesTask();
+        try {
+            asyncTaskListIMEIs = getIMEIMovilesTask.execute(imei_movil);
+            listImeis = asyncTaskListIMEIs.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        objResult = listImeis.get(0);
+
+        if (db.ExiteIMEI(objResult.getC_imei())>0){
+            db.UpdateIMEIMovil(objResult);
+        }
+        else {
+            db.InsertIMEIMovil(objResult);
+        }
 
 
         progressDialog= new ProgressDialog(MenuOpciones.this);
         progressDialog.setTitle("Sincronizando");
         progressDialog.setMessage("Sincronizando accesos .. espere por favor..");
         progressDialog.setIcon(R.drawable.icn_sync_48);
-        SincronizarAccesosTask sincronizarAccesosTask = new SincronizarAccesosTask(MenuOpciones.this,accesosDBs,menuDBs,listaUsers,progressDialog);
+        SincronizarAccesosTask sincronizarAccesosTask = new SincronizarAccesosTask(MenuOpciones.this,accesosDBs,menuDBs,listaUsers,progressDialog,codUser,objResult);
         AsyncTask<Void,Void,Void> asyncTaskSincroAccesos ;
-
         asyncTaskSincroAccesos = sincronizarAccesosTask.execute();
-
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("Sync","Si");
         editor.commit();
-
-
-
     }
-
-
     public  void  SincronizacionMaestros (){
 
         String resultRefresh = "";
@@ -561,10 +584,7 @@ public class MenuOpciones extends AppCompatActivity {
         progressDialogo.setIcon(R.drawable.icn_sync_48);
 
         // Arrays variables
-
         ArrayList<MaquinaDB> listMaquinas;
-
-        //***
 
         // get list maquinas
       listMaquinas = new ArrayList<MaquinaDB>();
@@ -580,9 +600,6 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
-
-
         // list Periodos
 
         ArrayList<PeriodoInspeccionDB>  listPeriodos = new ArrayList<PeriodoInspeccionDB>();
@@ -591,7 +608,7 @@ public class MenuOpciones extends AppCompatActivity {
 
         try {
             asyncTaskPeriodos= getPeriodosInspTask.execute();
-            listPeriodos = (ArrayList<PeriodoInspeccionDB>)asyncTaskPeriodos.get();
+            listPeriodos = asyncTaskPeriodos.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -605,14 +622,12 @@ public class MenuOpciones extends AppCompatActivity {
 
         try {
             asyncTaskInspecciones = getInspeccionesTask.execute();
-            listInspecciones =(ArrayList<InspeccionDB>) asyncTaskInspecciones.get();
+            listInspecciones = asyncTaskInspecciones.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
-
         ArrayList<CentroCostoDB> listCentroCosto = new ArrayList<CentroCostoDB>();
         AsyncTask<String,String,ArrayList<CentroCostoDB>> asyncTaskCentroCosto ;
         GetCentroCostoTask getCentroCostoTask  = new GetCentroCostoTask();
@@ -625,8 +640,6 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
-
         //  list tipo revision
         AsyncTask<String, String, ArrayList<TipoRevisionGBD>> asyncTipoRevision;
         GetTipoRevisionGTask getTipoRevisionGTask = new GetTipoRevisionGTask();
@@ -640,7 +653,6 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         // Lista de clientes
         AsyncTask<String,String,ArrayList<TMACliente>> asyncTaskClientes ;
         GetClientesTask getClientesTask = new GetClientesTask();
@@ -666,7 +678,6 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         // lista marcas
         AsyncTask<String,String,ArrayList<TMAMarca>> asyncTaskMarcas ;
         GetMarcasTask getMarcasTask = new GetMarcasTask();
@@ -679,7 +690,6 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         // lista modelos
         AsyncTask<String,String,ArrayList<TMAModelo>>  asyncTaskModelos;
         GetModelosTask getModelosTask = new GetModelosTask() ;
@@ -692,9 +702,7 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         // lista  pruebas lab
-
         AsyncTask<String,String,ArrayList<TMAPruebaLab>> asyncTaskPruebasLab;
         GetPruebasLabTask  getPruebasLabTask = new GetPruebasLabTask();
         ArrayList<TMAPruebaLab> listPruebasLab =  new ArrayList<>() ;
@@ -706,9 +714,7 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         // LISTA TIPO RECLAMO
-
         AsyncTask<String,String,ArrayList<TMATipoReclamo>> asyncTaskTipoReclamos ;
         GetTipoReclamosTask  getTipoReclamosTask = new GetTipoReclamosTask();
         ArrayList<TMATipoReclamo> listTipoReclamo = new ArrayList<>();
@@ -720,7 +726,6 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         // Lista Vendedores
         AsyncTask<String,String,ArrayList<TMAVendedor>> asyncTaskVendedor ;
         GetVendedoresTask  getVendedoresTask = new GetVendedoresTask();
@@ -733,9 +738,8 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         //   LISTA CALIFICACION
-        ArrayList<TMACalificacionQueja> calaficaciones = new ArrayList<TMACalificacionQueja>();
+        ArrayList<TMACalificacionQueja> calaficaciones = new ArrayList<>();
         //
         GetCalifiQJTask getCalifiQJTask = new GetCalifiQJTask();
         AsyncTask<String,String,ArrayList<TMACalificacionQueja>> asyncTaskCalificacion;
@@ -749,10 +753,9 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         // Lista tipo calificacion
-        ArrayList<TMATipoCalificacionQueja> tipocalaficaciones = new ArrayList<TMATipoCalificacionQueja>();
-        //
+        ArrayList<TMATipoCalificacionQueja> tipocalaficaciones = new ArrayList<>();
+
         GetTipoCalifiQJTask getCalifiQJTask1 = new GetTipoCalifiQJTask();
         AsyncTask<String,String,ArrayList<TMATipoCalificacionQueja>> asyncTaskTipoCalificacion;
 
@@ -765,10 +768,8 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         //  lista medio recepcion
-
-        ArrayList<TMAMedioRecepcion> listMedioRecepcion = new ArrayList<TMAMedioRecepcion>();
+        ArrayList<TMAMedioRecepcion> listMedioRecepcion = new ArrayList<>();
         //
         GetMedioRecTask getMedioRecTask = new GetMedioRecTask();
         AsyncTask<String,String,ArrayList<TMAMedioRecepcion>> asyncTaskMedioRecepcion;
@@ -782,10 +783,8 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
         // lista acciones rq
-
-        ArrayList<TMAAccionesTomar> listAccionesRQ = new ArrayList<TMAAccionesTomar>();
+        ArrayList<TMAAccionesTomar> listAccionesRQ = new ArrayList<>();
         //
         GetAccionesQJTask getAccionesQJTask = new GetAccionesQJTask();
         AsyncTask<String,String,ArrayList<TMAAccionesTomar>> asyncTaskAccionesQueja;
@@ -801,7 +800,7 @@ public class MenuOpciones extends AppCompatActivity {
         }
 
         // lista de notificaciones rq
-        ArrayList<TMANotificacionQueja> listNotificacion = new ArrayList<TMANotificacionQueja>();
+        ArrayList<TMANotificacionQueja> listNotificacion = new ArrayList<>();
         //
         GetNotificacionQJTask getNotificacionQJTask = new GetNotificacionQJTask();
         AsyncTask<String,String,ArrayList<TMANotificacionQueja>> asyncTaskNotifi;
@@ -816,7 +815,7 @@ public class MenuOpciones extends AppCompatActivity {
             e.printStackTrace();
         }
         // lista de Tipo Sugerencia
-        ArrayList<TMATipoSugerencia> listTipoSugerencia = new ArrayList<TMATipoSugerencia>();
+        ArrayList<TMATipoSugerencia> listTipoSugerencia = new ArrayList<>();
         GetTipoSugerenciaTask getTipoSugerenciaTask = new GetTipoSugerenciaTask();
         AsyncTask<String,String,ArrayList<TMATipoSugerencia>> asyncTaskTipoSug;
 
@@ -831,7 +830,7 @@ public class MenuOpciones extends AppCompatActivity {
         }
 
         // lista de Tema Capacitacion
-        ArrayList<TMATemaCapacitacion> listTemaCapacitacion = new ArrayList<TMATemaCapacitacion>();
+        ArrayList<TMATemaCapacitacion> listTemaCapacitacion = new ArrayList<>();
         GetTemaCapacitacionTask getTemaCapacitacionTask = new GetTemaCapacitacionTask();
         AsyncTask<String,String,ArrayList<TMATemaCapacitacion>> asyncTaskTemaCap;
 
@@ -846,7 +845,7 @@ public class MenuOpciones extends AppCompatActivity {
         }
 
         // lista de Direccion Cliente
-        ArrayList<TMADireccionCli> listDireccionCli = new ArrayList<TMADireccionCli>();
+        ArrayList<TMADireccionCli> listDireccionCli = new ArrayList<>();
         GetDireccionCliTask getDireccionCliTask = new GetDireccionCliTask();
         AsyncTask<String,String,ArrayList<TMADireccionCli>> asyncTaskDirCli;
 
@@ -859,9 +858,6 @@ public class MenuOpciones extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
-
-
 
         Log.i("Pre ejecuion de maestroTask",".");
         // progress dialog with asynctask

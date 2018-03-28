@@ -18,10 +18,12 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 import DataBase.ProdMantDataBase;
+import Model.EventoAuditoriaAPP;
 import Model.Menu;
 import Model.SubMenu;
 import Util.Constans;
 import Util.ExpandibleListMenuAdapater;
+import Util.Funciones;
 
 public class MenuPrincipal extends AppCompatActivity {
 
@@ -30,11 +32,12 @@ public class MenuPrincipal extends AppCompatActivity {
    String codUser;
     ArrayList<Menu> MenuFinalList;
     ExpandableListView menuExpListView;
+    ProdMantDataBase db  ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
-
+        db = new ProdMantDataBase(getApplicationContext());
         String var = Constans.UrlServer;
         CrearCarpetasFotos();
         Log.i("test aplicaction context", var);
@@ -72,7 +75,17 @@ public class MenuPrincipal extends AppCompatActivity {
                 Intent  intent = new Intent(MenuPrincipal.this,MenuOpciones.class);
                 intent.putExtra("codPadre",menu.getCodMenu());
                 intent.putExtra("codHijo",subMenu.getCodSubMenu());
-
+                EventoAuditoriaAPP event = new EventoAuditoriaAPP();
+                event.setC_enviado("N");
+                event.setC_movil(Funciones.DatosTelefono("NUMERO",getApplicationContext()));
+                event.setC_imei((Funciones.DatosTelefono("IMEI",getApplicationContext())));
+                event.setC_seriechip((Funciones.DatosTelefono("SIM",getApplicationContext())));
+                event.setC_origen(Constans.OrigenAPP_Auditoria);
+                event.setD_hora(Funciones.GetFechaActual());
+                event.setC_usuario(codUser);
+                event.setC_codIntApp(codUser);
+                event.setC_accion("[INGRESO OPCION : "+menu.getDescripcionMenu().toUpperCase().trim()+" > "+subMenu.getDescripcionSubmenu().toUpperCase().trim()+"]");
+                db.InsertEventoAuidtoriaAPP(event);
                 startActivity(intent);
                 return  false;
 
@@ -112,7 +125,6 @@ public class MenuPrincipal extends AppCompatActivity {
         ArrayList<SubMenu> listSubMenu;
 
         listMenu = db.GetMenuPadre(codUser);
-
         listSubMenu =  db.GetMenuHijos(codUser);
 
         AgregarItemsAMenu(listMenu,listSubMenu);

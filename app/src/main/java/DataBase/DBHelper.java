@@ -52,6 +52,12 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(ConstasDB.MCO_DOCS_SUGERENCIA_SQL);
         sqLiteDatabase.execSQL(ConstasDB.MCO_DOCS_CAPACITACION_SQL);
         sqLiteDatabase.execSQL(ConstasDB.TMA_NOTIFICAQUEJA_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.MA_AUDITORIAAPP_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.MA_IMECELULAR_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.MA_PARMAETROS_SQL);
+        sqLiteDatabase.execSQL(ConstasDB.MA_EVENTO_AUDITORIAAPP_SQL);
+
+
 
     }
 
