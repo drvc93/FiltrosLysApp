@@ -2,12 +2,15 @@ package com.filtroslys.filtroslysapp;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,10 +28,23 @@ public class Splash extends AppCompatActivity {
     private static final long SPLASH_SCREEN_DELAY = 3000;
     int  currentapiVersion;
     ActionBar actionBar ;
+    TextView  lblVersion ;
+    String version ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        lblVersion =  findViewById(R.id.lblVersionCode);
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = pInfo.versionName;
+            lblVersion.setText("Ver." + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            version= "";
+            lblVersion.setText("");
+        }
+
+
         // Set portrait orientation
         if (VerificarConexionInternet() && checkDataBase()){
             GetListParametrosSistTask getListParametrosSistTask= new GetListParametrosSistTask();

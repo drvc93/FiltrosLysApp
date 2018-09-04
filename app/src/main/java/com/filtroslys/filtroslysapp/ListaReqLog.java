@@ -77,7 +77,6 @@ public class ListaReqLog extends AppCompatActivity {
     ReqLogisticaAdapter adapter;
     String sCompaniaSel , sFechaIni , sFechaFin,sEstado,sCentroCosto ;
     Button btnBuscar;
-    String sDescripcionRechazo  = "";
     int selectedItem =  0;
     ProgressBar progressBar ;
     @Override
@@ -87,15 +86,15 @@ public class ListaReqLog extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
 
         progressBar = new ProgressBar(ListaReqLog.this, null, android.R.attr.progressBarStyleSmall);
-        spCentroCosto = (Spinner)findViewById(R.id.spCentroCostoRL);
-        spCompania = (Spinner)findViewById(R.id.spCompaniaRL);
-        spEstado = (Spinner)findViewById(R.id.spEstadoRL);
-        txtFechaFin = (EditText)findViewById(R.id.txtFechaFinRL);
-        txtFechaIni = (EditText)findViewById(R.id.txtFechaIniRL);
-        txtNroReq   =  (EditText)findViewById(R.id.txtNroRequsicionRL);
-        lblCantReg = (TextView)findViewById(R.id.lblCantidadRegRL)  ;
-        lvReqLog = (ListView) findViewById(R.id.LVReqLog);
-        btnBuscar = (Button) findViewById(R.id.btnBuscarRL);
+        spCentroCosto = findViewById(R.id.spCentroCostoRL);
+        spCompania = findViewById(R.id.spCompaniaRL);
+        spEstado = findViewById(R.id.spEstadoRL);
+        txtFechaFin = findViewById(R.id.txtFechaFinRL);
+        txtFechaIni = findViewById(R.id.txtFechaIniRL);
+        txtNroReq   =  findViewById(R.id.txtNroRequsicionRL);
+        lblCantReg = findViewById(R.id.lblCantidadRegRL)  ;
+        lvReqLog =  findViewById(R.id.LVReqLog);
+        btnBuscar =  findViewById(R.id.btnBuscarRL);
         preferences = PreferenceManager.getDefaultSharedPreferences(ListaReqLog.this);
         codUser = preferences.getString("UserCod", null);
         Calendar c = Calendar.getInstance();

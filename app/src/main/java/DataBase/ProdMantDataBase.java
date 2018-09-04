@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
+
+import java.net.PortUnreachableException;
 import java.util.ArrayList;
 import Model.CapacitacionCliente;
 import Model.DatosAuditoria;
@@ -19,6 +21,7 @@ import Model.InspeccionGenDetalle;
 import Model.InspeccionMaqCabecera;
 import Model.InspeccionMaqDetalle;
 import Model.Menu;
+import Model.OpcionConsulta;
 import Model.Parametros;
 import Model.Permisos;
 import Model.QuejaCliente;
@@ -68,7 +71,10 @@ public class ProdMantDataBase {
     }
 
     private ContentValues MenuContentValues(MenuDB menuDB) {
-
+        String sOrden = "2";
+        if (menuDB.getNivel1().equals("5")  && menuDB.getNivel2().equals("9")  && menuDB.getNivel3().equals("0")){
+               sOrden = "1" ;
+        }
         ContentValues cv = new ContentValues();
         cv.put(ConstasDB.MTP_MEN_COD, menuDB.getAppCodigo());
         cv.put(ConstasDB.MTP_MEN_N1, menuDB.getNivel1());
@@ -78,6 +84,7 @@ public class ProdMantDataBase {
         cv.put(ConstasDB.MTP_MEN_N5, menuDB.getNivel5());
         cv.put(ConstasDB.MTP_MEN_C_NOMM, menuDB.getNombreMenu());
         cv.put(ConstasDB.MTP_MEN_C_DESCP, menuDB.getDescripcion());
+        cv.put(ConstasDB.MTP_MEN_C_MENUORDEN, sOrden);
         return cv;
     }
 
@@ -827,7 +834,7 @@ public class ProdMantDataBase {
         String query = "SELECT  substr(ma.c_niveles, 1, 2)  as CodPadre, substr(ma.c_niveles, 3, 2)  as CosSubMenu,mn.c_descripcion,'1' estado, c_usuario FROM MTP_ACCESO ma  inner join MTP_MENUS mn on " +
                 " CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) = nivel1 and " +
                 "CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) = nivel2 and CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) = nivel3 and CAST(substr(ma.c_niveles, 7, 2) AS INTEGER) = nivel4  and CAST(substr(ma.c_niveles, 9, 2) AS INTEGER) = nivel5 " +
-                "where  CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) = 0  and  CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) >0 and  CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) >0 and c_acceso='S' ";
+                "where  CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) = 0  and  CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) >0 and  CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) >0 and c_acceso='S'   order by substr(ma.c_niveles, 1, 2)  ,mn.c_menuorden , substr(ma.c_niveles, 3, 2)  ";
         this.OpenWritableDB();
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
@@ -874,7 +881,7 @@ public class ProdMantDataBase {
         String sqlQuery = "SELECT  substr(ma.c_niveles, 1, 2)  as CodPadre, mn.c_descripcion,mn.AplicacionCodigo, c_usuario FROM MTP_ACCESO ma  inner join MTP_MENUS mn on " +
                 " CAST(substr(ma.c_niveles, 1, 2) AS INTEGER) = nivel1 and CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) = nivel2 and " +
                 "CAST(substr(ma.c_niveles, 5, 2) AS INTEGER) = nivel3 and CAST(substr(ma.c_niveles, 7, 2) AS INTEGER) = nivel4  and CAST(substr(ma.c_niveles, 9, 2) AS INTEGER) = nivel5  " +
-                "where  CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) =0 AND c_acceso= 'S'";
+                "where  CAST(substr(ma.c_niveles, 3, 2) AS INTEGER) =0 AND c_acceso= 'S'  ORDER BY  mn.c_descripcion ";
         this.OpenWritableDB();
         Cursor cursor = db.rawQuery(sqlQuery, null);
         while (cursor.moveToNext()) {
@@ -2536,6 +2543,20 @@ public class ProdMantDataBase {
         return oData;
     }
 
+    public  ArrayList <String> ListaOpcionesConsulta(String sTipo , String sComp){
+        ArrayList<String> oData = new ArrayList<>();
+        String query = "select  c_numero || '.-' || c_descripcion as c_consulta from MA_OPCIONCONSULTA " +
+                      " where c_compania = '"+sComp+"' " +
+                      " and c_tipo = '"+sTipo+"' " +
+                       "order by c_numero  asc " ;
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+            oData.add(cursor.getString(cursor.getColumnIndex("c_consulta")));
+        }
+        return  oData;
+    }
+
     /****************************** FIN ******************************/
 
     /*********VERIFICAR SI TIENE ACCESOS SINCRONIZADOS*********/
@@ -2558,7 +2579,42 @@ public class ProdMantDataBase {
         }
     }
 
+
+
+   // this.
+
     /*********************************************/
+
+    public  int  ExisteCliente (String sComp , String sCliente){
+        int resultreturn = 0 ;
+        String query = "select  count (*) n_count from TMA_CLIENTES "+
+                        "where c_compania = '"+sComp+"' "+
+                        "and n_cliente = " +sCliente;
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            resultreturn =  cursor.getInt(cursor.getColumnIndex("n_count"));
+
+        }
+        return resultreturn;
+    }
+
+    public  String ObtenerRazonSocialCliente(String sComp , String sCliente){
+        String  resultreturn = "" ;
+        String query = "select  c_razonsocial   from TMA_CLIENTES "+
+                "where c_compania = '"+sComp+"' "+
+                "and n_cliente = " +sCliente;
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            resultreturn =  cursor.getString(cursor.getColumnIndex("c_razonsocial"));
+
+        }
+        return resultreturn;
+    }
+
 
     public boolean deleteInspMaq(String correlativo) {
         boolean res = false;
@@ -2577,6 +2633,37 @@ public class ProdMantDataBase {
         res = db.delete(ConstasDB.TABLA_MTP_INSPECCIONGENERAL_DET_NAME, ConstasDB.MTP_INSP_GEN_DET_CORRELATIVO + "=" + correlativo, null) > 0;
         this.CloseDB();
         return res;
+    }
+
+    public  ContentValues OpcionConsultaContentValues (OpcionConsulta opc) {
+        ContentValues  contentValues = new ContentValues();
+        contentValues.put("c_compania" , opc.getC_compania());
+        contentValues.put("c_tipo" , opc.getC_tipo());
+        contentValues.put("c_numero" , opc.getC_numero());
+        contentValues.put("c_descripcion" , opc.getC_descripcion());
+        contentValues.put("c_exportable",opc.getC_exportable());
+        return  contentValues ;
+    }
+
+    public  long InsertarOpcionConsulta (OpcionConsulta op) {
+        this.OpenWritableDB();
+        long rowid = db.insert(ConstasDB.MA_OPCIONCONSULTA_NAME, null, OpcionConsultaContentValues(op));
+        this.CloseDB();
+        return rowid;
+    }
+
+    public  String VerifiExportable (String sTipo , String sNumero){
+        String resultreturn = "" ;
+        String query = "select  c_exportable from MA_OPCIONCONSULTA where c_tipo = '"+sTipo+"' and c_numero = '"+sNumero+"'";
+        Log.i("select > " , query);
+        this.OpenWritableDB();
+        Cursor cursor  =db.rawQuery(query,null);
+        while (cursor.moveToNext()) {
+
+            resultreturn =  cursor.getString(cursor.getColumnIndex("c_exportable"));
+
+        }
+        return resultreturn;
     }
 
 

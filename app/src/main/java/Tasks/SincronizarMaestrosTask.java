@@ -22,6 +22,7 @@ import DataBase.PeriodoInspeccionDB;
 import DataBase.ProdMantDataBase;
 import DataBase.TipoRevisionGBD;
 import Model.EventoAuditoriaAPP;
+import Model.OpcionConsulta;
 import Model.TMAAccionesTomar;
 import Model.TMACalificacionQueja;
 import Model.TMACliente;
@@ -69,6 +70,7 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
     public ArrayList<TMATipoSugerencia> listTipoSug;
     public ArrayList<TMATemaCapacitacion> listTemaCap;
     public ArrayList<TMADireccionCli> listDirecCli;
+    public  ArrayList<OpcionConsulta> listOpcion ;
     String codUser = "";
 
     public SincronizarMaestrosTask(Context context, ProgressDialog progressDialog, ArrayList<MaquinaDB> listMaquina,
@@ -127,6 +129,7 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
         dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_TIPOSUGERENCIA_NAME);
         dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_TEMACAPACITACION_NAME);
         dbBase.execSQL("DELETE FROM " + ConstasDB.TMA_DIRECCIONCLI_NAME);
+        dbBase.execSQL("DELETE FROM " + ConstasDB.MA_OPCIONCONSULTA_NAME);
 
         dbBase.close();
         // prodMantDataBase.deleteTableMaquina();
@@ -321,6 +324,15 @@ public class SincronizarMaestrosTask extends AsyncTask<Void,Void,Void> {
             event.setD_hora(Funciones.GetFechaActual());
             prodMantDataBase.InsertEventoAuidtoriaAPP(event);
             prodMantDataBase.InsertMasiviDireccionCliente(listDirecCli);
+        }
+
+        if (listOpcion!=null && listOpcion.size()>0) {
+            event.setC_accion("[SINCRONIZÓ OPCIONES CONSULTAS]");
+            event.setD_hora(Funciones.GetFechaActual());
+            prodMantDataBase.InsertEventoAuidtoriaAPP(event);
+            for (int i = 0; i < listOpcion.size() ; i++) {
+                prodMantDataBase.InsertarOpcionConsulta(listOpcion.get(i));
+            }
         }
         return null;
     }

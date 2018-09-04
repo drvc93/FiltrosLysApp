@@ -70,7 +70,7 @@ import Util.SolicitudServAdapter;
 public class ListaSolServicios extends AppCompatActivity {
    // Button  btnFiltros ;
    SharedPreferences preferences;
-   String sFechaIni= "" , sFechaFin ="" , sFlagFecha ="" , sPersonaSolcitante ="" , sMaquina ="", sPrioridad = "" ,sEstado ="",sCompania ="";
+   String sFechaIni= "" , sFechaFin ="" , sFlagFecha =""  , sMaquina ="", sPrioridad = "" ,sEstado ="",sCompania ="";
     ListView LVSolcitudesServ;
     EditText txtFechaIni , txtFechaFin ,txtNroSolicitud ;
     SolicitudServAdapter adapter ;
@@ -93,17 +93,17 @@ public class ListaSolServicios extends AppCompatActivity {
         String mes = String.format("%02d", month);
         int year = c.get(Calendar.YEAR);
 
-        LVSolcitudesServ = (ListView)findViewById(R.id.lvSoliciudesServ);
-        spEstado = (Spinner)findViewById(R.id.spEstadoSS);
-        spMaquina  =(Spinner)findViewById(R.id.spMaquinaSS);
-        spPrioridad = (Spinner)findViewById(R.id.spPrioridadSS);
-        spCompania = (Spinner)findViewById(R.id.spCompSS);
-        spUsuarioSolict = (Spinner)findViewById(R.id.spUsuarioSolicitanteSS);
-        txtFechaIni = (EditText)findViewById(R.id.txtFechaIniSS);
-        txtFechaFin = (EditText)findViewById(R.id.txtFechaFinSS);
-        btnBuscar = (Button)findViewById(R.id.btnBuscarSS);
-        lblCantReg = (TextView)findViewById(R.id.lblCantRegistrosSS);
-        txtNroSolicitud = (EditText)findViewById(R.id.txtNroSolicit);
+        LVSolcitudesServ = findViewById(R.id.lvSoliciudesServ);
+        spEstado = findViewById(R.id.spEstadoSS);
+        spMaquina  =findViewById(R.id.spMaquinaSS);
+        spPrioridad = findViewById(R.id.spPrioridadSS);
+        spCompania = findViewById(R.id.spCompSS);
+        spUsuarioSolict = findViewById(R.id.spUsuarioSolicitanteSS);
+        txtFechaIni = findViewById(R.id.txtFechaIniSS);
+        txtFechaFin = findViewById(R.id.txtFechaFinSS);
+        btnBuscar = findViewById(R.id.btnBuscarSS);
+        lblCantReg = findViewById(R.id.lblCantRegistrosSS);
+        txtNroSolicitud = findViewById(R.id.txtNroSolicit);
         preferences = PreferenceManager.getDefaultSharedPreferences(ListaSolServicios.this);
         codUser = preferences.getString("UserCod", null);
 

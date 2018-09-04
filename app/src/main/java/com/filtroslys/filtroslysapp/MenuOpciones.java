@@ -40,6 +40,7 @@ import DataBase.TipoRevisionGBD;
 import DataBase.UsuarioDB;
 import Model.EventoAuditoriaAPP;
 import Model.IMEMovil;
+import Model.OpcionConsulta;
 import Model.SubMenuBotones;
 import Model.TMAAccionesTomar;
 import Model.TMACalificacionQueja;
@@ -71,6 +72,7 @@ import Tasks.GetMedioRecTask;
 import Tasks.GetMenuDataTask;
 import Tasks.GetModelosTask;
 import Tasks.GetNotificacionQJTask;
+import Tasks.GetOpcionesConsultaTask;
 import Tasks.GetPeriodosInspTask;
 import Tasks.GetPruebasLabTask;
 import Tasks.GetTemaCapacitacionTask;
@@ -395,6 +397,17 @@ public class MenuOpciones extends AppCompatActivity {
         if (var_concatenado.equals("050802")) {
             Intent intent = new Intent(getApplicationContext(), ListaSugerenciaCliente.class);
             intent.putExtra("TipoInfo", "CT");
+            startActivity(intent);
+        }
+
+        if (var_concatenado.equals("050901")) {
+            Intent intent = new Intent(getApplicationContext(), AvanceVend.class);
+
+            startActivity(intent);
+        }
+        if (var_concatenado.equals("050902")) {
+            Intent intent = new Intent(getApplicationContext(), DepTecnico.class);
+
             startActivity(intent);
         }
     }
@@ -859,6 +872,19 @@ public class MenuOpciones extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // lista de opciones consulta
+        ArrayList<OpcionConsulta> listaOpciones  = new ArrayList<>();
+        GetOpcionesConsultaTask getOpcionesConsultaTask  = new GetOpcionesConsultaTask();
+        AsyncTask<String,String,ArrayList<OpcionConsulta>> asyncTaskListOpc;
+        try {
+            asyncTaskListOpc = getOpcionesConsultaTask.execute(Constans.NroConpania);
+            listaOpciones = asyncTaskListOpc.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         Log.i("Pre ejecuion de maestroTask",".");
         // progress dialog with asynctask
         AsyncTask<Void,Void,Void> asyncMaestros;
@@ -878,7 +904,7 @@ public class MenuOpciones extends AppCompatActivity {
         sincroMaestrosTask.listTipoSug = listTipoSugerencia;
         sincroMaestrosTask.listTemaCap = listTemaCapacitacion;
         sincroMaestrosTask.listDirecCli = listDireccionCli;
-
+        sincroMaestrosTask.listOpcion = listaOpciones ;
          asyncMaestros = sincroMaestrosTask.execute();
         Log.i("Post ejecuion de maestroTask",".");
     }

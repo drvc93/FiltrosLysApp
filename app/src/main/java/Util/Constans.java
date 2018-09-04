@@ -37,9 +37,10 @@ public class Constans {
     private static  final  String FolderConfig ="appConfig";
     public static  final  String IPDefault  ="100.100.100.57:8080" ;//"190.187.181.56:80";// "100.100.100.57:8080" ;// "190.187.181.56:80";
     private static  final  String FolderWs =  GetNombreServicioWeb() ;// "LysWsRest" ;
-    public static  final  String IpDescarga = "100.100.100.186:8080";//"190.187.181.56";// "100.100.100.186:8080";
+    public static  final  String IpDescarga = "190.187.181.56";//"190.187.181.56";// "100.100.100.186:8080";
     public static  final  String OrigenAPP_Auditoria = "APPMOVILYS";
-
+    public static  final  String FolderRepVent = "LysConfig/RepVent/";
+    public static  final  String FolderDatosCli = "LysConfig/DatosCli/";
     public static void SetConexion(String LocalOExt, String con) {
 
         String filename = "";
@@ -58,7 +59,6 @@ public class Constans {
         try {
             Clear();
             File root = new File(Environment.getExternalStorageDirectory() + File.separator + filename);
-            // File gpxfile = new File(root, "tex.txt");
             FileWriter writer = new FileWriter(root);
             writer.append(con);
             writer.flush();
@@ -155,58 +155,42 @@ public class Constans {
 
             String redval = ReaderFileLocal();
             if ( (redval.toString() == null || redval == "")  && TipoIp.equals("LO")) {
-                //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
-
-                String data = "http://"+sIP+"/"+FolderWs+"/SOAPLYS?wsdl/";
+                String data = "http://"+sIP+"/"+FolderWs+"/SOAPLYS?wsdl";
                 Log.i("Ip local   : " , data );
-
                 File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + FolderConfig +File.separator + "local.txt");
-                //    if (!myFile.exists()) {
                 myFile.createNewFile();
                 FileOutputStream fOut = new FileOutputStream(myFile);
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
                 myOutWriter.append(data);
                 myOutWriter.close();
                 fOut.close();
-                // }
             }
             String redvalext = ReaderFileExterno();
             if ((redvalext.toString() == null || redvalext == "") && TipoIp.equals("EX") ) {
-                //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
-
-                String data = "http://"+sIP+"/"+FolderWs+"/SOAPLYS?wsdl/";
+                String data = "http://"+sIP+"/"+FolderWs+"/SOAPLYS?wsdl";
                 Log.i("Ip Ext   : " , data );
-
                 File myFile = new File(Environment.getExternalStorageDirectory() +  File.separator + FolderConfig +File.separator + "ext.txt");
-                //    if (!myFile.exists()) {
                 myFile.createNewFile();
                 FileOutputStream fOut = new FileOutputStream(myFile);
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
                 myOutWriter.append(data);
                 myOutWriter.close();
                 fOut.close();
-                // }
+
             }
 
             String con = ReaderFielIpServer();
             if ((con == null || con == "") && TipoIp.equals("CON") ) {
-                //  File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
-
-                String data = "http://"+IPDefault+"/"+FolderWs+"/SOAPLYS?wsdl/";
+                String data = "http://"+IPDefault+"/"+FolderWs+"/SOAPLYS?wsdl";
                 Log.i("Ip CON   : " , data );
-
                 File myFile = new File(Environment.getExternalStorageDirectory() + File.separator + "con.txt");
-                //    if (!myFile.exists()) {
                 myFile.createNewFile();
                 FileOutputStream fOut = new FileOutputStream(myFile);
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
                 myOutWriter.append(data);
                 myOutWriter.close();
                 fOut.close();
-                // }
             }
-
-            // Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
 
 

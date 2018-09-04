@@ -45,6 +45,7 @@ public class ConstasDB {
     public static final String MTP_MEN_N5 = "nivel5";
     public static final String MTP_MEN_C_NOMM = "c_nombremenu";
     public static final String MTP_MEN_C_DESCP = "c_descripcion";
+    public static final String MTP_MEN_C_MENUORDEN = "c_menuorden";
 
     public static final String TABLA_MTP_MENUS_SQL =
             "CREATE TABLE " + TABLA_MTP_MENUS_NAME +
@@ -56,7 +57,8 @@ public class ConstasDB {
                     MTP_MEN_N4 + " TEXT, " +
                     MTP_MEN_N5 + " TEXT, " +
                     MTP_MEN_C_NOMM + " TEXT, " +
-                    MTP_MEN_C_DESCP + " TEXT );";
+                    MTP_MEN_C_DESCP + " TEXT," +
+                    MTP_MEN_C_MENUORDEN + " TEXT  );";
 
 
 
@@ -697,6 +699,16 @@ public class ConstasDB {
                     "c_usuario TEXT , "+
                     "c_codIntApp TEXT , "+
                     "c_enviado TEXT ); ";
+
+    public static final String  MA_OPCIONCONSULTA_NAME = "MA_OPCIONCONSULTA";
+    public  static  final String MA_MA_OPCIONCONSULTA_NAME_SQL =
+            "CREATE TABLE "+ MA_OPCIONCONSULTA_NAME +
+                    " (_id  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "c_compania TEXT , "+
+                    "c_tipo TEXT , "+
+                    "c_numero TEXT , "+
+                    "c_descripcion TEXT , "+
+                    "c_exportable TEXT ); ";
 
 
 }

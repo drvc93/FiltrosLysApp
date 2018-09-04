@@ -2,32 +2,24 @@ package com.filtroslys.filtroslysapp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
-import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
-import android.net.ParseException;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
@@ -82,7 +74,7 @@ import Util.Constans;
 import Util.Internet;
 import spencerstudios.com.fab_toast.FabToast;
 
-public class Login extends AppCompatActivity {
+public class Login extends AppCompatActivity  {
 
     //VARIABLES
     TextView lblModoConexion;
@@ -94,11 +86,7 @@ public class Login extends AppCompatActivity {
     int currentapiVersion;
     SharedPreferences preferences;
     String sModoTrabajo;
-    String TAG = "PhoneActivityTAG";
-    Activity activity = Login.this;
-    String wantPermission = Manifest.permission.READ_PHONE_STATE;
     String codUser;
-
 
 
     @Override
@@ -108,7 +96,6 @@ public class Login extends AppCompatActivity {
         inflater.inflate(R.menu.menu_login, menu);
         return true;
     }
-
 
     @SuppressLint("MissingPermission")
     @Override
@@ -121,13 +108,21 @@ public class Login extends AppCompatActivity {
         GenFile = preferences.getString("GenFile", null);
         CompDefault = preferences.getString("CompDefault", null);
         ProximaFechaVerficacion =preferences.getString("FechaExp", null);
+
+        boolean stickyMode = true;
         if (GenFile == null) {
+
             ActivityCompat.requestPermissions(Login.this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.REQUEST_INSTALL_PACKAGES, Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,Manifest.permission.READ_SMS},
                     1);
         }
         if (CompDefault == null) {
             GetDefaultCompania();
+        }
+
+        File FileCon = new File(Environment.getExternalStorageDirectory() +File.separator+"con.txt" );
+        if (!FileCon.exists()) {
+            CrearndoArchivosConfig();
         }
 
         currentapiVersion = android.os.Build.VERSION.SDK_INT;
@@ -137,7 +132,7 @@ public class Login extends AppCompatActivity {
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
-        copyFile();
+        //copyFile();
         //  ShowDialogAlert();
         // instanciando controles
         btnIngresar =  findViewById(R.id.btnIngresarLogin);
@@ -337,12 +332,7 @@ public class Login extends AppCompatActivity {
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
-        if (date1.after(date2)){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return date1.after(date2);
     }
 
     public  void  EnviarEventosAuditoriasLocales(){
@@ -759,9 +749,9 @@ public class Login extends AppCompatActivity {
 
         LayoutInflater infator = getLayoutInflater();
         View layout =infator.inflate(R.layout.toast_alarm_success, (ViewGroup) findViewById(R.id.toastlayout));
-        TextView toastText = (TextView)layout.findViewById(R.id.txtDisplayToast);
-        ImageView imgIcon =  (ImageView)layout.findViewById(R.id.imgToastSucc);
-        LinearLayout parentLayout = ( LinearLayout)layout.findViewById(R.id.toastlayout);
+        TextView toastText = layout.findViewById(R.id.txtDisplayToast);
+        ImageView imgIcon =  layout.findViewById(R.id.imgToastSucc);
+        LinearLayout parentLayout = layout.findViewById(R.id.toastlayout);
         imgIcon.setImageResource(icon);
         final int sdk = android.os.Build.VERSION.SDK_INT;
         if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {

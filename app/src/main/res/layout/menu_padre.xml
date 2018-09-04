@@ -25,7 +25,8 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
 
             android:textColor="#FFF"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:textStyle="italic" />
     </LinearLayout>
 
 </LinearLayout>

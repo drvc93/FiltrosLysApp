@@ -45,8 +45,8 @@ public class Internet{
 		try{
 
 			socket = new Socket();
-			socket.connect(new InetSocketAddress("100.100.100.57", 8080), 2000);
-			//socket.connect(new InetSocketAddress("8.8.8.8", 80), 2000);
+			//socket.connect(new InetSocketAddress("100.100.100.57", 8080), 2000);
+			socket.connect(new InetSocketAddress("8.8.8.8", 80), 2000);
 			return true;
 		} catch (IOException e) {
 			return false;

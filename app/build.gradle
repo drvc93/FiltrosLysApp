@@ -15,8 +15,8 @@ android {
         applicationId "com.filtroslys.filtroslysapp"
         minSdkVersion 17
         targetSdkVersion 27
-        versionCode 4
-        versionName '3'
+        versionCode 3
+        versionName '3.2'
         signingConfig signingConfigs.config
     }
     buildTypes {
@@ -46,4 +46,8 @@ dependencies {
     compile 'com.github.mjn1369:prettydialog:1.0.0'
     compile 'com.github.Binary-Finery:FabToast:1.0'
     compile 'com.jackandphantom.android:circularimageview:1.2.0'
+    compile 'me.tankery.lib:permission-requester:1.0.0'
+    compile 'com.github.aakira:expandable-layout:1.6.0@aar'
+    compile 'com.github.florent37:expansionpanel:1.1.1'
+    compile 'com.github.lutvie72:RackMonthPicker:1.4'
 }

@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/Agregar"
-        android:icon="@drawable/icn_add_crclie"
-        android:title="Back"
+        android:id="@+id/shared"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="Compartir"
         app:showAsAction="always" />
 </menu>
